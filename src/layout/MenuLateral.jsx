@@ -36,7 +36,6 @@ const MenuLateral = () => {
       );
 
       if (response.status === 200) {
-        // console.log(response.data);
         setDadosMenuLateral({
           avatar: `${RotaApi}/Backend/Usuario/avatar/${response.data.InformacoesBasicas.Avatar}`,
           nome: response.data.InformacoesBasicas.NomeDoUsuario,
@@ -140,7 +139,7 @@ const MenuLateral = () => {
                   strokeLinejoin="round"
                 />
               </svg>
-              <span className="mx-4 font-medium">Home page</span>
+              <span className="mx-4 font-medium">Dashboard</span>
             </a>
 
             <a
