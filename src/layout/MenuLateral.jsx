@@ -140,7 +140,7 @@ const MenuLateral = () => {
                   strokeLinejoin="round"
                 />
               </svg>
-              <span className="mx-4 font-medium">Dashboard</span>
+              <span className="mx-4 font-medium">Home page</span>
             </a>
 
             <a
