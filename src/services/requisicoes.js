@@ -17,7 +17,7 @@ export async function requisicaoGet(rota) {
     );
 
     if (response.status === 200) {
-      return response.data;
+      return response;
     } else {
       console.error("Erro na requisição:", response.statusText);
       return null;

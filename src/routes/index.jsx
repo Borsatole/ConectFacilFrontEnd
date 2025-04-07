@@ -1,60 +1,73 @@
+import { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
-import TelaLogin from "./telaLogin";
-import Dashboard from "./Dashboard";
-import MeusPedidos from "./MeusPedidos";
-import Perfil from "./Perfil";
-import Admin from "./Admin";
+
+import Loading from "../components/Loading";
+
+const TelaLogin = lazy(() => import("./telaLogin"));
+const Dashboard = lazy(() => import("./Dashboard"));
+const MeusPedidos = lazy(() => import("./MeusPedidos"));
+const Perfil = lazy(() => import("./Perfil"));
+const Admin = lazy(() => import("./Admin"));
 
 const Rotas = () => {
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/login" element={<TelaLogin />} />
+    <Suspense
+      fallback={
+        <div>
+          <h1>Carregando...</h1>
+          <Loading color="var(--corPrincipal)" />
+        </div>
+      }
+    >
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/login" element={<TelaLogin />} />
 
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/pedidos"
-        element={
-          <ProtectedRoute>
-            <MeusPedidos />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/pedidos"
+          element={
+            <ProtectedRoute>
+              <MeusPedidos />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/perfil"
-        element={
-          <ProtectedRoute>
-            <Perfil />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/perfil"
+          element={
+            <ProtectedRoute>
+              <Perfil />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/admin"
-        element={
-          <ProtectedRoute>
-            <Admin />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <Admin />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Suspense>
   );
 };
 

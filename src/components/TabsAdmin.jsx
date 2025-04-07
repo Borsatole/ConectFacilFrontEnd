@@ -2,23 +2,18 @@ import { useState } from "react";
 import SectionCupons from "./SectionCupons";
 import SectionRecargas from "./SectionRecargas";
 
-
 function TabsAdmin() {
   const [autorization, setAuthorization] = useState(true);
   // mudar o titulo da pagina
   document.title = "Administrador do Sistema";
   const [activeTab, setActiveTab] = useState("Vendas");
 
-
   return (
     <>
       {!autorization ? (
-      <>
-        <h1>Você não tem autorização para acessar essa seção.</h1>
-     </>
-      
-        
-        
+        <>
+          <h1>Você não tem autorização para acessar essa seção.</h1>
+        </>
       ) : (
         <div className="max-w-full mx-auto p-6 bg-white shadow-lg rounded-lg">
           <div className="mb-4 border-b border-gray-200">

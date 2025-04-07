@@ -1,4 +1,5 @@
-import { requisicaoGet } from "../services/requisicoes"; // ajuste o caminho se necessário
+import { requisicaoGet } from "../services/requisicoes";
+import ContainerPrincipal from "../components/tailwindComponents/containerPrincipal";
 
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
@@ -22,12 +23,12 @@ function ConteudoDashboard() {
 
       if (response) {
         setDadosDashboard({
-          TotalPedidos: response.InformacoesBasicas.TotalPedidos,
+          TotalPedidos: response.data.InformacoesBasicas.TotalPedidos,
           TotalPedidosCancelados:
-            response.InformacoesBasicas.TotalPedidosCancelados,
+            response.data.InformacoesBasicas.TotalPedidosCancelados,
           TotalPedidosPendentes:
-            response.InformacoesBasicas.TotalPedidosPendentes,
-          Recargas: response.Recargas,
+            response.data.InformacoesBasicas.TotalPedidosPendentes,
+          Recargas: response.data.Recargas,
         });
       }
 
@@ -38,7 +39,7 @@ function ConteudoDashboard() {
   }, []);
 
   return (
-    <div className="w-full p-4 md:p-10 bg-gray-100" id="conteudo">
+    <ContainerPrincipal>
       <BotaoAbrirMenu />
 
       <div className="flex justify-between items-center mb-6">
@@ -51,7 +52,7 @@ function ConteudoDashboard() {
           icone="fas fa-shopping-cart"
           valor={String(dadosDashboard.TotalPedidos)}
           descricao="TOTAL DE PEDIDOS"
-          loading={loading} // Passando o estado de loading para o Card
+          loading={loading}
         />
 
         <CardEstatisticas
@@ -70,7 +71,7 @@ function ConteudoDashboard() {
       </div>
 
       <CatalogoRecargas items={dadosDashboard.Recargas} loading={loading} />
-    </div>
+    </ContainerPrincipal>
   );
 }
 
