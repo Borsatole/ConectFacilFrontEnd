@@ -6,7 +6,7 @@ import { useMenu } from "../context/MenuContext";
 
 import "../assets/css/MenuLateral.css";
 import Swal from "sweetalert2";
-import BtnFecharMenuLateral from "../components/btnFecharMenuLateral";
+import { BtnFecharMenuLateral } from "../components/MenuLateral/botoesMenu";
 import Loading from "../components/Loading";
 import OpcaoMenu from "../components/MenuLateral/OpcaoMenu";
 
@@ -16,7 +16,6 @@ import MenuLateralMeusPedidos from "../components/MenuLateral/Icones/MeusPedidos
 import MenuLateralPerfil from "../components/MenuLateral/Icones/menuLateralPerfil";
 
 const MenuLateral = () => {
-  const RotaApi = import.meta.env.VITE_API;
   const { logout } = useContext(AuthContext);
   const { menuAberto, fecharMenu } = useMenu();
   const [loading, setLoading] = useState(true);
@@ -29,6 +28,7 @@ const MenuLateral = () => {
   });
 
   useEffect(() => {
+    const RotaApi = import.meta.env.VITE_API;
     const carregarDados = async () => {
       const response = await requisicaoGet("/Backend/Usuario/Dashboard.php");
 
@@ -44,7 +44,7 @@ const MenuLateral = () => {
     };
 
     carregarDados();
-  }, [RotaApi]);
+  }, []);
 
   function ConfirmSair() {
     Swal.fire({
@@ -63,7 +63,6 @@ const MenuLateral = () => {
   }
   return (
     <>
-      {/* Menu Lateral */}
       <aside
         className={`flex flex-col h-screen px-4 py-8 overflow-y-auto corPrincipalBg menu-lateral ${
           menuAberto ? "menu-aberto" : ""

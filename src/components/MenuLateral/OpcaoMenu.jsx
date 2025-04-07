@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 function OpcaoMenu({ nome = "", svg = "", rota = "#" }) {
   return (
     <a
@@ -9,5 +11,11 @@ function OpcaoMenu({ nome = "", svg = "", rota = "#" }) {
     </a>
   );
 }
+
+OpcaoMenu.propTypes = {
+  nome: PropTypes.string,
+  svg: PropTypes.node,
+  rota: PropTypes.string,
+};
 
 export default OpcaoMenu;

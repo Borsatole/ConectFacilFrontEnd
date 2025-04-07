@@ -1,18 +1,16 @@
 import BotaoAbrirMenu from "../components/botaoAbrirMenu";
 import FormularioPerfil from "../components/FormularioPerfil";
+import ContainerPrincipal from "../components/tailwindComponents/Container";
+import { TituloPagina } from "../components/tailwindComponents/Textos";
 
 function ConteudoMeusPedidos() {
   return (
-    <div className="w-full min-h-screen p-4 md:p-10 bg-gray-100 " id="conteudo">
+    <ContainerPrincipal tipo="principal">
       <BotaoAbrirMenu />
-      <div className="flex justify-between items-center mb-6 ">
-        <h1 className="text-2xl font-bold">Configurações do Perfil</h1>
-      </div>
+      <TituloPagina>Perfil</TituloPagina>
 
       <FormularioPerfil />
-
-      {/* <CardsPedidos /> */}
-    </div>
+    </ContainerPrincipal>
   );
 }
 

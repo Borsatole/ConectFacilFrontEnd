@@ -1,12 +1,15 @@
 import axios from "axios";
+import { requisicaoGet } from "../services/requisicoes";
 import { useState, useEffect } from "react";
 import Alerta from "./comum/alertas";
+import Loading from "./Loading";
+import Container from "./tailwindComponents/Container";
 
 function FormularioPerfil() {
   const [dadosRecebidosFormulario, setDadosRecebidosFormulario] =
     useState(null);
   const [erro, setErro] = useState(null);
-  const [carregando, setCarregando] = useState(true);
+  const [loading, setLoading] = useState(true);
   // Lista fixa de avatares disponíveis
   const [avatares] = useState([
     "avatar1.png",
@@ -19,59 +22,22 @@ function FormularioPerfil() {
   const [avatarSelecionado, setAvatarSelecionado] = useState("");
 
   useEffect(() => {
-    async function buscarDados() {
-      const token = localStorage.getItem("token");
-      const RotaApi = import.meta.env.VITE_API;
+    const carregarDados = async () => {
+      const response = await requisicaoGet(
+        "/Backend/Usuario/configuracoes.php"
+      );
 
-      setCarregando(true);
-      setErro(null);
-
-      try {
-        const response = await axios.post(
-          `${RotaApi}/Backend/Usuario/configuracoes.php`,
-          { token: token },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          // Verificando se os dados estão em response.data ou response.data.dados
-          if (response.data.dados) {
-            setDadosRecebidosFormulario(response.data.dados);
-            // Define o avatar atual como selecionado
-            setAvatarSelecionado(response.data.dados.avatar || "");
-          } else {
-            // Se os dados estiverem diretamente em response.data
-            setDadosRecebidosFormulario(response.data);
-            setAvatarSelecionado(response.data.avatar || "");
-          }
-        }
-
-        // Removido a chamada para buscar avatares
-      } catch (error) {
-        console.error("Erro na verificação do token:", error);
-        setErro(
-          "Falha ao carregar os dados do perfil. Por favor, tente novamente mais tarde."
-        );
-      } finally {
-        setCarregando(false);
+      if (response) {
+        setDadosRecebidosFormulario(response.data.dados);
+        setAvatarSelecionado(response.data.dados.avatar || "");
       }
-    }
 
-    buscarDados();
+      setLoading(false);
+    };
+
+    carregarDados();
   }, []);
 
-  // Use um useEffect para monitorar as mudanças no estado e logar quando for atualizado
-  useEffect(() => {
-    if (dadosRecebidosFormulario) {
-      // console.log("Dados carregados:", dadosRecebidosFormulario);
-    }
-  }, [dadosRecebidosFormulario]);
-
-  // Função para lidar com o envio do formulário
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
@@ -110,6 +76,7 @@ function FormularioPerfil() {
         }, 2200);
       }
     } catch (error) {
+      setErro("Erro ao atualizar perfil.");
       console.error("Erro ao atualizar perfil:", error);
       Alerta(
         "toast",
@@ -125,8 +92,12 @@ function FormularioPerfil() {
   };
 
   // Mostra mensagem de carregamento enquanto os dados estão sendo buscados
-  if (carregando) {
-    return <div className="text-center p-6">Carregando dados do perfil...</div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center">
+        <Loading color="var(--corPrincipal)" />
+      </div>
+    );
   }
 
   // Mostra mensagem de erro se ocorrer algum problema
@@ -135,7 +106,7 @@ function FormularioPerfil() {
   }
 
   return (
-    <div className="max-w-full mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <Container tipo={"secundario"}>
       {dadosRecebidosFormulario ? (
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
@@ -277,7 +248,7 @@ function FormularioPerfil() {
           Nenhum dado de perfil disponível. Por favor, faça login novamente.
         </div>
       )}
-    </div>
+    </Container>
   );
 }
 

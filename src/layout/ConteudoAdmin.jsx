@@ -1,17 +1,16 @@
 import BotaoAbrirMenu from "../components/botaoAbrirMenu";
 import TabsAdmin from "../components/TabsAdmin";
-import ContainerPrincipal from "../components/tailwindComponents/containerPrincipal";
+import Container from "../components/tailwindComponents/Container";
+import { TituloPagina } from "../components/tailwindComponents/Textos";
 
 function ConteudoMeusPedidos() {
   return (
-    <ContainerPrincipal p="10">
+    <Container>
       <BotaoAbrirMenu />
-      <div className="flex justify-between items-center mb-6 ">
-        <h1 className="text-2xl font-bold">Admin</h1>
-      </div>
+      <TituloPagina>Admin</TituloPagina>
 
       <TabsAdmin />
-    </ContainerPrincipal>
+    </Container>
   );
 }
 

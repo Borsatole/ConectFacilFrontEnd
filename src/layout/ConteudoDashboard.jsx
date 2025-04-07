@@ -1,12 +1,13 @@
 import { requisicaoGet } from "../services/requisicoes";
-import ContainerPrincipal from "../components/tailwindComponents/containerPrincipal";
-
+import Container from "../components/tailwindComponents/Container";
+import CardRecargas from "../components/CardRecargas";
+import Loading from "../components/Loading";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import CardEstatisticas from "../components/CardEstatisticas";
-import CarrinhoCompras from "../components/CarrinhoCompras";
-import CatalogoRecargas from "../components/Recargas";
-import BotaoAbrirMenu from "../components/botaoAbrirMenu";
+
+import { TituloPagina, H2 } from "../components/tailwindComponents/Textos";
+import { BtnAbrirMenuLateral } from "../components/MenuLateral/botoesMenu";
 
 function ConteudoDashboard() {
   const [dadosDashboard, setDadosDashboard] = useState({
@@ -16,6 +17,24 @@ function ConteudoDashboard() {
     Recargas: [],
   });
   const [loading, setLoading] = useState(true);
+
+  const estatisticas = [
+    {
+      icone: "fas fa-shopping-cart",
+      valor: dadosDashboard.TotalPedidos,
+      descricao: "TOTAL DE PEDIDOS",
+    },
+    {
+      icone: "fas fa-users",
+      valor: dadosDashboard.TotalPedidosCancelados,
+      descricao: "PEDIDOS CANCELADOS",
+    },
+    {
+      icone: "fas fa-users",
+      valor: dadosDashboard.TotalPedidosPendentes,
+      descricao: "PEDIDOS PENDENTES",
+    },
+  ];
 
   useEffect(() => {
     const carregarDados = async () => {
@@ -39,39 +58,25 @@ function ConteudoDashboard() {
   }, []);
 
   return (
-    <ContainerPrincipal>
-      <BotaoAbrirMenu />
+    <Container>
+      <BtnAbrirMenuLateral />
 
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <CarrinhoCompras items={0} />
-      </div>
+      <TituloPagina>Dashboard</TituloPagina>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-10">
-        <CardEstatisticas
-          icone="fas fa-shopping-cart"
-          valor={String(dadosDashboard.TotalPedidos)}
-          descricao="TOTAL DE PEDIDOS"
-          loading={loading}
-        />
-
-        <CardEstatisticas
-          icone="fas fa-users"
-          valor={String(dadosDashboard.TotalPedidosCancelados)}
-          descricao="PEDIDOS CANCELADOS"
-          loading={loading}
-        />
-
-        <CardEstatisticas
-          icone="fas fa-users"
-          valor={String(dadosDashboard.TotalPedidosPendentes)}
-          descricao="PEDIDOS PENDENTES"
-          loading={loading}
-        />
+        {estatisticas.map((item, index) => (
+          <CardEstatisticas
+            key={index}
+            icone={item.icone}
+            valor={String(item.valor)}
+            descricao={item.descricao}
+            loading={loading}
+          />
+        ))}
       </div>
 
       <CatalogoRecargas items={dadosDashboard.Recargas} loading={loading} />
-    </ContainerPrincipal>
+    </Container>
   );
 }
 
@@ -80,3 +85,39 @@ ConteudoDashboard.propTypes = {
 };
 
 export default ConteudoDashboard;
+
+function CatalogoRecargas(props) {
+  const { items, loading } = props;
+
+  const RotaApi = import.meta.env.VITE_API;
+
+  return (
+    <div className="mt-16">
+      <H2>Recargas</H2>
+
+      {loading ? (
+        <div className="flex justify-center h-140 ">
+          <Loading color="var(--corPrincipal)" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3  justify-items-center">
+          {items
+            .sort((a, b) => parseFloat(a.dias) - parseFloat(b.dias))
+            .map((item) => (
+              <CardRecargas
+                key={item.id}
+                id={item.id}
+                imgRecarga={`${RotaApi}/Backend/Recargas/${item.imagem}`}
+                descricaoRecarga={item.titulo}
+                valorRecarga={item.valor}
+              />
+            ))}
+        </div>
+      )}
+    </div>
+  );
+}
+CatalogoRecargas.propTypes = {
+  items: PropTypes.array,
+  loading: PropTypes.bool,
+};

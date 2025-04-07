@@ -1,4 +1,4 @@
-import axios from "axios";
+import { requisicaoGet } from "../services/requisicoes";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Loading from "./Loading";
@@ -80,44 +80,25 @@ PedidoCard.propTypes = {
 function CardsPedidos() {
   const [dadosPedidos, setDadosPedidos] = useState({ pedidos: [] });
   const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    MeusPedidos();
-  }, []);
-
-  async function MeusPedidos() {
-    const RotaApi = import.meta.env.VITE_API;
-    const token = localStorage.getItem("token");
-
-    try {
-      const response = await axios.post(
-        `${RotaApi}/Backend/Usuario/Pedidos.php`,
-        { token },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      if (response.status === 200 && response.data.Pedidos) {
-        setDadosPedidos({ pedidos: response.data.Pedidos });
-
-        setTimeout(() => {
-          setLoading(false);
-        }, 500);
-      } else {
-        console.error(
-          "Erro na requisição ou dados inválidos:",
-          response.statusText
-        );
-      }
-    } catch (error) {
-      console.error("Erro na verificação do token:", error);
-    }
-  }
 
   const pedidos = dadosPedidos.pedidos || [];
   const pedidosmaisrecentes = pedidos.sort(
     (a, b) => new Date(b.created) - new Date(a.created)
   );
+
+  useEffect(() => {
+    const carregarDados = async () => {
+      const response = await requisicaoGet("/Backend/Usuario/Pedidos.php");
+
+      if (response) {
+        setDadosPedidos({ pedidos: response.data.Pedidos });
+      }
+
+      setLoading(false);
+    };
+
+    carregarDados();
+  }, []);
 
   function converterData(data) {
     const dataConvertida = new Date(data);
