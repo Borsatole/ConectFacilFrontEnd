@@ -28,9 +28,20 @@ function Step1({
     if (handleRequisicao.data.success == true) {
       setSellerInfo(handleRequisicao.data);
       handleContinue(2);
+    } else {
+      if (
+        handleRequisicao.data.success == false &&
+        handleRequisicao.data.error == "Token inválido"
+      ) {
+        logout();
+        toast.error("Token expirado! Faça login novamente");
+      } else {
+        Swal.fire(handleRequisicao.data.error, "", "error");
+      }
     }
+  }
     
-}
+
 
   // async function EnviarDados() {
   //   try {
@@ -127,8 +138,8 @@ function Step1({
       </div>
     </div>
   );
-}
 
+}
 Step1.propTypes = {
   productInfo: PropTypes.shape({
     id: PropTypes.number,
