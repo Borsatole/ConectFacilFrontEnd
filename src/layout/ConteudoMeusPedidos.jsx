@@ -1,12 +1,14 @@
 import CardsPedidos from "../components/CardsPedidos";
-import BotaoAbrirMenu from "../components/botaoAbrirMenu";
 import { TituloPagina } from "../components/tailwindComponents/Textos";
 import Container from "../components/tailwindComponents/Container";
+
+import { BtnAbrirMenuLateral } from "../components/MenuLateral/botoesMenu";
+
 
 function ConteudoMeusPedidos() {
   return (
     <Container>
-      <BotaoAbrirMenu />
+      <BtnAbrirMenuLateral />
       <TituloPagina>Meus Pedidos</TituloPagina>
 
       <CardsPedidos />

@@ -6,7 +6,7 @@ import { useMenu } from "../context/MenuContext";
 
 import "../assets/css/MenuLateral.css";
 import Swal from "sweetalert2";
-import { BtnFecharMenuLateral } from "../components/MenuLateral/botoesMenu";
+import { BtnFecharMenuLateral} from "../components/MenuLateral/botoesMenu";
 import Loading from "../components/Loading";
 import OpcaoMenu from "../components/MenuLateral/OpcaoMenu";
 

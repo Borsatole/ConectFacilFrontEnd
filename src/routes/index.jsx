@@ -4,6 +4,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 
 import Loading from "../components/Loading";
 
+
 const TelaLogin = lazy(() => import("./telaLogin"));
 const Dashboard = lazy(() => import("./Dashboard"));
 const MeusPedidos = lazy(() => import("./MeusPedidos"));
@@ -14,10 +15,7 @@ const Rotas = () => {
   return (
     <Suspense
       fallback={
-        <div>
-          <h1>Carregando...</h1>
-          <Loading color="var(--corPrincipal)" />
-        </div>
+        <TelaLoading />
       }
     >
       <Routes>
@@ -70,5 +68,17 @@ const Rotas = () => {
     </Suspense>
   );
 };
+
+function TelaLoading() {
+  return (
+    <div className="flex items-center justify-center h-screen bg-white">
+      <div className="flex flex-col items-center space-y-4">
+        <Loading color="var(--corPrincipal)" />
+        <span className="text-gray-600 text-sm animate-pulse">Carregando...</span>
+      </div>
+    </div>
+  );
+}
+
 
 export default Rotas;

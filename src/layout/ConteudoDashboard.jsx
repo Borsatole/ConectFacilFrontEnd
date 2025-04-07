@@ -1,10 +1,13 @@
 import { requisicaoGet } from "../services/requisicoes";
 import Container from "../components/tailwindComponents/Container";
-import CardRecargas from "../components/CardRecargas";
+// import CardRecargas from "../components/CardRecargas";
+// import CardEstatisticas from "../components/CardEstatisticas";
+import { CardEstatisticas, CardRecargas } from "../components/Dashboard/Cards";
+
 import Loading from "../components/Loading";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
-import CardEstatisticas from "../components/CardEstatisticas";
+
 
 import { TituloPagina, H2 } from "../components/tailwindComponents/Textos";
 import { BtnAbrirMenuLateral } from "../components/MenuLateral/botoesMenu";
