@@ -1,8 +1,9 @@
 import PropTypes from "prop-types";
 import axios from "axios";
 import Swal from "sweetalert2";
-import Loading from "../Loading";
 import { useState } from "react";
+import { Button } from "../comum/button";
+
 
 function Step2({
   sellerInfo,
@@ -99,28 +100,12 @@ function Step2({
           </p>
         </div>
         <div className="mt-6 flex justify-end">
-          <button
-            onClick={() => finalizarCompra()}
-            className="w-full px-4 py-2 mt-2 text-sm font-medium text-white bg-green-600 rounded-md cursor-pointer"
-            style={{
-              backgroundColor: "var(--corPrincipal)",
-              color: "var(--corTexto1)",
-            }}
-            onMouseOver={(e) =>
-              (e.currentTarget.style.backgroundColor = "var(--corSecundaria)")
-            }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.backgroundColor = "var(--corPrincipal)")
-            }
-          >
-            {loading ? (
-              <div className="flex items-center justify-center max-h-6 scale-65">
-                <Loading />
-              </div>
-            ) : (
-              "Finalizar o Pagamento"
-            )}
-          </button>
+
+          <Button onClick={finalizarCompra} loading= {loading}>
+            Finalizar o Pagamento
+          </Button>
+          
+          
         </div>
       </div>
     </div>

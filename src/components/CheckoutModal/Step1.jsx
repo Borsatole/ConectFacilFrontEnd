@@ -1,9 +1,10 @@
-import axios from "axios";
+import { requisicaoPost } from "../../services/requisicoes";
 import PropTypes from "prop-types";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { Button } from "../comum/button";
 
 function Step1({
   setSellerInfo,
@@ -14,40 +15,55 @@ function Step1({
 }) {
   const { logout } = useContext(AuthContext);
 
-  
+  async function EnviarDados2() {
+    const  handleRequisicao = await requisicaoPost(
+      "/Backend/Checkout/cupons/cupons.php",
+      {
+        token: localStorage.getItem("token"),
+        cupom: cupom,
+        idProduto: productInfo.id,
+      }, 
+    )
 
-  async function EnviarDados() {
-    try {
-      await axios
-        .post(
-          `${import.meta.env.VITE_API}/Backend/Checkout/cupons/cupons.php`,
-          {
-            token: localStorage.getItem("token"),
-            cupom: cupom,
-            idProduto: productInfo.id,
-          }
-        )
-        .then((response) => {
-          console.log(response);
-          if (response.status == 200 && response.data.success == true) {
-            setSellerInfo(response.data);
-            handleContinue(2);
-          } else {
-            if (
-              response.data.success == false &&
-              response.data.error == "Token inválido"
-            ) {
-              logout();
-              toast.error("Token expirado! Faça login novamente");
-            } else {
-              Swal.fire(response.data.error, "", "error");
-            }
-          }
-        });
-    } catch (error) {
-      console.log(error);
+    if (handleRequisicao.data.success == true) {
+      setSellerInfo(handleRequisicao.data);
+      handleContinue(2);
     }
-  }
+    
+}
+
+  // async function EnviarDados() {
+  //   try {
+  //     await axios
+  //       .post(
+  //         `${import.meta.env.VITE_API}/Backend/Checkout/cupons/cupons.php`,
+  //         {
+  //           token: localStorage.getItem("token"),
+  //           cupom: cupom,
+  //           idProduto: productInfo.id,
+  //         }
+  //       )
+  //       .then((response) => {
+  //         console.log(response);
+  //         if (response.status == 200 && response.data.success == true) {
+  //           setSellerInfo(response.data);
+  //           handleContinue(2);
+  //         } else {
+  //           if (
+  //             response.data.success == false &&
+  //             response.data.error == "Token inválido"
+  //           ) {
+  //             logout();
+  //             toast.error("Token expirado! Faça login novamente");
+  //           } else {
+  //             Swal.fire(response.data.error, "", "error");
+  //           }
+  //         }
+  //       });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
   return (
     <div>
@@ -101,22 +117,12 @@ function Step1({
         </div>
 
         <div className="mt-6 flex justify-end">
-          <button
-            onClick={() => EnviarDados()}
-            className="w-full px-4 py-2 mt-2 text-sm font-medium text-white bg-green-600 rounded-md cursor-pointer"
-            style={{
-              backgroundColor: "var(--corPrincipal)",
-              color: "var(--corTexto1)",
-            }}
-            onMouseOver={(e) =>
-              (e.currentTarget.style.backgroundColor = "var(--corSecundaria)")
-            }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.backgroundColor = "var(--corPrincipal)")
-            }
-          >
-            Continue
-          </button>
+          <Button
+            onClick={() => EnviarDados2()}>
+              Continue
+          </Button>
+            
+          
         </div>
       </div>
     </div>
