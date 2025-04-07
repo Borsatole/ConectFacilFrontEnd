@@ -4,6 +4,10 @@ import { useState, useEffect } from "react";
 import Alerta from "./comum/alertas";
 import Loading from "./Loading";
 import Container from "./tailwindComponents/Container";
+import { Input } from "./comum/input";
+import { Label } from "./comum/label";
+import { FormGroup } from "./comum/FormGroup";
+import { AvatarGrid } from "./comum/gridAvatar";
 
 function FormularioPerfil() {
   const [dadosRecebidosFormulario, setDadosRecebidosFormulario] =
@@ -110,125 +114,55 @@ function FormularioPerfil() {
       {dadosRecebidosFormulario ? (
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="avatar"
-            >
-              Selecione seu Avatar
-            </label>
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4 mt-2">
-              {avatares.map((avatar, index) => (
-                <div
-                  key={index}
-                  className="relative cursor-pointer flex items-center justify-center"
-                  onClick={() => selecionarAvatar(avatar)}
-                >
-                  <div
-                    className={`
-                    w-26 h-26 rounded-full border-2 p-1 flex
-                    ${
-                      avatarSelecionado === avatar
-                        ? "border-green-500 ring-2 ring-green-300"
-                        : "border-gray-200"
-                    }
-                  `}
-                  >
-                    <img
-                      alt={`Avatar ${index + 1}`}
-                      className="rounded-full w-full object-cover"
-                      src={`${
-                        import.meta.env.VITE_API
-                      }/Backend/Usuario/avatar/${avatar}`}
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = "https://placehold.co/100x100";
-                      }}
-                    />
-                  </div>
-                  {avatarSelecionado === avatar && (
-                    <div className="absolute bottom-0 right-0 bg-green-500 rounded-full w-4 h-4 border border-white flex items-center justify-center">
-                      <span className="text-white text-xs">✓</span>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+          <Label htmlFor="avatar">Selecione seu avatar</Label>
+            <AvatarGrid
+              avatares={avatares}
+              avatarSelecionado={avatarSelecionado}
+              selecionarAvatar={selecionarAvatar}
+            />
+
+            
           </div>
 
-          <div>
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="fullName"
-            >
-              Nome Completo
-            </label>
-            <div className="mt-2">
-              <input
+          
+
+          <FormGroup label="Nome Completo" id="fullName">
+              <Input
                 id="fullName"
                 type="text"
                 placeholder="Digite seu nome completo"
-                autoComplete="name"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                defaultValue={dadosRecebidosFormulario.nome || ""}
+                defaultValue={dadosRecebidosFormulario.nome}
               />
-            </div>
-          </div>
-
-          <div>
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="email"
-            >
-              Email
-            </label>
-            <div className="mt-2">
-              <input
+            </FormGroup>
+            
+          <FormGroup label="E-mail" id="email">
+              <Input
                 id="email"
-                type="email"
-                placeholder="Digite seu email"
-                autoComplete="email"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                defaultValue={dadosRecebidosFormulario.email || ""}
+                type="text"
+                placeholder="Digite seu nome completo"
+                defaultValue={dadosRecebidosFormulario.email}
               />
-            </div>
-          </div>
+            </FormGroup>
 
-          <div>
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="password"
-            >
-              Senha
-            </label>
-            <div className="mt-2">
-              <input
+            <FormGroup label="Senha" id="password">
+              <Input
                 id="password"
                 type="password"
                 placeholder="Digite sua nova senha (deixe em branco para manter a atual)"
-                autoComplete="new-password"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                defaultValue={''}
               />
-            </div>
-          </div>
+            </FormGroup>
 
-          <div>
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="phone"
-            >
-              Telefone de Contato
-            </label>
-            <div className="mt-2">
-              <input
+
+            <FormGroup label="phone" id="telefone">
+              <Input
                 id="phone"
                 type="tel"
                 placeholder="Digite seu telefone"
-                autoComplete="tel"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                defaultValue={dadosRecebidosFormulario.telefone || ""}
+                defaultValue={dadosRecebidosFormulario.telefone}
               />
-            </div>
-          </div>
+            </FormGroup>
+          
 
           <div className="flex items-center justify-between">
             <button

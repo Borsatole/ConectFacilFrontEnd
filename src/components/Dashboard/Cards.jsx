@@ -27,7 +27,7 @@ export function CardEstatisticas(props) {
         </div>
       </div>
     );
-  }
+}
   
 CardEstatisticas.propTypes = {
     icone: PropTypes.string.isRequired,

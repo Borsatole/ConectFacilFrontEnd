@@ -3,7 +3,6 @@ import AbrirMenuIcon from "../MenuLateral/Icones/AbrirMenu";
 import FecharMenuIcon from "../MenuLateral/Icones/FecharMenu";
 import PropTypes from "prop-types";
 
-
 export function BtnAbrirMenuLateral() {
   const { abrirMenu } = useMenu();
   return (
@@ -17,7 +16,6 @@ export function BtnAbrirMenuLateral() {
     </div>
   );
 }
-
 
 export function BtnFecharMenuLateral({ funcao = () => {} }) {
   return (

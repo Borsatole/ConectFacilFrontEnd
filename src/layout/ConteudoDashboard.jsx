@@ -1,7 +1,5 @@
 import { requisicaoGet } from "../services/requisicoes";
 import Container from "../components/tailwindComponents/Container";
-// import CardRecargas from "../components/CardRecargas";
-// import CardEstatisticas from "../components/CardEstatisticas";
 import { CardEstatisticas, CardRecargas } from "../components/Dashboard/Cards";
 
 import Loading from "../components/Loading";
