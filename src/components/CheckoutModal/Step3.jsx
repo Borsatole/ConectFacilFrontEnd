@@ -66,49 +66,7 @@ function Step3({
       }
     }
 
-    
 
-    // const verificarPagamento = async () => {
-    //   try {
-    //     const response = await axios.post(
-    //       `${import.meta.env.VITE_API}/Backend/Checkout/consulta-pedido.php`,
-    //       {
-    //         token: localStorage.getItem("token"),
-    //         idPedido: paymentId,
-    //       }
-    //     );
-
-    //     if (response.status == 200 && response.data.success == true) {
-    //       if (
-    //         response.data.pedido.status == "pendente" &&
-    //         response.data.pedido.codigoderecarga == ""
-    //       ) {
-    //         // console.log("Aguardando pagamento...");
-    //         // console.log(response.data.pedido);
-
-    //         return;
-    //       } else {
-    //         setDadosCodigo({
-    //           servidor: response.data.pedido.servidor,
-    //           codigoderecarga: response.data.pedido.codigoderecarga,
-    //           idPedido: response.data.pedido.id,
-    //         });
-    //         setLoading(false);
-    //         handleContinue(4);
-    //       }
-    //     } else {
-    //       if (response.data.message == "Token inválido") {
-    //         logout();
-    //         toast.error("Token expirado! Faça login novamente");
-    //       } else {
-    //         Swal.fire(`${response.data.message}`, "", "error");
-    //       }
-    //     }
-    //   } catch (error) {
-    //     console.error("Erro ao verificar pagamento:", error);
-    //     Swal.fire("Erro ao verificar pagamento", "", "error");
-    //   }
-    // };
 
     // Verificar a cada 30 segundos
     const interval = setInterval(verificarPagamento, 3000);

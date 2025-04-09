@@ -23,3 +23,15 @@ export function H2({ children }) {
 H2.propTypes = {
   children: PropTypes.node,
 };
+
+export function H3({ children }) {
+  return (
+    <h3 className="text-xl font-bold leading-6 text-gray-900 mb-4">
+      {children}
+    </h3>
+  );
+}
+
+H3.propTypes = {
+  children: PropTypes.node,
+};
