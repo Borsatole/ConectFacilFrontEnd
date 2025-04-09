@@ -12,6 +12,7 @@ export function CardEstatisticas(props) {
           backgroundImage: "linear-gradient(161deg, #4F46E5, #2664EB)",
           cursor: "pointer",
         }}
+       
       >
         <i className={`${props.icone} text-3xl md:text-4xl mr-4`}></i>
         <div>
@@ -79,7 +80,7 @@ export function CardRecargas({
             }}
             type="button"
             className="bg-green-600 flex items-center gap-x-2 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-700 transition mt-4"
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer"}}
           >
             <i className="fa fa-bolt" aria-hidden="true"></i>
             Ativar
