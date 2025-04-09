@@ -13,8 +13,8 @@ function PedidoCard({ id, server, codigo, data, valor, situacao, bgColor }) {
 
   return (
     <div
-      className={`flex justify-between items-center p-4 rounded-lg shadow-sm ${bgColor}`}
-      style={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" }}
+    className={`flex justify-between items-center p-4 rounded-lg shadow-sm ${bgColor}`}
+    style={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" }}
     >
       <div>
         <h2
@@ -33,12 +33,11 @@ function PedidoCard({ id, server, codigo, data, valor, situacao, bgColor }) {
             Codigo de recarga - {codigo}
           </p>
         ) : null}
-        <p className="text-gray-600" style={{ fontWeight: "200" }}>
-          Data Pedido: {data}
-        </p>
-        <p className="text-gray-600" style={{ fontWeight: "200" }}>
-          Valor: R${valor}
-        </p>
+        <Paragrafo Titulo={"Data de validade"} dado={data} />
+        <Paragrafo Titulo={"Valor"} dado={valor} />
+
+        
+        
         <p className="text-gray-600" style={{ fontWeight: "200" }}>
           Pagamento:
           <span
@@ -53,6 +52,7 @@ function PedidoCard({ id, server, codigo, data, valor, situacao, bgColor }) {
         </p>
       </div>
       {codigo !== "" ? (
+
         <button
           onClick={() => copiarCodigo(codigo)}
           style={{
@@ -78,6 +78,16 @@ PedidoCard.propTypes = {
   bgColor: PropTypes.string,
 };
 
+function Paragrafo ({ Titulo , dado }) {
+  return <p className="text-gray-600" style={{ fontWeight: "200" }}>
+  {Titulo}: {dado}
+  </p>; 
+}
+Paragrafo.propTypes = {
+  Titulo: PropTypes.string.isRequired,
+  dado: PropTypes.string.isRequired, 
+}
+
 function CardsPedidos() {
   const [dadosPedidos, setDadosPedidos] = useState({ pedidos: [] });
   const [loading, setLoading] = useState(true);
@@ -101,20 +111,6 @@ function CardsPedidos() {
     carregarDados();
   }, []);
 
-  // function converterData(data) {
-  //   const dataConvertida = new Date(data);
-  //   const dia = dataConvertida.getDate();
-  //   const mes = dataConvertida.getMonth() + 1;
-  //   const ano = dataConvertida.getFullYear();
-  //   const hora = dataConvertida.getHours();
-  //   const minuto = dataConvertida.getMinutes();
-  //   const segundo = dataConvertida.getSeconds();
-  //   return `${dia < 10 ? `0${dia}` : dia}/${
-  //     mes < 10 ? `0${mes}` : mes
-  //   }/${ano} as ${hora}:${minuto < 10 ? `0${minuto}` : minuto}:${
-  //     segundo < 10 ? `0${segundo}` : segundo
-  //   }`;
-  // }
 
   return (
     <div>
