@@ -1,5 +1,5 @@
 import axios from "axios";
-import { requisicaoGet } from "../services/requisicoes";
+import { requisicaoPost } from "../services/requisicoes";
 import { useState, useEffect } from "react";
 import Alerta from "./comum/alertas";
 import Loading from "./Loading";
@@ -27,7 +27,7 @@ function FormularioPerfil() {
 
   useEffect(() => {
     const carregarDados = async () => {
-      const response = await requisicaoGet(
+      const response = await requisicaoPost(
         "/Backend/Usuario/configuracoes.php"
       );
 

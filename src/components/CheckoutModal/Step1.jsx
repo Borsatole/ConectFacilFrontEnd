@@ -15,11 +15,10 @@ function Step1({
 }) {
   const { logout } = useContext(AuthContext);
 
-  async function EnviarDados2() {
+  async function EnviarDados() {
     const  handleRequisicao = await requisicaoPost(
       "/Backend/Checkout/cupons/cupons.php",
       {
-        token: localStorage.getItem("token"),
         cupom: cupom,
         idProduto: productInfo.id,
       }, 
@@ -129,7 +128,7 @@ function Step1({
 
         <div className="mt-6 flex justify-end">
           <Button
-            onClick={() => EnviarDados2()}>
+            onClick={() => EnviarDados()}>
               Continue
           </Button>
             

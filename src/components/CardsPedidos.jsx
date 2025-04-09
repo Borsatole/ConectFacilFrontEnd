@@ -1,4 +1,4 @@
-import { requisicaoGet } from "../services/requisicoes";
+import { requisicaoPost } from "../services/requisicoes";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Loading from "./Loading";
@@ -88,7 +88,7 @@ function CardsPedidos() {
 
   useEffect(() => {
     const carregarDados = async () => {
-      const response = await requisicaoGet("/Backend/Usuario/Pedidos.php");
+      const response = await requisicaoPost("/Backend/Usuario/Pedidos.php");
 
       if (response) {
         setDadosPedidos({ pedidos: response.data.Pedidos });

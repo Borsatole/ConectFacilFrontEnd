@@ -1,11 +1,10 @@
-import { requisicaoGet } from "../services/requisicoes";
+import { requisicaoPost } from "../services/requisicoes";
 import Container from "../components/tailwindComponents/Container";
 import { CardEstatisticas, CardRecargas } from "../components/Dashboard/Cards";
 
 import Loading from "../components/Loading";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
-
 
 import { TituloPagina, H2 } from "../components/tailwindComponents/Textos";
 import { BtnAbrirMenuLateral } from "../components/MenuLateral/botoesMenu";
@@ -39,7 +38,8 @@ function ConteudoDashboard() {
 
   useEffect(() => {
     const carregarDados = async () => {
-      const response = await requisicaoGet("/Backend/Usuario/Dashboard.php");
+      const response = await requisicaoPost("/Backend/Usuario/Dashboard.php");
+      
 
       if (response) {
         setDadosDashboard({
@@ -48,7 +48,7 @@ function ConteudoDashboard() {
             response.data.InformacoesBasicas.TotalPedidosCancelados,
           TotalPedidosPendentes:
             response.data.InformacoesBasicas.TotalPedidosPendentes,
-          Recargas: response.data.Recargas,
+            Recargas: response.data.Recargas,
         });
       }
 
