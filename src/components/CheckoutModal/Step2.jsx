@@ -1,9 +1,10 @@
 import PropTypes from "prop-types";
-import axios from "axios";
+// import axios from "axios";
 import Swal from "sweetalert2";
 import { useState } from "react";
 import { Button } from "../comum/button";
-
+import { requisicaoPost } from "../../services/requisicoes";
+import Alerta from "../comum/alertas";
 
 function Step2({
   sellerInfo,
@@ -21,32 +22,53 @@ function Step2({
     handleClose();
   }
 
-  const finalizarCompra = async () => {
+  const FinalizarCompra = async () => {
     setLoading(true);
-    try {
-      await axios
-        .post(
-          `${import.meta.env.VITE_API}/Backend/Checkout/cria-pagamento.php`,
-          {
-            token: localStorage.getItem("token"),
-            cupom: dadosDaCompra.cupom,
-            idProduto: dadosDaCompra.idProduto,
-          }
-        )
-        .then((response) => {
-          if (response.status == 200 && response.data.success == true) {
-            setMercadoPagoDados(response.data);
-            handleContinue(3);
-            setLoading(false);
-          } else {
-            handleClose();
-            Swal.fire(`${response.data.message}`, "", "error");
-          }
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    const response = await requisicaoPost(
+      "/Backend/Checkout/cria-pagamento.php",
+      {
+        cupom: dadosDaCompra.cupom,
+        idProduto: dadosDaCompra.idProduto,
+      },
+    );
+    // console.log(response);
+    if (!response.data.success){
+      handleClose();
+      Alerta("swal", "error", `${response.data.message}`);
+    } else {
+      setMercadoPagoDados(response.data);
+      setLoading(false);
+      handleContinue(3);}
+    
+  }
+
+  // const finalizarCompra = async () => {
+  //   setLoading(true);
+  //   try {
+  //     await axios
+  //       .post(
+  //         `${import.meta.env.VITE_API}/Backend/Checkout/cria-pagamento.php`,
+  //         {
+  //           token: localStorage.getItem("token"),
+  //           cupom: dadosDaCompra.cupom,
+  //           idProduto: dadosDaCompra.idProduto,
+  //         }
+  //       )
+  //       .then((response) => {
+  //         // console.log(response);
+  //         if (response.status == 200 && response.data.success == true) {
+  //           setMercadoPagoDados(response.data);
+  //           handleContinue(3);
+  //           setLoading(false);
+  //         } else {
+  //           handleClose();
+  //           Swal.fire(`${response.data.message}`, "", "error");
+  //         }
+  //       });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <div>
@@ -101,7 +123,7 @@ function Step2({
         </div>
         <div className="mt-6 flex justify-end">
 
-          <Button onClick={finalizarCompra} loading= {loading}>
+          <Button onClick={FinalizarCompra} loading= {loading}>
             Finalizar o Pagamento
           </Button>
           
