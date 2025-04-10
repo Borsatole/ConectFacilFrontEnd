@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import Swal from "sweetalert2";
 import { useState } from "react";
 import { Button } from "../comum/button";
 import { requisicaoPost } from "../../services/requisicoes";
@@ -17,7 +16,7 @@ function Step2({
   const dadosDaCompra = sellerInfo?.dadosDaCompra || {};
 
   if (dadosDaCompra.total == 0) {
-    Swal.fire("Você não pode usar esse cupom nesse produto.", "", "error");
+    Alerta("swal", "error", "O valor total da compra não pode ser zero.");
     handleClose();
   }
 

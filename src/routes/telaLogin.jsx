@@ -1,18 +1,21 @@
-import { useContext } from "react";
-
-import Swal from "sweetalert2";
+import { useContext, useState} from "react";
 import { useNavigate } from "react-router-dom";
+
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import { useMenu } from "../context/MenuContext";
+import Alerta from "../components/comum/alertas";
+import { Button } from "../components/comum/button";
 
 export default function TelaLogin() {
   document.title = "Acesse sua conta";
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false); 
   const { login } = useContext(AuthContext); // Obtém a função login do contexto
   const { fecharMenu } = useMenu();
 
   async function verificaLogin(event) {
+    setLoading(true);
     event.preventDefault();
     const form = event.target;
     const formData = new FormData(form);
@@ -20,42 +23,39 @@ export default function TelaLogin() {
     const RotaApi = import.meta.env.VITE_API;
 
     try {
+      
       const response = await axios.post(
         `${RotaApi}/Backend/Auth/login.php`,
         dadosFormularioLogin
       );
 
       if (response.data.JWT) {
-        console.log(response.data);
+        
 
-        Swal.fire({
-          title: "Sucesso!",
-          text: `${response.data.successMessage}`,
-          icon: "success",
-          confirmButtonText: "Ok",
-        });
+        Alerta("swal", "success", `${response.data.successMessage}`);
+        
 
-        fecharMenu(); // Fecha o menu antes de fazer login
+        fecharMenu();
         login(response.data.JWT);
 
         // Redireciona para o Dashboard
         navigate("/dashboard");
       } else {
-        Swal.fire({
-          title: "Error!",
-          text: `${response.data.erroMessage}`,
-          icon: "error",
-          confirmButtonText: "Ok",
-        });
+        Alerta("swal", "error", `${response.data.erroMessage}`);
+        
       }
     } catch (error) {
-      console.log(error);
-      Swal.fire({
-        title: "Error!",
-        text: `${error.message}`,
-        icon: "error",
-        confirmButtonText: "Ok",
-      });
+
+      if (error.code == "ERR_NETWORK") {
+        Alerta("swal", "error", "Não foi possível conectar ao servidor.");
+        return;
+      }
+
+      
+      Alerta("swal", "error", `${error.message}`);
+  
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -119,13 +119,10 @@ export default function TelaLogin() {
                 </div>
               </div>
               <div>
-                <button
-                  type="submit"
-                  className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                  style={{ cursor: "pointer" }}
-                >
-                  Fazer Login
-                </button>
+                <Button type="submit" loading={loading} >
+                  Acessar
+                </Button>
+                
               </div>
             </form>
             <p className="mt-10 text-center text-sm/6 text-gray-500">

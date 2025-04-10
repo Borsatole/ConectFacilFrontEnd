@@ -1,9 +1,9 @@
 import { createContext, useState, useEffect } from "react";
 
 import PropTypes from "prop-types";
-import { toast } from "react-toastify";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Alerta from "../components/comum/alertas";
+import { requisicaoPost } from "../services/requisicoes";
 
 // Criando o contexto de autenticação
 // eslint-disable-next-line react-refresh/only-export-components
@@ -31,40 +31,21 @@ export function AuthProvider({ children }) {
   // Função para validar o token na API
   // eslint-disable-next-line react-hooks/exhaustive-deps
   async function verificaToken(token) {
-    const RotaApi = import.meta.env.VITE_API;
     try {
-      const response = await axios.post(
-        `${RotaApi}/Backend/Auth/Token/valida-jwt.php`,
-        { token: token }
-      );
+      const response = await requisicaoPost( 
+        `/Backend/Auth/Token/valida-jwt.php`,
+        { token },
+      )
+      
 
-      // console.log(response.data);
 
       if (!response.data.success) {
-        toast.error("Token expirado! Deslogando usuário...", {
-          position: "top-right",
-          autoClose: 900,
-          hideProgressBar: true,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        // console.log("Token expirado! Deslogando usuário...");
+        Alerta("swal", "error", `${response.data.error}`);
         logout();
+        
       }
     } catch (e) {
-      toast.error("Token expirado! Deslogando usuário...", {
-        position: "top-right",
-        autoClose: 900,
-        hideProgressBar: true,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      Alerta("swal", "error", `${e}`);
       logout();
     }
   }
@@ -83,7 +64,7 @@ export function AuthProvider({ children }) {
     // Evita erros de navegação antes da atualização do estado
     setTimeout(() => {
       navigate("/login", { replace: true });
-    }, 100);
+    }, 1000);
   };
 
   return (

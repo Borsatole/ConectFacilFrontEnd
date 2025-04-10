@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import Swal from "sweetalert2";
 import { useEffect, useState, useContext } from "react";
 
 import { requisicaoPost } from "../../services/requisicoes";
@@ -22,7 +21,7 @@ function Step3({ mercadoPagoDados, setDadosCodigo, handleClose, handleContinue }
   useEffect(() => {
     if (!pixCopiaEcola && !pixQrCode) {
       handleClose();
-      Swal.fire("Tente novamente mais tarde", "", "error");
+      Alerta("toast", "error", "Não foi possível gerar o Pagamento");
     }
   }, [pixCopiaEcola, pixQrCode, handleClose]);
 
