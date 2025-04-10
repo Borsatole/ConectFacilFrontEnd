@@ -3,14 +3,11 @@ import { useEffect, useState } from "react";
 import {converterData} from "../functions/data";
 import PropTypes from "prop-types";
 import Loading from "./Loading";
-import Alerta from "./comum/alertas";
+import { ButtonCopy } from "./comum/button";
+
 
 function PedidoCard({ id, server, codigo, data, valor, situacao, bgColor }) {
-  function copiarCodigo(codigo) {
-    navigator.clipboard.writeText(codigo);
-    Alerta("swal", "success", `Código copiado: <br> ${codigo}`);
-  }
-
+  
   return (
     <div
     className={`flex justify-between items-center p-4 rounded-lg shadow-sm ${bgColor}`}
@@ -26,43 +23,21 @@ function PedidoCard({ id, server, codigo, data, valor, situacao, bgColor }) {
         {codigo !== "" ? (
           <p
             className="bg-green-200 text-green-800 font-semibold rounded inline-block"
-            style={{
-              fontSize: "0.8rem",
-            }}
-          >
+            style={{fontSize: "0.8rem"}}>
+              
             Codigo de recarga - {codigo}
           </p>
         ) : null}
         <Paragrafo Titulo={"Data de validade"} dado={data} />
         <Paragrafo Titulo={"Valor"} dado={valor} />
+        <Status situacao={situacao} status={"aprovado"} />
 
         
         
-        <p className="text-gray-600" style={{ fontWeight: "200" }}>
-          Pagamento:
-          <span
-            className={`text-xs font-semibold mr-2 px-2.5 py-0.5 rounded ${
-              situacao === "aprovado"
-                ? "bg-green-200 text-green-800"
-                : "bg-yellow-200 text-yellow-800"
-            }`}
-          >
-            {situacao}
-          </span>
-        </p>
+        
       </div>
       {codigo !== "" ? (
-
-        <button
-          onClick={() => copiarCodigo(codigo)}
-          style={{
-            cursor: "pointer",
-            color: "var(--color-green-500)",
-            fontSize: "1.3rem",
-          }}
-        >
-          <i className="fas fa-copy"></i>
-        </button>
+        <ButtonCopy codigo={codigo} />
       ) : null}
     </div>
   );
@@ -84,8 +59,26 @@ function Paragrafo ({ Titulo , dado }) {
   </p>; 
 }
 Paragrafo.propTypes = {
-  Titulo: PropTypes.string.isRequired,
-  dado: PropTypes.string.isRequired, 
+  Titulo: PropTypes.string,
+  dado: PropTypes.string, 
+}
+
+function Status ({ status, situacao }) {
+ return (
+  <span
+            className={`text-xs font-semibold uppercase mr-2 px-2.5 py-0.5 rounded ${
+              situacao === status
+                ? "bg-green-200 text-green-800"
+                : "bg-yellow-200 text-yellow-800"
+            }`}
+          >
+            {situacao}
+          </span>
+ ); 
+}
+Status.propTypes = {
+  status: PropTypes.string.isRequired,
+  situacao: PropTypes.string.isRequired, 
 }
 
 function CardsPedidos() {

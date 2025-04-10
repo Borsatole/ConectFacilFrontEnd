@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import Loading from '../Loading';
+import Alerta from './alertas';
 
 export function Button({ children, type = "button", onClick = () => {} , loading = false}) {
   
@@ -37,5 +38,28 @@ Button.propTypes = {
     children: PropTypes.node.isRequired,
     type: PropTypes.string,
     onClick: PropTypes.func, 
+}
+
+export function ButtonCopy({codigo}){
+  return (
+    <button
+    onClick={() => copiarCodigo(codigo)}
+    style={{
+      cursor: "pointer",
+      color: "var(--color-green-500)",
+      fontSize: "1.3rem",
+    }}
+  >
+    <i className="fas fa-copy"></i>
+  </button>
+  );
+
+  function copiarCodigo(codigo) {
+    navigator.clipboard.writeText(codigo);
+    Alerta("toast", "success", `Código copiado: ${codigo}`);
+  }
+}
+ButtonCopy.propTypes = {
+  codigo: PropTypes.string, 
 }
   
