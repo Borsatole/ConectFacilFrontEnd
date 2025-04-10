@@ -14,4 +14,8 @@ export function converterData(data) {
     }`;
     
 }
-  
+
+
+export function CopiarTexto(texto) {
+    navigator.clipboard.writeText(texto);
+}

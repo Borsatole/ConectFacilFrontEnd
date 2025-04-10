@@ -1,6 +1,8 @@
 import PropTypes from "prop-types";
-import { toast } from "react-toastify";
 import { H3 } from "../tailwindComponents/Textos";
+import Alerta from "../comum/alertas";
+import { Paragrafo } from "../tailwindComponents/Textos";
+
 
 function Sucess({ dadosCodigo = { servidor: "", codigoderecarga: "", idPedido: "" } }) {
   const codigo = dadosCodigo?.codigoderecarga;
@@ -8,31 +10,38 @@ function Sucess({ dadosCodigo = { servidor: "", codigoderecarga: "", idPedido: "
   const handleCopy = () => {
     if (codigo) {
       navigator.clipboard.writeText(codigo);
-      toast.success("Código copiado para a área de transferência");
+      Alerta("toast", "success", "Código copiado para a área de transferência")
+      
     } else {
-      toast.error("Contate nosso suporte");
+      Alerta("toast", "error", "Contate nosso suporte")
     }
   };
+
+  
 
   return (
     <div className="py-8 text-center">
       <CheckIcon />
       <H3>Compra Finalizada com Sucesso!</H3>
-      
+      <Paragrafo>Seus dados de acesso:</Paragrafo>
 
-      <p className="text-gray-600 mb-6">
-        Seu código de recarga é:
-        <span className="block mt-2 font-semibold text-lg bg-gray-100 p-2 rounded-md bg-green-200 text-green-800 mx-auto">
-          {codigo || "Entre em contato com o suporte"}
-        </span>
-        {codigo && (
-          <span className="block mt-2">
-            Seu código fica salvo em <strong>Meus Pedidos</strong>,
-            <br />
-            também enviamos o código para o seu e-mail.
+      
+      <div className="flex items-center justify-center mx-auto max-w-xs mb-4">
+        <div className="bg-green-100 border border-green-200 rounded-l-md py-2 px-4">
+          <span className="font-mono font-medium text-green-800">
+            {codigo || "Erro: Contate o suporte"}
           </span>
-        )}
-      </p>
+        </div>
+        
+      </div>
+
+      {codigo && (
+        <p className="text-sm text-gray-600 mt-2 mb-6">
+          Seu código fica salvo em <strong>Meus Pedidos</strong>,
+          <br />
+          também enviamos o código para o seu e-mail.
+        </p>
+      )}
 
       <button
         onClick={handleCopy}

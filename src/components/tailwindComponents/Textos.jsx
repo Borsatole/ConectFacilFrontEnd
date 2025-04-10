@@ -12,6 +12,15 @@ TituloPagina.propTypes = {
   children: PropTypes.node,
 };
 
+export function Paragrafo({ children }) {
+  return (
+    <p className="text-gray-600 mb-4">{children}</p>
+  );
+}
+Paragrafo.propTypes = {
+  children: PropTypes.node, 
+}
+
 export function H2({ children }) {
   return (
     <h2 className="text-2xl font-bold text-gray-900 text-left mb-8">
@@ -35,3 +44,16 @@ export function H3({ children }) {
 H3.propTypes = {
   children: PropTypes.node,
 };
+
+export function H4({ children }) {
+  return (
+    <h4 className="text-lg font-semibold mb-2">
+      {children}
+    </h4>
+  ); 
+}
+H4.propTypes = {
+  children: PropTypes.node, 
+}
+
+

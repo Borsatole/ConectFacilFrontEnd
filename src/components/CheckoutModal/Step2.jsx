@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "../comum/button";
 import { requisicaoPost } from "../../services/requisicoes";
 import Alerta from "../comum/alertas";
+import { H3 } from "../tailwindComponents/Textos";
 
 function Step2({
   sellerInfo,
@@ -42,10 +43,8 @@ function Step2({
 
   return (
     <div>
-      <h3 className="text-xl font-bold leading-6 text-gray-900 mb-4">
-        Confirmação dos dados
-      </h3>
-
+      <H3> Confirmação dos dados</H3>
+      
       <div className="border-t border-gray-200 pt-4">
         <h4 className="text-lg font-semibold mb-2">Dados do Usuário</h4>
         <UsuarioInfo dados={dadosDoUsuario} />

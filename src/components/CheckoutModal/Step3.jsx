@@ -1,19 +1,15 @@
 import PropTypes from "prop-types";
 import Swal from "sweetalert2";
-// import axios from "axios";
-import { requisicaoPost } from "../../services/requisicoes";
-import { toast } from "react-toastify";
-import { AuthContext } from "../../context/AuthContext";
-
 import { useEffect, useState, useContext } from "react";
-import Loading from "../Loading";
 
-function Step3({
-  mercadoPagoDados,
-  setDadosCodigo,
-  handleClose,
-  handleContinue,
-}) {
+import { requisicaoPost } from "../../services/requisicoes";
+import { AuthContext } from "../../context/AuthContext";
+import Loading from "../Loading";
+import Alerta from "../comum/alertas";
+import { CopiarTexto } from "../../functions/data";
+import { H3, H4 } from "../tailwindComponents/Textos";
+
+function Step3({ mercadoPagoDados, setDadosCodigo, handleClose, handleContinue }) {
   const { logout } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
 
@@ -22,137 +18,73 @@ function Step3({
   const paymentId = mercadoPagoDados?.paymentId || "";
   const tituloPedido = mercadoPagoDados?.tituloPedido || "";
   const total = mercadoPagoDados?.valorPagamento || 0;
-  // const idPagamento = mercadoPagoDados?.paymentId || "";
 
-
-  // Verificar se os dados do Pix estão disponíveis
   useEffect(() => {
-    if (pixCopiaEcola === "" && pixQrCode === "") {
+    if (!pixCopiaEcola && !pixQrCode) {
       handleClose();
       Swal.fire("Tente novamente mais tarde", "", "error");
     }
   }, [pixCopiaEcola, pixQrCode, handleClose]);
 
-  // Configurar verificação de pagamento
   useEffect(() => {
-    // Inicia carregando
     setLoading(true);
 
-    // Função de verificação
     const verificarPagamento = async () => {
-      
-      const response = await requisicaoPost(
-        "/Backend/Checkout/consulta-pedido.php",
-        {
-          idPedido: paymentId,
-        },
-      );
-
-      console.log (response.data.pedido);
-
-      if (response.data.success) {
-        if (response.data.pedido.status == "pendente" && response.data.pedido.codigoderecarga == "") {
-        return
-      }else {
-       setDadosCodigo({
-        servidor: response.data.pedido.servidor,
-        codigoderecarga: response.data.pedido.codigoderecarga,
-        idPedido: response.data.pedido.id,
+      const response = await requisicaoPost("/Backend/Checkout/consulta-pedido.php", {
+        idPedido: paymentId,
       });
-      setLoading(false);
-      handleContinue(4);
+
+      const pedido = response?.data?.pedido;
+      if (response?.data?.success && pedido) {
+        if (pedido.status !== "pendente" && pedido.codigoderecarga) {
+          setDadosCodigo({
+            servidor: pedido.servidor,
+            codigoderecarga: pedido.codigoderecarga,
+            idPedido: pedido.id,
+          });
+          setLoading(false);
+          handleContinue(4);
+        }
       }
-  
-      }
-    }
+    };
 
-
-
-    // Verificar a cada 30 segundos
     const interval = setInterval(verificarPagamento, 3000);
-
-    return () => clearInterval(interval); // Limpa o intervalo ao desmontar o componente
-  }, [paymentId, handleContinue, setDadosCodigo, logout]); // Array de dependências vazio para executar apenas uma vez
+    return () => clearInterval(interval);
+  }, [paymentId, handleContinue, setDadosCodigo, logout]);
 
   return (
     <div className="p-4">
-      <h3
-        className="text-xl font-bold leading-6 text-gray-900 mb-4"
-        id="modal-title"
-      >
-        Pagamento
-      </h3>
+      <H3>Efetue o Pagamento</H3>
 
       <div className="border-t border-gray-200 pt-4">
-        <h4 className="text-lg font-semibold mb-2">Qr Code</h4>
+        <H4>Código QR</H4>
 
-        {pixQrCode ? (
-          <img
-            src={`data:image/png;base64,${pixQrCode}`}
-            alt="Qr Code"
-            className="w-80 h-80 mx-auto mt-4 shadow-lg rounded-lg object-contain"
+        <QRCodeImage base64={pixQrCode} />
+
+        <p className="text-center text-gray-500 mt-4 font-semibold">
+          Escaneie o código QR ou copie o código e cole no seu app de pagamento
+        </p>
+
+        <h2 className="text-center text-2xl text-green-500 mt-4 font-bold">
+          {tituloPedido} - R$ {total.toFixed(2)}
+        </h2>
+
+        <PixCodeTextArea value={pixCopiaEcola} />
+
+        <div className="mt-6 flex flex-col gap-4 items-center">
+          <CopyButton
+            onClick={() => {
+              CopiarTexto(pixCopiaEcola);
+              Alerta("toast", "success", "Código Pix Copiado");
+            }}
           />
-        ) : (
-          <p className="text-center text-gray-500">QR Code não disponível</p>
-        )}
 
-        <h1 className="text-center text-gray-500 mt-4 font-semibold">
-          Escaneie o codigo qr ou copie o código e cole no seu app de pagamento
-        </h1>
-
-        <h1 className="text-center text-gray-500 mt-4 font-semibold text-2xl text-green-500">
-          {tituloPedido} - R$ {(total ?? 0).toFixed(2)}
-        </h1>
-
-        <textarea
-          name="copiaECola"
-          id="copiaECola"
-          className="w-full p-2 mt-4 border border-gray-600 rounded-md resize-none"
-          value={pixCopiaEcola}
-          readOnly
-          rows={4}
-          style={{
-            border: "none",
-            backgroundColor: "#f2f2f2",
-          }}
-        />
-
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            justifyItems: "center",
-            gap: "1rem",
-          }}
-        >
-          <div className="mt-6 flex justify-end">
-            <button
-              onClick={() => {
-                navigator.clipboard.writeText(pixCopiaEcola);
-                toast.success("Codigo copiado para a area de transferência");
-              }}
-              className="w-full px-4 py-2 text-sm font-medium rounded-md cursor-pointer transition-colors duration-300"
-              style={{
-                backgroundColor: "var(--corPrincipal)",
-                color: "var(--corTexto1)",
-              }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.backgroundColor = "var(--corSecundaria)")
-              }
-              onMouseOut={(e) =>
-                (e.currentTarget.style.backgroundColor = "var(--corPrincipal)")
-              }
-            >
-              Copiar
-            </button>
-          </div>
-          {loading ? (
-            <div className="flex flex-col items-center justify-center gap-2">
+          {loading && (
+            <div className="flex flex-col items-center gap-2">
               <Loading color="var(--corPrincipal)" style={{ scale: "0.3" }} />
               <p className="text-sm text-gray-600">Aguardando o pagamento...</p>
             </div>
-          ) : null}
+          )}
         </div>
       </div>
     </div>
@@ -166,5 +98,68 @@ Step3.propTypes = {
   handleContinue: PropTypes.func,
   handleClose: PropTypes.func,
 };
+
+// COMPONENTE INTERNO: QRCodeImage
+function QRCodeImage({ base64 }) {
+  if (!base64) {
+    return <p className="text-center text-gray-500">QR Code não disponível</p>;
+  }
+
+  return (
+    <img
+      src={`data:image/png;base64,${base64}`}
+      alt="Qr Code"
+      className="w-80 h-80 mx-auto mt-4 shadow-lg rounded-lg object-contain"
+    />
+  );
+}
+
+// COMPONENTE INTERNO: PixCodeTextArea
+function PixCodeTextArea({ value }) {
+  return (
+    <textarea
+      className="w-full p-2 mt-4 border border-gray-300 rounded-md resize-none bg-gray-100"
+      value={value}
+      readOnly
+      rows={4}
+      onClick={() => {
+        CopiarTexto(value);
+        Alerta("toast", "success", "Código Pix Copiado");
+      }}
+    />
+  );
+}
+
+// COMPONENTE INTERNO: CopyButton
+function CopyButton({ onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className="w-full px-4 py-2 text-sm font-medium rounded-md cursor-pointer transition-colors duration-300"
+      style={{
+        backgroundColor: "var(--corPrincipal)",
+        color: "var(--corTexto1)",
+      }}
+      onMouseOver={(e) =>
+        (e.currentTarget.style.backgroundColor = "var(--corSecundaria)")
+      }
+      onMouseOut={(e) =>
+        (e.currentTarget.style.backgroundColor = "var(--corPrincipal)")
+      }
+    >
+      Copiar
+    </button>
+  );
+}
+
+QRCodeImage.propTypes = {
+  base64: PropTypes.string,
+};
+PixCodeTextArea.propTypes = {
+  value: PropTypes.string, 
+}
+CopyButton.propTypes = {
+  onClick: PropTypes.func, 
+}
 
 export default Step3;
