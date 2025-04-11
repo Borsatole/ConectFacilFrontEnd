@@ -4,7 +4,7 @@ import SectionRecargas from "./SectionRecargas";
 
 function TabsAdmin() {
   const [autorization, setAuthorization] = useState(true);
-  // mudar o titulo da pagina
+
   document.title = "Administrador do Sistema";
   const [activeTab, setActiveTab] = useState("Vendas");
 
@@ -43,7 +43,7 @@ function TabsAdmin() {
               {
                 id: "Vendas",
                 title: "Vendas da loja",
-                content: <SectionVendasLoja />,
+                content: <SectionVendasLoja  />,
               },
               {
                 id: "Recarga",

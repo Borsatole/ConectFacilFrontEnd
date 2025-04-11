@@ -2,14 +2,19 @@ import PropTypes from 'prop-types';
 import Loading from '../Loading';
 import Alerta from './alertas';
 
-export function Button({ children, type = "button", onClick = () => {} , loading = false}) {
+export function Button({ 
+  children, type = "button", 
+  onClick = () => {} , 
+  loading = false, 
+  wsize = "w-full"}) {
+
   
     return (
       <button
         type={type}
         disabled={loading}
         onClick={onClick}
-        className="w-full px-4 py-2 mt-2 text-sm font-medium text-white bg-green-600 rounded-md cursor-pointer"
+        className={`${wsize} px-4 py-2 mt-2 text-sm font-medium text-white bg-green-600 rounded-md cursor-pointer`}
         style={{
             backgroundColor: "var(--corPrincipal)",
             color: "var(--corTexto1)",
@@ -38,6 +43,7 @@ Button.propTypes = {
     children: PropTypes.node.isRequired,
     type: PropTypes.string,
     onClick: PropTypes.func, 
+    wsize: PropTypes.string,
 }
 
 export function ButtonCopy({codigo}){

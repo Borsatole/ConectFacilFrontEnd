@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
+import {handleUpdateCoupon, handleDeleteCoupon, handleAddNewCoupon, determinarStatus, formatarDesconto} from "../functions/cupons";
 import { format, parseISO } from "date-fns";
-import Alerta from "./comum/alertas";
 import Swal from "sweetalert2";
 import Loading from "../components/Loading";
+import { requisicaoPost } from "../services/Requisicoes";
+import { Button } from "./comum/button";
+import { H3 } from "./tailwindComponents/Textos";
 
 function SectionCupons() {
   const [cupons, setCupons] = useState([]);
@@ -29,111 +32,44 @@ function SectionCupons() {
     });
   }
 
-  const determinarStatus = (cupom) => {
-    if (cupom.valido === 0) return "Inativo";
 
-    const dataValidade = new Date(cupom.validade);
-    const hoje = new Date();
-
-    if (dataValidade < hoje) return "Expirado";
-    if (cupom.usos >= cupom.maxuse) return "Limite Excedido";
-
-    return "Ativo";
-  };
-
-  const formatarDesconto = (cupom) => {
-    return cupom.tipo === "percent"
-      ? `${parseFloat(cupom.desconto).toFixed(0)}%`
-      : `R$ ${parseFloat(cupom.desconto).toFixed(2)}`;
-  };
-
-  // Fetch servers
   useEffect(() => {
-    const fetchServers = async () => {
+    const BaixarRecargas = async () => {
       setLoading(true);
-
+      
+  
       try {
-        const response = await fetch(
-          `${
-            import.meta.env.VITE_API
-          }/Backend/Admin/servidores/buscar-recargas.php`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              token: localStorage.getItem("token"),
-            }),
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Falha ao carregar servidores");
-        }
-
-        const data = await response.json();
-
-        if (data.recargas) {
-          setServer(data.recargas);
+        const response = await requisicaoPost("/Backend/Admin/servidores/buscar-recargas.php");
+  
+        if (response?.data?.recargas) {
+          setServer(response.data.recargas);
+         
         } else {
-          throw new Error("Formato de dados de servidores inválido");
+          throw new Error("Nenhuma recarga encontrada ou resposta inválida.");
         }
       } catch (error) {
-        Alerta(
-          "swal",
-          "error",
-          `Erro ao carregar servidores: ${error.message}`
-        );
-
-        setError(error.message);
+        setError(error.message); 
       } finally {
         setLoading(false);
       }
     };
-
-    fetchServers();
+  
+    BaixarRecargas();
   }, []);
+  
 
-  // Fetch coupons
   useEffect(() => {
-    const carregarTodosCupons = async () => {
-      try {
-        const response = await fetch(
-          `${
-            import.meta.env.VITE_API
-          }/Backend/Admin/cupons/cupons-listagem.php`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              token: localStorage.getItem("token"),
-            }),
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Falha ao carregar cupons");
-        }
-
-        const data = await response.json();
-
-        if (data.success && Array.isArray(data.todosCupons)) {
-          setCupons(data.todosCupons);
-        } else {
-          throw new Error("Formato de dados inválido");
-        }
-      } catch (error) {
-        Alerta("swal", "error", `Erro ao carregar cupons: ${error.message}`);
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    carregarTodosCupons();
+    
+  const carregarTodosCupons = async () => {
+      const response = await requisicaoPost("/Backend/Admin/cupons/cupons-listagem.php");
+      
+      if (response) {
+        setCupons(response.data.todosCupons);
+      } 
+      
+  };
+    
+  carregarTodosCupons();
   }, []);
 
   // Handle edit coupon
@@ -154,179 +90,13 @@ function SectionCupons() {
     setSelectedCoupon(null);
   };
 
-  // Update coupon
-  const handleUpdateCoupon = async (e) => {
-    e.preventDefault();
-
-    // Get selected servers
-    const selectedServers = Array.from(
-      e.target.querySelectorAll('input[name="aplicavel"]:checked')
-    ).map((checkbox) => checkbox.value);
-
-    const dados = {
-      token: localStorage.getItem("token"),
-      couponId: selectedCoupon.id,
-      codigo: e.target.codigo.value,
-      desconto: e.target.desconto.value,
-      tipo: e.target.tipo.value,
-      validade: e.target.validade.value,
-      maxuse: e.target.maxuse.value,
-      valido: e.target.valido.checked ? 1 : 0,
-      produtos: selectedServers,
-    };
-
-    console.log(dados);
-
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API}/Backend/Admin/cupons/cupons-editar.php`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(dados),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Falha na resposta do servidor");
-      }
-
-      const data = await response.json();
-
-      if (data.success) {
-        // Fetch updated list of coupons
-        const listResponse = await fetch(
-          `${
-            import.meta.env.VITE_API
-          }/Backend/Admin/cupons/cupons-listagem.php`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              token: localStorage.getItem("token"),
-            }),
-          }
-        );
-
-        if (!listResponse.ok) {
-          throw new Error("Falha ao atualizar lista de cupons");
-        }
-
-        const listData = await listResponse.json();
-        if (listData.success && Array.isArray(listData.todosCupons)) {
-          setCupons(listData.todosCupons);
-        }
-
-        Alerta("swal", "success", "Cupom atualizado com sucesso!");
-        handleCloseModal();
-      } else {
-        throw new Error(data.message || "Erro ao atualizar cupom");
-      }
-    } catch (error) {
-      Alerta("swal", "error", `Erro ao atualizar cupom: ${error.message}`);
-    }
-  };
-
-  // Add new coupon
-  const handleAddNewCoupon = async (e) => {
-    e.preventDefault();
-
-    // Get selected servers
-    const selectedServers = Array.from(
-      e.target.querySelectorAll('input[name="aplicavel"]:checked')
-    ).map((checkbox) => checkbox.value);
-
-    const dados = {
-      token: localStorage.getItem("token"),
-      codigo: e.target.codigo.value,
-      desconto: e.target.desconto.value,
-      tipo: e.target.tipo.value,
-      validade: e.target.validade.value,
-      maxuse: e.target.maxuse.value,
-      valido: e.target.valido.checked ? 1 : 0,
-      produtos: selectedServers,
-    };
-
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API}/Backend/Admin/cupons/cupons-adicionar.php`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(dados),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Falha na resposta do servidor");
-      }
-
-      const data = await response.json();
-
-      if (data.success) {
-        // Add new coupon to local data
-        Alerta("swal", "success", "Cupom adicionado com sucesso!");
-
-        console.log(data);
-
-        // relistar cupons
-        const updatedCupons = [data.novocupon, ...cupons];
-        setCupons(updatedCupons);
-        handleCloseModal();
-      } else {
-        throw new Error(data.message || "Erro ao adicionar cupom");
-      }
-    } catch (error) {
-      Alerta("swal", "error", `Erro ao adicionar cupom: ${error.message}`);
-    }
-  };
-
-  const handleDeleteCoupon = async (cupom) => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API}/Backend/Admin/cupons/cupons-deletar.php`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            token: localStorage.getItem("token"),
-            codigo: cupom.codigo,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Falha na resposta do servidor");
-      }
-
-      const data = await response.json();
-
-      console.log(data);
-
-      if (data.success) {
-        // Remove deleted coupon from local data
-        const updatedCupons = cupons.filter((c) => c.id !== cupom.id);
-        setCupons(updatedCupons);
-        Alerta("swal", "success", "Cupom deletado com sucesso!");
-      } else {
-        throw new Error(data.message || "Erro ao deletar cupom");
-      }
-    } catch (error) {
-      Alerta("swal", "error", `Erro ao deletar cupom: ${error.message}`);
-    }
-  };
 
   // Show loading state
   if (loading) {
-    return <Loading />;
+    
+    return <div className="w-full flex justify-center">
+    <Loading color="#4F46E5" />
+    </div>;
   }
 
   // Show error state
@@ -337,22 +107,10 @@ function SectionCupons() {
   return (
     <div>
       <div id="Vendas" className="tabcontent block overflow-x-scroll">
-        <button
-          className="text-white py-2 px-4 rounded mb-4 cursor-pointer transition duration-300"
-          style={{
-            backgroundColor: "var(--corPrincipal)",
-          }}
-          onClick={handleAddCoupon}
-          onMouseEnter={(e) =>
-            (e.target.style.backgroundColor = "var(--corSecundaria)")
-          }
-          onMouseLeave={(e) =>
-            (e.target.style.backgroundColor = "var(--corPrincipal)")
-          }
-        >
-          Adicionar cupom
-        </button>
-        <h2 className="text-x2 font-semibold mb-4">Meus Cupons</h2>
+        <Button onClick={handleAddCoupon} wsize="">Adicionar Cupom</Button>
+        <H3>Meus Cupons</H3>
+
+    
 
         {cupons.length === 0 ? (
           <div>Nenhum cupom encontrado</div>
@@ -478,7 +236,7 @@ function SectionCupons() {
 
             <h2 className="text-xl font-semibold mb-4">Editar Cupom</h2>
 
-            <form onSubmit={handleUpdateCoupon}>
+            <form onSubmit={(e) => handleUpdateCoupon(e, selectedCoupon, setCupons, handleCloseModal)}>
               <div className="mt-2">
                 <label className="block text-gray-700 text-sm font-bold mb-2">
                   Código do Cupom
@@ -539,6 +297,8 @@ function SectionCupons() {
                   required
                 />
               </div>
+
+              
 
               <div className="mt-2">
                 <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -615,16 +375,7 @@ function SectionCupons() {
               </div>
 
               <div className="mt-2 flex items-center justify-between">
-                <button
-                  type="submit"
-                  className="w-full text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  style={{
-                    backgroundColor: "var(--corPrincipal)",
-                    cursor: "pointer",
-                  }}
-                >
-                  Atualizar Cupom
-                </button>
+                <Button type="submit">Atualizar Cupom</Button>
               </div>
             </form>
           </div>
@@ -660,7 +411,7 @@ function SectionCupons() {
 
             <h2 className="text-xl font-semibold mb-4">Adicionar Novo Cupom</h2>
 
-            <form onSubmit={handleAddNewCoupon}>
+            <form onSubmit={(e) => handleAddNewCoupon(e,cupons, setCupons, handleCloseModal)}>
               <div className="mt-2">
                 <label className="block text-gray-700 text-sm font-bold mb-2">
                   Código do Cupom
