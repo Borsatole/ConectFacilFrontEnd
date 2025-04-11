@@ -1,11 +1,21 @@
 import { useState, useEffect } from "react";
-import {handleUpdateCoupon, handleDeleteCoupon, handleAddNewCoupon, determinarStatus, formatarDesconto} from "../functions/cupons";
+import {
+  handleUpdateCoupon,
+  handleDeleteCoupon,
+  handleAddNewCoupon,
+  determinarStatus,
+  formatarDesconto,
+} from "../functions/cupons";
 import { format, parseISO } from "date-fns";
 import Swal from "sweetalert2";
 import Loading from "../components/Loading";
 import { requisicaoPost } from "../services/Requisicoes";
-import { Button } from "./comum/button";
+import { Button, ButtonCloseModal } from "./comum/button";
 import { H3 } from "./tailwindComponents/Textos";
+import { FormGroup } from "./comum/FormGroup";
+import { Input } from "./comum/input";
+// import { Form } from "react-router-dom";
+import Select from "./comum/select";
 
 function SectionCupons() {
   const [cupons, setCupons] = useState([]);
@@ -32,44 +42,42 @@ function SectionCupons() {
     });
   }
 
-
   useEffect(() => {
     const BaixarRecargas = async () => {
       setLoading(true);
-      
-  
+
       try {
-        const response = await requisicaoPost("/Backend/Admin/servidores/buscar-recargas.php");
-  
+        const response = await requisicaoPost(
+          "/Backend/Admin/servidores/buscar-recargas.php"
+        );
+
         if (response?.data?.recargas) {
           setServer(response.data.recargas);
-         
         } else {
           throw new Error("Nenhuma recarga encontrada ou resposta inválida.");
         }
       } catch (error) {
-        setError(error.message); 
+        setError(error.message);
       } finally {
         setLoading(false);
       }
     };
-  
+
     BaixarRecargas();
   }, []);
-  
 
   useEffect(() => {
-    
-  const carregarTodosCupons = async () => {
-      const response = await requisicaoPost("/Backend/Admin/cupons/cupons-listagem.php");
-      
+    const carregarTodosCupons = async () => {
+      const response = await requisicaoPost(
+        "/Backend/Admin/cupons/cupons-listagem.php"
+      );
+
       if (response) {
         setCupons(response.data.todosCupons);
-      } 
-      
-  };
-    
-  carregarTodosCupons();
+      }
+    };
+
+    carregarTodosCupons();
   }, []);
 
   // Handle edit coupon
@@ -90,13 +98,13 @@ function SectionCupons() {
     setSelectedCoupon(null);
   };
 
-
   // Show loading state
   if (loading) {
-    
-    return <div className="w-full flex justify-center">
-    <Loading color="#4F46E5" />
-    </div>;
+    return (
+      <div className="w-full flex justify-center">
+        <Loading color="#4F46E5" />
+      </div>
+    );
   }
 
   // Show error state
@@ -107,10 +115,10 @@ function SectionCupons() {
   return (
     <div>
       <div id="Vendas" className="tabcontent block overflow-x-scroll">
-        <Button onClick={handleAddCoupon} wsize="">Adicionar Cupom</Button>
+        <Button onClick={handleAddCoupon} wsize="">
+          Adicionar Cupom
+        </Button>
         <H3>Meus Cupons</H3>
-
-    
 
         {cupons.length === 0 ? (
           <div>Nenhum cupom encontrado</div>
@@ -214,111 +222,68 @@ function SectionCupons() {
           style={{ backgroundColor: "rgba(0, 0, 0, 0.33)" }}
         >
           <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative">
-            <button
-              onClick={handleCloseModal}
-              className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 cursor-pointer"
+            <ButtonCloseModal onClick={handleCloseModal} />
+            <H3>Editar Cupom</H3>
+
+            <form
+              onSubmit={(e) =>
+                handleUpdateCoupon(
+                  e,
+                  selectedCoupon,
+                  setCupons,
+                  handleCloseModal
+                )
+              }
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18 18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-
-            <h2 className="text-xl font-semibold mb-4">Editar Cupom</h2>
-
-            <form onSubmit={(e) => handleUpdateCoupon(e, selectedCoupon, setCupons, handleCloseModal)}>
-              <div className="mt-2">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Código do Cupom
-                </label>
-                <input
-                  type="text"
-                  name="codigo"
-                  placeholder="Digite o código do cupom"
-                  autoComplete="off"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  defaultValue={selectedCoupon.codigo || ""}
+              <FormGroup label="Código do Cupom" id="codigo">
+                <Input
+                  id="codigo"
+                  defaultValue={selectedCoupon.codigo}
                   required
-                />
-              </div>
+                ></Input>
+              </FormGroup>
 
-              <div className="mt-2">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Tipo de Desconto
-                </label>
-                <select
-                  name="tipo"
-                  defaultValue={selectedCoupon.tipo}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                >
-                  <option value="percent">Porcentagem</option>
-                  <option value="valor">Valor Fixo</option>
-                </select>
-              </div>
+              <FormGroup label="Tipo de Desconto" id="tipo">
+                <Select selectedCoupon={selectedCoupon.tipo} />
+              </FormGroup>
 
-              <div className="mt-2">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Desconto
-                </label>
-                <input
+              <FormGroup label="Desconto" id="desconto">
+                <Input
+                  id="desconto"
                   type="number"
-                  name="desconto"
                   defaultValue={selectedCoupon.desconto}
                   min="0"
-                  step="0.01"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  // step="1.00"
                   required
-                />
-              </div>
+                ></Input>
+              </FormGroup>
 
-              <div className="mt-2">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Data de Validade
-                </label>
-                <input
+              <FormGroup label="Data de Validade" id="validade">
+                <Input
+                  id="validade"
                   type="datetime-local"
                   name="validade"
                   defaultValue={format(
                     parseISO(selectedCoupon.validade),
                     "yyyy-MM-dd'T'HH:mm"
                   )}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
-                />
-              </div>
+                ></Input>
+              </FormGroup>
 
-              
-
-              <div className="mt-2">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Máximo de Usos
-                </label>
-                <input
-                  type="number"
+              <FormGroup label="Número maximo de Usos" id="maxuse">
+                <Input
+                  id="maxuse"
                   name="maxuse"
-                  min="0"
+                  type="number"
                   defaultValue={selectedCoupon.maxuse}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  min="0"
+                  // step="1.00"
                   required
-                />
-              </div>
+                ></Input>
+              </FormGroup>
 
-              <div className="mt-2">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Recargas Aplicáveis
-                </label>
-
+              <FormGroup label="Produtos Aplicáveis" id="aplicavel">
                 <div className="flex flex-col gap-2 overflow-y-scroll max-h-40 p-2">
                   {server
                     .sort((a, b) => parseFloat(a.dias) - parseFloat(b.dias))
@@ -360,7 +325,7 @@ function SectionCupons() {
                       </label>
                     ))}
                 </div>
-              </div>
+              </FormGroup>
 
               <div className="mt-2">
                 <label className="flex items-center">
@@ -411,7 +376,11 @@ function SectionCupons() {
 
             <h2 className="text-xl font-semibold mb-4">Adicionar Novo Cupom</h2>
 
-            <form onSubmit={(e) => handleAddNewCoupon(e,cupons, setCupons, handleCloseModal)}>
+            <form
+              onSubmit={(e) =>
+                handleAddNewCoupon(e, cupons, setCupons, handleCloseModal)
+              }
+            >
               <div className="mt-2">
                 <label className="block text-gray-700 text-sm font-bold mb-2">
                   Código do Cupom
