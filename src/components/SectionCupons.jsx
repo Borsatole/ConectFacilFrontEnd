@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+
 import {
   handleUpdateCoupon,
   handleDeleteCoupon,
@@ -6,6 +8,7 @@ import {
   determinarStatus,
   formatarDesconto,
 } from "../functions/cupons";
+
 import { format, parseISO } from "date-fns";
 import Swal from "sweetalert2";
 import Loading from "../components/Loading";
@@ -123,95 +126,49 @@ function SectionCupons() {
         {cupons.length === 0 ? (
           <div>Nenhum cupom encontrado</div>
         ) : (
-          <table className="min-w-full border-collapse border border-gray-300 shadow-lg rounded-lg overflow-hidden">
+          <Tabela>
             <thead>
-              <tr className="bg-gray-100 text-gray-700 uppercase text-sm">
-                <th className="px-6 py-3 text-left ">Cupom</th>
-                <th className="px-6 py-3 text-left ">Desconto</th>
-                <th className="px-6 py-3 text-left ">Validade</th>
-                <th className="px-6 py-3 text-left ">Uso</th>
-                <th className="px-6 py-3 text-left ">Status</th>
-                <th className="px-6 py-3 text-left ">Ações</th>
-              </tr>
+              <LinhaTabela>
+                <CelulaTabela tipo="">Cupom</CelulaTabela>
+                <CelulaTabela tipo="">Desconto</CelulaTabela>
+                <CelulaTabela tipo="">Validade</CelulaTabela>
+                <CelulaTabela tipo="">Uso</CelulaTabela>
+                <CelulaTabela tipo="">Status</CelulaTabela>
+                <CelulaTabela tipo="">Ações</CelulaTabela>
+              </LinhaTabela>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {cupons.map((cupom) => {
                 const status = determinarStatus(cupom);
                 return (
-                  <tr key={cupom.id} className="hover:bg-gray-50 transition">
-                    <td className="px-6 py-4 ">{cupom.codigo}</td>
-                    <td className="px-6 py-4 ">{formatarDesconto(cupom)}</td>
-                    <td className="px-6 py-4">
+                  <LinhaTabela key={cupom.id} tipo="body">
+                    <CelulaTabela>{cupom.codigo}</CelulaTabela>
+                    <CelulaTabela>{formatarDesconto(cupom)}</CelulaTabela>
+                    <CelulaTabela>
                       {format(parseISO(cupom.validade), "dd/MM/yyyy HH:mm")}
-                    </td>
-                    <td className="px-6 py-4 ">
-                      {cupom.usos} / {cupom.maxuse}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                          status === "Ativo"
-                            ? "text-green-700 bg-green-100"
-                            : status === "Expirado"
-                            ? "text-red-700 bg-red-100"
-                            : "text-yellow-700 bg-yellow-100"
-                        }`}
-                      >
-                        {status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 space-x-2">
-                      <button
-                        onClick={() => handleEditCoupon(cupom)}
-                        className="text-white py-2 px-4 rounded mb-4 cursor-pointer transition duration-300"
-                        style={{
-                          backgroundColor: "var(--corPrincipal)",
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="size-5"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                          />
-                        </svg>
-                      </button>
+                    </CelulaTabela>
 
-                      <button
-                        onClick={() => handleConfirmDelete(cupom)}
-                        className="text-white py-2 px-4 rounded mb-4 cursor-pointer transition duration-300"
-                        style={{
-                          backgroundColor: "var(--corPrincipal)",
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="size-5"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                          />
-                        </svg>
-                      </button>
-                    </td>
-                  </tr>
+                    <CelulaTabela>
+                      {cupom.usos}/{cupom.maxuse}
+                    </CelulaTabela>
+
+                    <CelulaTabela>
+                      <Status status={status} />
+                    </CelulaTabela>
+
+                    <CelulaTabela>
+                      <div className="flex items-center gap-2">
+                        <ButtonEdit onClick={() => handleEditCoupon(cupom)} />
+                        <ButtonDelete
+                          onClick={() => handleConfirmDelete(cupom)}
+                        />
+                      </div>
+                    </CelulaTabela>
+                  </LinhaTabela>
                 );
               })}
             </tbody>
-          </table>
+          </Tabela>
         )}
       </div>
 
@@ -354,127 +311,82 @@ function SectionCupons() {
           style={{ backgroundColor: "rgba(0, 0, 0, 0.33)" }}
         >
           <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative">
-            <button
-              onClick={handleCloseModal}
-              className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 cursor-pointer"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18 18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-
-            <h2 className="text-xl font-semibold mb-4">Adicionar Novo Cupom</h2>
+            <ButtonCloseModal onClick={handleCloseModal} />
+            <H3>Adicionar Novo Cupom</H3>
 
             <form
               onSubmit={(e) =>
                 handleAddNewCoupon(e, cupons, setCupons, handleCloseModal)
               }
             >
-              <div className="mt-2">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Código do Cupom
-                </label>
-                <input
-                  type="text"
+              <FormGroup label="Código do Cupom" id="codigo">
+                <Input
+                  id="codigo"
                   name="codigo"
                   placeholder="Digite o código do cupom"
                   autoComplete="off"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
-              </div>
+              </FormGroup>
 
-              <div className="mt-2">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Tipo de Desconto
-                </label>
-                <select
-                  name="tipo"
-                  defaultValue="percent"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                >
-                  <option value="percent">Porcentagem</option>
-                  <option value="valor">Valor Fixo</option>
-                </select>
-              </div>
+              <FormGroup label="Tipo de Desconto" id="tipo">
+                <Select selectedCoupon="percent" />
+              </FormGroup>
 
-              <div className="mt-2">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Desconto
-                </label>
-                <input
-                  type="number"
+              <FormGroup label="Desconto" id="desconto">
+                <Input
+                  id="desconto"
                   name="desconto"
+                  type="number"
                   min="0"
                   step="0.01"
                   placeholder="Digite o valor do desconto"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
-              </div>
+              </FormGroup>
 
-              <div className="mt-2">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Data de Validade
-                </label>
-                <input
-                  type="datetime-local"
+              <FormGroup label="Data de Validade" id="validade">
+                <Input
+                  id="validade"
                   name="validade"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  type="datetime-local"
                   required
                 />
-              </div>
+              </FormGroup>
 
-              <div className="mt-2">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Máximo de Usos
-                </label>
-                <input
-                  type="number"
+              <FormGroup label="Número máximo de Usos" id="maxuse">
+                <Input
+                  id="maxuse"
                   name="maxuse"
-                  min="0"
+                  type="number"
                   defaultValue="10"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  min="0"
                   required
                 />
-              </div>
+              </FormGroup>
 
-              <div className="mt-2">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Aplicável
-                </label>
-
+              <FormGroup label="Produtos Aplicáveis" id="aplicavel">
                 <div className="flex flex-col gap-2 overflow-y-scroll max-h-40 p-2">
-                  {server.map((server) => (
-                    <label
-                      key={server.id}
-                      className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg shadow-sm cursor-pointer transition-all hover:bg-gray-100 focus-within:ring-2 focus-within:ring-blue-500"
-                    >
-                      <input
-                        type="checkbox"
-                        name="aplicavel"
-                        value={server.id}
-                        className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                      />
-                      <span className="text-sm font-medium text-gray-700">
-                        {server.titulo}
-                      </span>
-                    </label>
-                  ))}
+                  {server
+                    .sort((a, b) => parseFloat(a.dias) - parseFloat(b.dias))
+                    .map((server) => (
+                      <label
+                        key={server.id}
+                        className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg shadow-sm cursor-pointer transition-all hover:bg-gray-100 focus-within:ring-2 focus-within:ring-blue-500"
+                      >
+                        <input
+                          type="checkbox"
+                          name="aplicavel"
+                          value={server.id}
+                          className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                        />
+                        <span className="text-sm font-medium text-gray-700">
+                          {server.titulo}
+                        </span>
+                      </label>
+                    ))}
                 </div>
-              </div>
+              </FormGroup>
 
               <div className="mt-2">
                 <label className="flex items-center">
@@ -489,16 +401,7 @@ function SectionCupons() {
               </div>
 
               <div className="mt-2 flex items-center justify-between">
-                <button
-                  type="submit"
-                  className="w-full text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  style={{
-                    backgroundColor: "var(--corPrincipal)",
-                    cursor: "pointer",
-                  }}
-                >
-                  Adicionar Cupom
-                </button>
+                <Button type="submit">Adicionar Cupom</Button>
               </div>
             </form>
           </div>
@@ -507,5 +410,124 @@ function SectionCupons() {
     </div>
   );
 }
+
+function Tabela({ children }) {
+  return (
+    <table className="min-w-full border-collapse border border-gray-300 shadow-lg rounded-lg overflow-hidden">
+      {children}
+    </table>
+  );
+}
+
+Tabela.propTypes = {
+  children: PropTypes.node,
+};
+
+function LinhaTabela({ children, tipo = "" }) {
+  if (tipo === "body") {
+    return <tr className="hover:bg-gray-50 transition">{children}</tr>;
+  }
+
+  return (
+    <tr className="bg-gray-100 text-gray-700 uppercase text-sm">{children}</tr>
+  );
+}
+
+LinhaTabela.propTypes = {
+  children: PropTypes.node,
+  tipo: PropTypes.string,
+};
+
+function CelulaTabela({ children, tipo = "body" }) {
+  if (tipo !== "body") {
+    return <th className="px-6 py-3 text-left">{children}</th>;
+  }
+  return <td className="px-6 py-4">{children}</td>;
+}
+
+CelulaTabela.propTypes = {
+  children: PropTypes.node,
+  tipo: PropTypes.string,
+};
+
+function Status({ status }) {
+  const statusStyles = {
+    Ativo: "text-green-700 bg-green-100",
+    Expirado: "text-red-700 bg-red-100",
+    default: "text-yellow-700 bg-yellow-100",
+  };
+
+  const styleClass = statusStyles[status] || statusStyles.default;
+
+  return (
+    <span
+      className={`px-2 py-1 text-xs font-semibold rounded-full ${styleClass}`}
+    >
+      {status}
+    </span>
+  );
+}
+
+Status.propTypes = {
+  status: PropTypes.string,
+};
+
+function ButtonEdit({ onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className="text-white py-2 px-4 rounded mb-4 cursor-pointer transition duration-300"
+      style={{ backgroundColor: "var(--corPrincipal)" }}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        className="size-5"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+        />
+      </svg>
+    </button>
+  );
+}
+
+ButtonEdit.propTypes = {
+  onClick: PropTypes.func,
+};
+
+function ButtonDelete({ onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className="text-white py-2 px-4 rounded mb-4 cursor-pointer transition duration-300"
+      style={{ backgroundColor: "var(--corPrincipal)" }}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        className="size-5"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+        />
+      </svg>
+    </button>
+  );
+}
+
+ButtonDelete.propTypes = {
+  onClick: PropTypes.func,
+};
 
 export default SectionCupons;
