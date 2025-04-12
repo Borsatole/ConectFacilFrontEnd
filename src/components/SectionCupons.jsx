@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { Tabela, LinhaTabela, CelulaTabela } from "./comum/tabelas";
 
 import {
   handleUpdateCoupon,
@@ -11,7 +12,7 @@ import {
 
 import { format, parseISO } from "date-fns";
 import Swal from "sweetalert2";
-import Loading from "../components/Loading";
+import Loading from "./Loading";
 import { requisicaoPost } from "../services/Requisicoes";
 import { Button, ButtonCloseModal } from "./comum/button";
 import { H3 } from "./tailwindComponents/Textos";
@@ -410,45 +411,6 @@ function SectionCupons() {
     </div>
   );
 }
-
-function Tabela({ children }) {
-  return (
-    <table className="min-w-full border-collapse border border-gray-300 shadow-lg rounded-lg overflow-hidden">
-      {children}
-    </table>
-  );
-}
-
-Tabela.propTypes = {
-  children: PropTypes.node,
-};
-
-function LinhaTabela({ children, tipo = "" }) {
-  if (tipo === "body") {
-    return <tr className="hover:bg-gray-50 transition">{children}</tr>;
-  }
-
-  return (
-    <tr className="bg-gray-100 text-gray-700 uppercase text-sm">{children}</tr>
-  );
-}
-
-LinhaTabela.propTypes = {
-  children: PropTypes.node,
-  tipo: PropTypes.string,
-};
-
-function CelulaTabela({ children, tipo = "body" }) {
-  if (tipo !== "body") {
-    return <th className="px-6 py-3 text-left">{children}</th>;
-  }
-  return <td className="px-6 py-4">{children}</td>;
-}
-
-CelulaTabela.propTypes = {
-  children: PropTypes.node,
-  tipo: PropTypes.string,
-};
 
 function Status({ status }) {
   const statusStyles = {

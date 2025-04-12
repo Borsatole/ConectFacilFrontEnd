@@ -1,5 +1,6 @@
-import PropTypes from "prop-types";
-export function Select({ selectedCoupon }) {
+// import PropTypes from "prop-types";
+import * as React from "react";
+export function Select({ selectedCoupon } : SelectProps) {
   return (
     <select
       name="tipo"
@@ -13,8 +14,8 @@ export function Select({ selectedCoupon }) {
   );
 }
 
-Select.propTypes = {
-  selectedCoupon: PropTypes.string.isRequired,
+type SelectProps = {
+  selectedCoupon: string;
 };
 
 export default Select;

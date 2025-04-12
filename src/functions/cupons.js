@@ -1,6 +1,65 @@
 import Alerta from "../components/comum/alertas";
 import { requisicaoPost } from "../services/Requisicoes";
 
+export async function handleAddNewCoupon(
+  e,
+  cupons,
+  setCupons,
+  handleCloseModal
+) {
+  e.preventDefault();
+
+  const selectedServers = Array.from(
+    e.target.querySelectorAll('input[name="aplicavel"]:checked')
+  ).map((checkbox) => checkbox.value);
+
+  const dados = {
+    token: localStorage.getItem("token"),
+    codigo: e.target.codigo.value,
+    desconto: e.target.desconto.value,
+    tipo: e.target.tipo.value,
+    validade: e.target.validade.value,
+    maxuse: e.target.maxuse.value,
+    valido: e.target.valido.checked ? 1 : 0,
+    produtos: selectedServers,
+  };
+
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API}/Backend/Admin/cupons/cupons-adicionar.php`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dados),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Falha na resposta do servidor");
+    }
+
+    const data = await response.json();
+
+    if (data.success) {
+      // Add new coupon to local data
+      Alerta("swal", "success", "Cupom adicionado com sucesso!");
+
+      console.log(data);
+
+      // relistar cupons
+      const updatedCupons = [data.novocupon, ...cupons];
+      setCupons(updatedCupons);
+      handleCloseModal();
+    } else {
+      throw new Error(data.message || "Erro ao adicionar cupom");
+    }
+  } catch (error) {
+    Alerta("swal", "error", `Erro ao adicionar cupom: ${error.message}`);
+  }
+}
+
 export async function handleUpdateCoupon(
   e,
   selectedCoupon,
@@ -70,6 +129,7 @@ export async function handleUpdateCoupon(
       }
 
       Alerta("swal", "success", "Cupom atualizado com sucesso!");
+
       handleCloseModal();
     } else {
       throw new Error(data.message || "Erro ao atualizar cupom");
@@ -88,68 +148,10 @@ export async function handleDeleteCoupon(cupom) {
   );
   if (response?.data?.success) {
     Alerta("toast", "success", `${response?.data?.message}`);
-    console.log(response);
+
+    // console.log(response);
   } else {
     Alerta("toast", "error", `${response?.data?.message}`);
-  }
-}
-
-export async function handleAddNewCoupon(
-  e,
-  cupons,
-  setCupons,
-  handleCloseModal
-) {
-  e.preventDefault();
-
-  const selectedServers = Array.from(
-    e.target.querySelectorAll('input[name="aplicavel"]:checked')
-  ).map((checkbox) => checkbox.value);
-
-  const dados = {
-    token: localStorage.getItem("token"),
-    codigo: e.target.codigo.value,
-    desconto: e.target.desconto.value,
-    tipo: e.target.tipo.value,
-    validade: e.target.validade.value,
-    maxuse: e.target.maxuse.value,
-    valido: e.target.valido.checked ? 1 : 0,
-    produtos: selectedServers,
-  };
-
-  try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API}/Backend/Admin/cupons/cupons-adicionar.php`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dados),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Falha na resposta do servidor");
-    }
-
-    const data = await response.json();
-
-    if (data.success) {
-      // Add new coupon to local data
-      Alerta("swal", "success", "Cupom adicionado com sucesso!");
-
-      console.log(data);
-
-      // relistar cupons
-      const updatedCupons = [data.novocupon, ...cupons];
-      setCupons(updatedCupons);
-      handleCloseModal();
-    } else {
-      throw new Error(data.message || "Erro ao adicionar cupom");
-    }
-  } catch (error) {
-    Alerta("swal", "error", `Erro ao adicionar cupom: ${error.message}`);
   }
 }
 
