@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { AuthProvider } from "./context/AuthContext";
 import { MenuProvider } from "./context/MenuContext";
 import Rotas from "./routes";
-
+import * as React from "react";
 function App() {
   return (
     <BrowserRouter>
