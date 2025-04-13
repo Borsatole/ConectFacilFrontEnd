@@ -93,19 +93,32 @@ const MenuLateral = () => {
         )}
 
         <h4 className="mt-2 font-medium text-white">{dadosMenuLateral.nome}</h4>
-        <p className="text-sm font-medium text-gray-300">{dadosMenuLateral.email}</p>
+        <p className="text-sm font-medium text-gray-300">
+          {dadosMenuLateral.email}
+        </p>
       </div>
 
       <div className="flex flex-col justify-between flex-1 mt-6">
         <nav>
-          <OpcaoMenu nome="Dashboard" rota="/dashboard" svg={<MenuLateralDashboard />} />
-          <OpcaoMenu nome="Meus Pedidos" rota="/pedidos" svg={<MenuLateralMeusPedidos />} />
+          <OpcaoMenu
+            nome="Dashboard"
+            rota="/dashboard"
+            svg={<MenuLateralDashboard />}
+          />
+          <OpcaoMenu
+            nome="Meus Pedidos"
+            rota="/pedidos"
+            svg={<MenuLateralMeusPedidos />}
+          />
           <OpcaoMenu nome="Perfil" rota="/perfil" svg={<MenuLateralPerfil />} />
 
           {/* Caso seja admin */}
           {dadosMenuLateral.tipoDeUsuario === "admin" && (
-            <OpcaoMenu nome="Administrador" rota="/admin" svg={<MenuLateralAdmin />} />
-            
+            <OpcaoMenu
+              nome="Administrador"
+              rota="/admin"
+              svg={<MenuLateralAdmin />}
+            />
           )}
 
           <hr className="my-8 border-gray-300" />

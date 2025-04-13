@@ -1,9 +1,17 @@
 import { useMenu } from "../../context/MenuContext";
-import AbrirMenuIcon from "../MenuLateral/Icones/AbrirMenu";
-import FecharMenuIcon from "../MenuLateral/Icones/FecharMenu";
-import PropTypes from "prop-types";
+import AbrirMenuIcon from "./Icones/AbrirMenu";
+import FecharMenuIcon from "./Icones/FecharMenu";
 
-export function BtnAbrirMenuLateral() {
+import * as React from "react";
+
+interface BtnAbrirMenuLateralProps {
+  abrirMenu: () => void;
+  fecharMenu: () => void;
+  menuAberto: boolean;
+
+}
+
+export function BtnAbrirMenuLateral(props: BtnAbrirMenuLateralProps) {
   const { abrirMenu } = useMenu();
   return (
     <div id="botao-abrir-menu">
@@ -17,6 +25,10 @@ export function BtnAbrirMenuLateral() {
   );
 }
 
+interface BtnFecharMenuLateralProps {
+  funcao: () => void;
+}
+
 export function BtnFecharMenuLateral({ funcao = () => {} }) {
   return (
     <button
@@ -28,10 +40,4 @@ export function BtnFecharMenuLateral({ funcao = () => {} }) {
     </button>
   );
 }
-
-BtnFecharMenuLateral.propTypes = {
-  funcao: PropTypes.func,
-};
-
-
 

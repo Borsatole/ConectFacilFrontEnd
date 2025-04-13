@@ -13,27 +13,27 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 
 export function Input({
-  id = "",
-  type = "text",
-  placeholder = "",
-  defaultValue = "",
-  autoComplete = "off",
-  min = "",
-  max = "",
-  required = false,
+  id,
+  type,
+  placeholder,
+  defaultValue,
+  autoComplete,
+  min,
+  max,
+  required,
   ...rest 
 }: InputProps) {
   return (
     <input
-      id={id}
-      type={type}
+      id={id || ""}
+      type={type || "text"}
       placeholder={placeholder || ""}
-      autoComplete={autoComplete}
+      autoComplete={autoComplete || "off"}
       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       defaultValue={defaultValue || ""}
-      min={min}
-      max={max}
-      required={required}
+      min={min || ""}
+      max={max || ""}
+      required={required || false}
       {...rest}
     />
   );

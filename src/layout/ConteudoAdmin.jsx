@@ -1,4 +1,3 @@
-
 import TabsAdmin from "../components/TabsAdmin";
 import Container from "../components/tailwindComponents/Container";
 import { TituloPagina } from "../components/tailwindComponents/Textos";

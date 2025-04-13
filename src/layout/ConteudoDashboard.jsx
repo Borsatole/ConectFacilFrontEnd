@@ -39,7 +39,6 @@ function ConteudoDashboard() {
   useEffect(() => {
     const carregarDados = async () => {
       const response = await requisicaoPost("/Backend/Usuario/Dashboard.php");
-      
 
       if (response) {
         setDadosDashboard({
@@ -48,7 +47,7 @@ function ConteudoDashboard() {
             response.data.InformacoesBasicas.TotalPedidosCancelados,
           TotalPedidosPendentes:
             response.data.InformacoesBasicas.TotalPedidosPendentes,
-            Recargas: response.data.Recargas,
+          Recargas: response.data.Recargas,
         });
       }
 
@@ -69,7 +68,7 @@ function ConteudoDashboard() {
           <CardEstatisticas
             key={index}
             icone={item.icone}
-            valor={String(item.valor)}
+            valor={Number(item.valor)}
             descricao={item.descricao}
             loading={loading}
           />
@@ -110,7 +109,7 @@ function CatalogoRecargas(props) {
                 id={item.id}
                 imgRecarga={`${RotaApi}/Backend/Recargas/${item.imagem}`}
                 descricaoRecarga={item.titulo}
-                valorRecarga={item.valor}
+                valorRecarga={Number(item.valor)}
               />
             ))}
         </div>

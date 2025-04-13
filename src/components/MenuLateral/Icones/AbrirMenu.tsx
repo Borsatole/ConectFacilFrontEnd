@@ -1,3 +1,6 @@
+import * as React from "react";
+
+
 function AbrirMenuIcon() {
   return (
     <svg

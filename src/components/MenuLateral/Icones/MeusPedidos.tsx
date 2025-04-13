@@ -1,3 +1,4 @@
+import * as React from "react";
 function MenuLateralMeusPedidos() {
   return (
     <svg
