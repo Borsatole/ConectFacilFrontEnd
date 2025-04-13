@@ -1,5 +1,18 @@
 import Alerta from "../components/comum/alertas";
-import { requisicaoPost } from "../services/requisicoes";
+import {
+  requisicaoGet,
+  requisicaoPost,
+  requisicaoDelete,
+} from "../services/requisicoes";
+
+export async function carregarCupons(setCupons) {
+  const response = await requisicaoGet(
+    "/Backend/Admin/cupons/cupons-listagem.php"
+  );
+  if (response?.data?.todosCupons) {
+    setCupons(response.data.todosCupons);
+  }
+}
 
 export async function handleAddNewCoupon(
   e,
@@ -25,35 +38,24 @@ export async function handleAddNewCoupon(
   };
 
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API}/Backend/Admin/cupons/cupons-adicionar.php`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dados),
-      }
+    const response = await requisicaoPost(
+      "/Backend/Admin/cupons/cupons-adicionar.php",
+      dados
     );
 
-    if (!response.ok) {
-      throw new Error("Falha na resposta do servidor");
-    }
-
-    const data = await response.json();
-
-    if (data.success) {
-      // Add new coupon to local data
+    if (response?.data?.success) {
       Alerta("swal", "success", "Cupom adicionado com sucesso!");
 
-      console.log(data);
-
-      // relistar cupons
-      const updatedCupons = [data.novocupon, ...cupons];
+      const updatedCupons = [response.data.novocupon, ...cupons];
       setCupons(updatedCupons);
       handleCloseModal();
     } else {
-      throw new Error(data.message || "Erro ao adicionar cupom");
+      Alerta(
+        "swal",
+        "error",
+        response?.data?.message || "Erro ao adicionar cupom"
+      );
+      throw new Error(response?.data?.message || "Erro ao adicionar cupom");
     }
   } catch (error) {
     Alerta("swal", "error", `Erro ao adicionar cupom: ${error.message}`);
@@ -87,52 +89,26 @@ export async function handleUpdateCoupon(
   };
 
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API}/Backend/Admin/cupons/cupons-editar.php`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dados),
-      }
+    const response = await requisicaoPost(
+      "/Backend/Admin/cupons/cupons-editar.php",
+      dados
     );
 
-    if (!response.ok) {
-      throw new Error("Falha na resposta do servidor");
-    }
-
-    const data = await response.json();
-
-    if (data.success) {
-      // Atualiza lista de cupons
-      const listResponse = await fetch(
-        `${import.meta.env.VITE_API}/Backend/Admin/cupons/cupons-listagem.php`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            token: localStorage.getItem("token"),
-          }),
-        }
-      );
-
-      if (!listResponse.ok) {
-        throw new Error("Falha ao atualizar lista de cupons");
-      }
-
-      const listData = await listResponse.json();
-      if (listData.success && Array.isArray(listData.todosCupons)) {
-        setCupons(listData.todosCupons);
-      }
-
+    if (response?.data?.success) {
       Alerta("swal", "success", "Cupom atualizado com sucesso!");
+
+      // Atualiza o cupom alterado na lista
+      setCupons((prevCupons) =>
+        prevCupons.map((cupom) =>
+          cupom.id === selectedCoupon.id ? response.data.novocupon : cupom
+        )
+      );
 
       handleCloseModal();
     } else {
-      throw new Error(data.message || "Erro ao atualizar cupom");
+      const message = response?.data?.message || "Erro ao atualizar cupom";
+      Alerta("swal", "error", message);
+      throw new Error(message);
     }
   } catch (error) {
     Alerta("swal", "error", `Erro ao atualizar cupom: ${error.message}`);
@@ -140,7 +116,7 @@ export async function handleUpdateCoupon(
 }
 
 export async function handleDeleteCoupon(cupom) {
-  const response = await requisicaoPost(
+  const response = await requisicaoDelete(
     "/Backend/Admin/cupons/cupons-deletar.php",
     {
       codigo: cupom.codigo,
@@ -148,23 +124,14 @@ export async function handleDeleteCoupon(cupom) {
   );
   if (response?.data?.success) {
     Alerta("toast", "success", `${response?.data?.message}`);
-
-    // console.log(response);
   } else {
     Alerta("toast", "error", `${response?.data?.message}`);
   }
 }
 
 export function determinarStatus(cupom) {
-  if (cupom.valido === 0) return "Inativo";
-
-  const dataValidade = new Date(cupom.validade);
-  const hoje = new Date();
-
-  if (dataValidade < hoje) return "Expirado";
-  if (cupom.usos >= cupom.maxuse) return "Excedido";
-
-  return "Ativo";
+  if (!cupom || typeof cupom.valido === "undefined") return "Indefinido";
+  return cupom.valido ? "Ativo" : "Inativo";
 }
 
 export function formatarDesconto(cupom) {

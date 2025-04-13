@@ -144,6 +144,10 @@ function SectionCupons() {
             </thead>
             <tbody className="divide-y divide-gray-200">
               {cupons.map((cupom) => {
+                if (!cupom || !cupom.codigo) {
+                  console.warn("Cupom inválido na posição", cupom);
+                  return null;
+                }
                 const status = determinarStatus(cupom);
                 return (
                   <LinhaTabela key={cupom.id} tipo="body">

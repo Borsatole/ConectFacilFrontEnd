@@ -67,51 +67,65 @@ export async function requisicaoPost(rota, dados) {
 }
 
 export async function requisicaoPut(rota, dados) {
+  
   const token = localStorage.getItem("token");
 
   try {
     const response = await axios.put(
       `${rotaApi}${rota}`,
-      { token,...dados },
+      { token, ...dados },
       {
         headers: {
           "Content-Type": "application/json",
         },
       }
-    );   
-    if (response.status === 200) {
-      return response.data;
+    );
+
+    
+    if (response.status === 200 && response.data.success == true) {
+      return response;
     } else {
-      console.error("Erro na requisição:", response.statusText);
-      return null;
+      if (response.data.error == "Token inválido") {
+        window.location.href = "/login";
+      }
+      
+      
+      return response;
     }
   } catch (error) {
-    console.error("Erro na verificação do token:", error);
+    console.error("Erro:", error);
     return null;
   }
 }
 
 export async function requisicaoDelete(rota, dados) {
+  
   const token = localStorage.getItem("token");
 
   try {
     const response = await axios.delete(
       `${rotaApi}${rota}`,
-      { token,...dados },
+      { token, ...dados },
       {
         headers: {
           "Content-Type": "application/json",
         },
       }
-    );   
-    if (response.status === 200) {
-      return response.data;
+    );
+
+    
+    if (response.status === 200 && response.data.success == true) {
+      return response;
     } else {
-      console.error("Erro na requisição:", response.statusText);
-      return null;
+      if (response.data.error == "Token inválido") {
+        window.location.href = "/login";
+      }
+      
+      
+      return response;
     }
   } catch (error) {
-    console.error("Erro na verificação do token:", error);
+    console.error("Erro:", error);
     return null;
   }
 }

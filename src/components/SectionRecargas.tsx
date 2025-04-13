@@ -174,7 +174,7 @@ function SectionRecargas() {
                 <CelulaTabela tipo="">Imagem</CelulaTabela>
                 <CelulaTabela tipo="">Recarga</CelulaTabela>
                 <CelulaTabela tipo="">Dias</CelulaTabela>
-                <CelulaTabela tipo="">Códigos</CelulaTabela>
+                
                 <CelulaTabela tipo="">Ações</CelulaTabela>
               </LinhaTabela>
             </thead>
@@ -190,7 +190,7 @@ function SectionRecargas() {
                   </CelulaTabela>
                   <CelulaTabela>{recarga.titulo.toUpperCase()}</CelulaTabela>
                   <CelulaTabela>{recarga.dias}</CelulaTabela>
-                  <CelulaTabela>5</CelulaTabela>
+                  
                   <td className="px-6 py-4 space-x-2">
                     <ButtonEdit onClick={() => handleEditCoupon(recarga)} />
                     <ButtonDelete onClick={() => handleConfirmarDelete(recarga)} />
