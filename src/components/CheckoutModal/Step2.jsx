@@ -43,7 +43,7 @@ function Step2({
   return (
     <div>
       <H3> Confirmação dos dados</H3>
-      
+
       <div className="border-t border-gray-200 pt-4">
         <h4 className="text-lg font-semibold mb-2">Dados do Usuário</h4>
         <UsuarioInfo dados={dadosDoUsuario} />

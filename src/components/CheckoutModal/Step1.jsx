@@ -36,7 +36,10 @@ function Step1({
       <H3>Compre e Receba na hora!</H3>
 
       <div className="border-t border-gray-200 pt-4 flex flex-col md:flex-row md:space-x-6 mb-6">
-        <RecargaImage imageUrl={productInfo.imageUrl} title={productInfo.title} />
+        <RecargaImage
+          imageUrl={productInfo.imageUrl}
+          title={productInfo.title}
+        />
         <RecargaInfo
           title={productInfo.title}
           description={productInfo.description}
@@ -60,7 +63,9 @@ function Step1({
         </div>
 
         <div className="mt-6 flex justify-end">
-          <Button onClick={() => EnviarDados()} loading={loading}>Continue</Button>
+          <Button onClick={() => EnviarDados()} loading={loading}>
+            Continue
+          </Button>
         </div>
       </div>
     </div>

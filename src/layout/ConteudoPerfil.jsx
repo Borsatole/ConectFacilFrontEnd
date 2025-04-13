@@ -3,7 +3,6 @@ import ContainerPrincipal from "../components/tailwindComponents/Container";
 import { TituloPagina } from "../components/tailwindComponents/Textos";
 import { BtnAbrirMenuLateral } from "../components/MenuLateral/botoesMenu";
 
-
 function ConteudoMeusPedidos() {
   return (
     <ContainerPrincipal tipo="principal">

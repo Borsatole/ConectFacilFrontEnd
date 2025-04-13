@@ -30,7 +30,9 @@ function FormularioPerfil() {
   useEffect(() => {
     const carregarDados = async () => {
       try {
-        const response = await requisicaoPost("/Backend/Usuario/configuracoes.php");
+        const response = await requisicaoPost(
+          "/Backend/Usuario/configuracoes.php"
+        );
         const dadosUsuario = response?.data?.dados;
 
         if (dadosUsuario) {
@@ -82,7 +84,11 @@ function FormularioPerfil() {
     } catch (error) {
       console.error("Erro ao atualizar perfil:", error);
       setErro("Erro ao atualizar perfil.");
-      Alerta("toast", "error", "Falha ao atualizar o perfil. Por favor, tente novamente.");
+      Alerta(
+        "toast",
+        "error",
+        "Falha ao atualizar o perfil. Por favor, tente novamente."
+      );
     }
   };
 
@@ -99,7 +105,9 @@ function FormularioPerfil() {
   }
 
   if (!dados) {
-    return <div className="text-center p-6">Nenhum dado de perfil disponível.</div>;
+    return (
+      <div className="text-center p-6">Nenhum dado de perfil disponível.</div>
+    );
   }
 
   return (
@@ -154,7 +162,6 @@ function FormularioPerfil() {
           <Button type="submit" loading={loadingbtn}>
             Salvar Alterações
           </Button>
-
         </div>
       </form>
     </Container>

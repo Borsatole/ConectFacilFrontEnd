@@ -1,17 +1,15 @@
 import { requisicaoPost } from "../services/requisicoes";
 import { useEffect, useState } from "react";
-import {converterData} from "../functions/data";
+import { converterData } from "../functions/data";
 import PropTypes from "prop-types";
 import Loading from "./Loading";
 import { ButtonCopy } from "./comum/button";
 
-
 function PedidoCard({ id, server, codigo, data, valor, situacao, bgColor }) {
-  
   return (
     <div
-    className={`flex justify-between items-center p-4 rounded-lg shadow-sm ${bgColor}`}
-    style={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" }}
+      className={`flex justify-between items-center p-4 rounded-lg shadow-sm ${bgColor}`}
+      style={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" }}
     >
       <div>
         <h2
@@ -23,22 +21,16 @@ function PedidoCard({ id, server, codigo, data, valor, situacao, bgColor }) {
         {codigo !== "" ? (
           <p
             className="bg-green-200 text-green-800 font-semibold rounded inline-block"
-            style={{fontSize: "0.8rem"}}>
-              
+            style={{ fontSize: "0.8rem" }}
+          >
             Codigo de recarga - {codigo}
           </p>
         ) : null}
         <Paragrafo Titulo={"Data de validade"} dado={data} />
         <Paragrafo Titulo={"Valor"} dado={valor} />
         <Status situacao={situacao} status={"aprovado"} />
-
-        
-        
-        
       </div>
-      {codigo !== "" ? (
-        <ButtonCopy codigo={codigo} />
-      ) : null}
+      {codigo !== "" ? <ButtonCopy codigo={codigo} /> : null}
     </div>
   );
 }
@@ -53,33 +45,35 @@ PedidoCard.propTypes = {
   bgColor: PropTypes.string,
 };
 
-function Paragrafo ({ Titulo , dado }) {
-  return <p className="text-gray-600" style={{ fontWeight: "200" }}>
-  {Titulo}: {dado}
-  </p>; 
+function Paragrafo({ Titulo, dado }) {
+  return (
+    <p className="text-gray-600" style={{ fontWeight: "200" }}>
+      {Titulo}: {dado}
+    </p>
+  );
 }
 Paragrafo.propTypes = {
   Titulo: PropTypes.string,
-  dado: PropTypes.string, 
-}
+  dado: PropTypes.string,
+};
 
-function Status ({ status, situacao }) {
- return (
-  <span
-            className={`text-xs font-semibold uppercase mr-2 px-2.5 py-0.5 rounded ${
-              situacao === status
-                ? "bg-green-200 text-green-800"
-                : "bg-yellow-200 text-yellow-800"
-            }`}
-          >
-            {situacao}
-          </span>
- ); 
+function Status({ status, situacao }) {
+  return (
+    <span
+      className={`text-xs font-semibold uppercase mr-2 px-2.5 py-0.5 rounded ${
+        situacao === status
+          ? "bg-green-200 text-green-800"
+          : "bg-yellow-200 text-yellow-800"
+      }`}
+    >
+      {situacao}
+    </span>
+  );
 }
 Status.propTypes = {
   status: PropTypes.string.isRequired,
-  situacao: PropTypes.string.isRequired, 
-}
+  situacao: PropTypes.string.isRequired,
+};
 
 function CardsPedidos() {
   const [dadosPedidos, setDadosPedidos] = useState({ pedidos: [] });
@@ -103,7 +97,6 @@ function CardsPedidos() {
 
     carregarDados();
   }, []);
-
 
   return (
     <div>

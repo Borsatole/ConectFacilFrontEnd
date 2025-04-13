@@ -10,20 +10,21 @@ import {
 
 import Swal from "sweetalert2";
 
-import { toast } from "react-toastify";
-import { Button, ButtonCloseModal } from "./comum/button";
+import { Button } from "./comum/button";
 import { H3 } from "./tailwindComponents/Textos";
-import { FormGroup } from "./comum/FormGroup";
-import { Input } from "./comum/input";
-import { BtnInserir } from "./AdminRecargas/btnInserir";
+// import { FormGroup } from "./comum/FormGroup";
+// import { Input } from "./comum/input";
+// import { BtnInserir } from "./AdminRecargas/btnInserir";
 import {
   handleFiltrarCodigos,
   handleCodigoChange,
   handleUpdateRecarga,
+  handleDeleteRecarga,
 } from "../functions/recargas";
+import { requisicaoPost } from "src/services/requisicoes.jsx";
+import ModalEditarRecargas from "./AdminRecargas/modalEditarRecargas";
 
 function SectionRecargas() {
-  // const { logout } = useContext(AuthContext);
   const [recargas, setRecargas] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -71,7 +72,7 @@ function SectionRecargas() {
     if (selectedRecarga == null) return;
     const filteredCodigos = handleFiltrarCodigos(selectedRecarga.id, codigos);
     setCodigosFiltrados(filteredCodigos);
-  }, [selectedRecarga]);
+  }, [codigos, selectedRecarga]);
 
   const handleEditCoupon = (recarga) => {
     setSelectedRecarga(recarga);
@@ -100,112 +101,22 @@ function SectionRecargas() {
     }
   };
 
-  // const handleUpdateRecarga = async (e) => {
-  //   e.preventDefault();
-
-  //   const dados = {
-  //     token: localStorage.getItem("token"),
-  //     idRecarga: selectedRecarga.id,
-  //     titulo: e.target.titulo.value,
-  //     dias: e.target.dias.value,
-  //     imagem: selectedRecarga.previewImage || "",
-  //   };
-
-  //   try {
-  //     const response = await fetch(
-  //       `${
-  //         import.meta.env.VITE_API
-  //       }/Backend/Admin/recargas/recargas-editar.php`,
-  //       {
-  //         method: "POST",
-  //         body: JSON.stringify(dados),
-  //       }
-  //     );
-  //     console.log(dados);
-
-  //     if (!response.ok) {
-  //       throw new Error("Falha na resposta do servidor");
-  //     }
-
-  //     const data = await response.json();
-
-  //     if (data.success) {
-  //       // Refresh the list
-  //       const updatedRecargas = recargas.map((recarga) =>
-  //         recarga.id === selectedRecarga.id
-  //           ? {
-  //               ...recarga,
-  //               titulo: e.target.titulo.value,
-  //               dias: e.target.dias.value,
-  //             }
-  //           : recarga
-  //       );
-  //       setRecargas(updatedRecargas);
-  //       toast.success("Recarga atualizada com sucesso!", {
-  //         position: "top-right",
-  //         autoClose: 1000,
-  //         hideProgressBar: true,
-  //         closeOnClick: false,
-  //         pauseOnHover: false,
-  //         draggable: true,
-  //         progress: undefined,
-  //         theme: "light",
-  //       });
-  //       // handleCloseModal();
-  //     } else {
-  //       throw new Error(data.message || "Erro ao atualizar recarga");
-  //     }
-  //   } catch (error) {
-  //     console.error("Erro ao atualizar recarga:", error);
-  //     toast.error(`Erro ao atualizar recarga: ${error.message}`);
-  //   }
-  // };
-
   // Buscar servidores
   useEffect(() => {
     const fetchServers = async () => {
       setLoading(true);
 
       try {
-        const response = await fetch(
-          `${
-            import.meta.env.VITE_API
-          }/Backend/Admin/servidores/buscar-recargas.php`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              token: localStorage.getItem("token"),
-            }),
-          }
+        const response = await requisicaoPost(
+          "/Backend/Admin/servidores/buscar-recargas.php"
         );
 
-        if (!response.ok) {
-          throw new Error("Falha ao carregar servidores");
-        }
-
-        const data = await response.json();
-
-        if (data.error) {
-          if (
-            data.error == "Token não fornecido" ||
-            data.error == "Token inválido"
-          ) {
-            toast.error("Sua sessão expirou, faça login novamente.");
-            // logout();
-          }
-        }
-
-        if (data.recargas) {
-          setRecargas(data.recargas);
+        if (response?.data?.recargas) {
+          setRecargas(response.data.recargas);
         } else {
-          throw new Error("Formato de dados de servidores inválido");
+          throw new Error("Nenhuma recarga encontrada ou resposta inválida.");
         }
       } catch (error) {
-        console.error("Erro ao carregar servidores:", error);
-
         setError(error.message);
       } finally {
         setLoading(false);
@@ -214,44 +125,6 @@ function SectionRecargas() {
 
     fetchServers();
   }, []);
-
-  const handleDeleteRecarga = async (recarga) => {
-    try {
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_API
-        }/Backend/Admin/recargas/recargas-deletar.php`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            token: localStorage.getItem("token"),
-            idRecarga: recarga.id,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Falha na resposta do servidor");
-      }
-
-      const data = await response.json();
-
-      console.log(data);
-
-      if (data.success) {
-        // Remove deleted coupon from local data
-        const updatedRecargas = recargas.filter((c) => c.id !== recarga.id);
-        setRecargas(updatedRecargas);
-      } else {
-        throw new Error(data.message || "Erro ao deletar cupom");
-      }
-    } catch (error) {
-      console.error("Erro ao deletar recarga:", error);
-    }
-  };
 
   if (loading) {
     return <Loading color="var(--corPrincipal)" />;
@@ -273,7 +146,7 @@ function SectionRecargas() {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        handleDeleteRecarga(recarga);
+        handleDeleteRecarga(recarga, setRecargas, recargas);
       }
     });
   }
@@ -283,7 +156,6 @@ function SectionRecargas() {
       <Button onClick={handleEditCoupon} wsize="">
         Adicionar Recarga
       </Button>
-
       {recargas.length === 0 ? (
         <div>Nenhuma recarga encontrada</div>
       ) : (
@@ -344,128 +216,140 @@ function SectionRecargas() {
           </Tabela>
         </div>
       )}
-
-      {/* Edit Recarga Modal */}
       {isEditModalOpen && selectedRecarga && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.33)" }}
-        >
-          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative">
-            <ButtonCloseModal onClick={handleCloseModal} />
-            <H3>Editar Recarga</H3>
-
-            <form
-              onSubmit={(e) =>
-                handleUpdateRecarga(
-                  e,
-                  selectedRecarga,
-                  setRecargas,
-                  setLoading,
-                  recargas, // This was in the wrong position
-                  handleCloseModal
-                )
-              }
-            >
-              <FormGroup label="Imagem da Recarga" id="icone-app">
-                <div className="flex items-center gap-4">
-                  <img
-                    src={
-                      selectedRecarga.previewImage ||
-                      `${import.meta.env.VITE_API}/Backend/Recargas/${
-                        selectedRecarga.imagem
-                      }`
-                    }
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      objectFit: "cover",
-                      borderRadius: "50%",
-                    }}
-                  />
-
-                  <input
-                    type="file"
-                    name="imagem"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                  />
-                </div>
-              </FormGroup>
-
-              <FormGroup label="Titulo da Recarga" id="titulo">
-                <Input
-                  type="text"
-                  id="titulo"
-                  name="titulo"
-                  defaultValue={selectedRecarga.titulo || ""}
-                />
-              </FormGroup>
-
-              <FormGroup label="dias" id="dias">
-                <Input
-                  type="number"
-                  name="dias"
-                  id="dias"
-                  min="1"
-                  defaultValue={selectedRecarga.dias || ""}
-                />
-              </FormGroup>
-
-              <FormGroup label="Valor" id="valor">
-                <Input
-                  type="number"
-                  id="valor"
-                  name="valor"
-                  min="1"
-                  defaultValue={selectedRecarga.valor || ""}
-                />
-              </FormGroup>
-
-              {/* separador */}
-              <div className="mt-2 justify-center">
-                <div className="flex justify-between items-center gap-4 pt-4  pb-4 border-b border-gray-300">
-                  <label className="block text-gray-700 text-sm font-bold mb-2 ">
-                    Codigos ({codigosFiltrados.length})
-                  </label>
-
-                  <BtnInserir selectedCodigos={selectedCodigos}></BtnInserir>
-                </div>
-              </div>
-
-              <div className="mt-2">
-                <div className="flex flex-col gap-2 overflow-y-scroll max-h-40 p-2">
-                  {codigosFiltrados.map((codigo) => (
-                    <label
-                      key={codigo.id}
-                      className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg shadow-sm cursor-pointer transition-all hover:bg-gray-100 focus-within:ring-2 focus-within:ring-blue-500"
-                    >
-                      <input
-                        type="checkbox"
-                        name="aplicavel"
-                        value={codigo.id}
-                        checked={selectedCodigos.includes(codigo.id)}
-                        onChange={() =>
-                          handleCodigoChange(codigo, setSelectedCodigos)
-                        }
-                        className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                      />
-                      <span className="text-sm font-medium text-gray-700">
-                        {codigo.codigo}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <Button type="submit">Atualizar Recarga</Button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <ModalEditarRecargas
+          handleCloseModal={handleCloseModal}
+          selectedRecarga={selectedRecarga}
+          setRecargas={setRecargas}
+          setLoading={setLoading}
+          recargas={recargas}
+          handleImageChange={handleImageChange}
+          handleUpdateRecarga={handleUpdateRecarga}
+          codigosFiltrados={codigosFiltrados}
+          selectedCodigos={selectedCodigos}
+          handleCodigoChange={handleCodigoChange}
+          setSelectedCodigos={setSelectedCodigos}
+        />
       )}
+      {/* <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+        style={{ backgroundColor: "rgba(0, 0, 0, 0.33)" }}
+      >
+        <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative">
+          <ButtonCloseModal onClick={handleCloseModal} />
+          <H3>Editar Recarga</H3>
+
+          <form
+            onSubmit={(e) =>
+              handleUpdateRecarga(
+                e,
+                selectedRecarga,
+                setRecargas,
+                setLoading,
+                recargas,
+                handleCloseModal
+              )
+            }
+          >
+            <FormGroup label="Imagem da Recarga" id="icone-app">
+              <div className="flex items-center gap-4">
+                <img
+                  src={
+                    selectedRecarga.previewImage ||
+                    `${import.meta.env.VITE_API}/Backend/Recargas/${
+                      selectedRecarga.imagem
+                    }`
+                  }
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    objectFit: "cover",
+                    borderRadius: "50%",
+                  }}
+                />
+
+                <input
+                  type="file"
+                  name="imagem"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+            </FormGroup>
+
+            <FormGroup label="Titulo da Recarga" id="titulo">
+              <Input
+                type="text"
+                id="titulo"
+                name="titulo"
+                defaultValue={selectedRecarga.titulo || ""}
+              />
+            </FormGroup>
+
+            <FormGroup label="dias" id="dias">
+              <Input
+                type="number"
+                name="dias"
+                id="dias"
+                min="1"
+                defaultValue={selectedRecarga.dias || ""}
+              />
+            </FormGroup>
+
+            <FormGroup label="Valor" id="valor">
+              <Input
+                type="number"
+                id="valor"
+                name="valor"
+                min="1"
+                defaultValue={selectedRecarga.valor || ""}
+              />
+            </FormGroup>
+
+          
+            <div className="mt-2 justify-center">
+              <div className="flex justify-between items-center gap-4 pt-4  pb-4 border-b border-gray-300">
+                <label className="block text-gray-700 text-sm font-bold mb-2 ">
+                  Codigos ({codigosFiltrados.length})
+                </label>
+
+                <BtnInserir selectedCodigos={selectedCodigos}></BtnInserir>
+              </div>
+            </div>
+
+            <div className="mt-2">
+              <div className="flex flex-col gap-2 overflow-y-scroll max-h-40 p-2">
+                {codigosFiltrados.map((codigo) => (
+                  <label
+                    key={codigo.id}
+                    className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg shadow-sm cursor-pointer transition-all hover:bg-gray-100 focus-within:ring-2 focus-within:ring-blue-500"
+                  >
+                    <input
+                      type="checkbox"
+                      name="aplicavel"
+                      value={codigo.id}
+                      checked={selectedCodigos.includes(codigo.id)}
+                      onChange={() =>
+                        handleCodigoChange(codigo, setSelectedCodigos)
+                      }
+                      className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                    />
+                    <span className="text-sm font-medium text-gray-700">
+                      {codigo.codigo}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <Button type="submit">Atualizar Recarga</Button>
+            </div>
+          </form>
+        </div>
+      </div>
+      )} */}
     </>
   );
 }

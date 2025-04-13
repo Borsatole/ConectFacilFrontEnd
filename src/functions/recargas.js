@@ -18,11 +18,11 @@ export async function handleUpdateRecarga(
   e,
   selectedRecarga,
   setRecargas,
+  setLoading,
   recargas,
   handleCloseModal
 ) {
   e.preventDefault();
-  //   setLoading(true);
 
   const dados = {
     idRecarga: selectedRecarga.id,
@@ -38,7 +38,11 @@ export async function handleUpdateRecarga(
     );
 
     if (response?.data?.success) {
-      const updatedRecargas = recargas.map((recarga) =>
+      const arrRecargas = Array.isArray(recargas)
+        ? recargas
+        : Object.values(recargas || {});
+
+      const updatedRecargas = arrRecargas.map((recarga) =>
         recarga.id === selectedRecarga.id
           ? {
               ...recarga,
@@ -50,7 +54,6 @@ export async function handleUpdateRecarga(
       );
 
       setRecargas(updatedRecargas);
-
       handleCloseModal();
 
       Alerta(
@@ -62,5 +65,27 @@ export async function handleUpdateRecarga(
   } catch (error) {
     console.error("Erro ao atualizar recarga:", error);
     Alerta("toast", "error", "Erro ao atualizar recarga");
+  }
+}
+
+export async function handleDeleteRecarga(recarga, setRecargas, recargas) {
+  try {
+    const response = await requisicaoPost(
+      "/Backend/Admin/recargas/recargas-deletar.php",
+      {
+        idRecarga: recarga.id,
+      }
+    );
+
+    if (response?.data?.success) {
+      const updatedRecargas = recargas.filter((c) => c.id !== recarga.id);
+      setRecargas(updatedRecargas);
+      Alerta("toast", "success", "Recarga deletada com sucesso");
+    } else {
+      Alerta("toast", "error", "Erro ao deletar recarga");
+    }
+  } catch (error) {
+    console.error("Erro ao deletar recarga:", error);
+    Alerta("toast", "error", "Erro ao deletar recarga");
   }
 }

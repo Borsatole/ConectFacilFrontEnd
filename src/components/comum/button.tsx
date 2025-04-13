@@ -2,19 +2,29 @@ import PropTypes from "prop-types";
 import Loading from "../Loading";
 import Alerta from "./alertas";
 
+import * as React from "react";
+
+
+interface ButtonProps extends React.InputHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+  type?: "button" | "submit" | "reset";
+  onClick?: () => void;
+  loading?: boolean;
+  wsize?: string;
+}
 export function Button({
   children,
-  type = "button",
-  onClick = () => {},
-  loading = false,
-  wsize = "w-full",
-}) {
+  type,
+  onClick,
+  loading,
+  wsize,
+} : ButtonProps) {
   return (
     <button
-      type={type}
-      disabled={loading}
-      onClick={onClick}
-      className={`${wsize} px-4 py-2 mt-2 text-sm font-medium text-white bg-green-600 rounded-md cursor-pointer`}
+      type={type || "button"}
+      disabled={loading || false}
+      onClick={onClick || (() => {})}
+      className={`${wsize || "w-full"} px-4 py-2 mt-2 text-sm font-medium text-white bg-green-600 rounded-md cursor-pointer`}
       style={{
         backgroundColor: "var(--corPrincipal)",
         color: "var(--corTexto1)",
@@ -37,15 +47,12 @@ export function Button({
   );
 }
 
-Button.propTypes = {
-  loading: PropTypes.bool,
-  children: PropTypes.node.isRequired,
-  type: PropTypes.string,
-  onClick: PropTypes.func,
-  wsize: PropTypes.string,
-};
+interface ButtonCopyProps {
+  codigo: string | number;
+  copiarCodigo: () => void;
+}
 
-export function ButtonCopy({ codigo }) {
+export function ButtonCopy({ codigo } : ButtonCopyProps) {
   return (
     <button
       onClick={() => copiarCodigo(codigo)}
@@ -64,14 +71,15 @@ export function ButtonCopy({ codigo }) {
     Alerta("toast", "success", `Código copiado: ${codigo}`);
   }
 }
-ButtonCopy.propTypes = {
-  codigo: PropTypes.string,
-};
 
-export function ButtonCloseModal({ onClick }) {
+interface ButtonCloseModalProps {
+  onClick: () => void;
+}
+
+export function ButtonCloseModal({ onClick } : ButtonCloseModalProps) {
   return (
     <button
-      onClick={onClick}
+      onClick={onClick || (() => {})}
       className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 cursor-pointer"
     >
       <svg
@@ -92,6 +100,3 @@ export function ButtonCloseModal({ onClick }) {
   );
 }
 
-ButtonCloseModal.propTypes = {
-  onClick: PropTypes.func,
-};
