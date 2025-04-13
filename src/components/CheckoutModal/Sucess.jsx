@@ -3,21 +3,19 @@ import { H3 } from "../tailwindComponents/Textos";
 import Alerta from "../comum/alertas";
 import { Paragrafo } from "../tailwindComponents/Textos";
 
-
-function Sucess({ dadosCodigo = { servidor: "", codigoderecarga: "", idPedido: "" } }) {
+function Sucess({
+  dadosCodigo = { servidor: "", codigoderecarga: "", idPedido: "" },
+}) {
   const codigo = dadosCodigo?.codigoderecarga;
 
   const handleCopy = () => {
     if (codigo) {
       navigator.clipboard.writeText(codigo);
-      Alerta("toast", "success", "Código copiado para a área de transferência")
-      
+      Alerta("toast", "success", "Código copiado para a área de transferência");
     } else {
-      Alerta("toast", "error", "Contate nosso suporte")
+      Alerta("toast", "error", "Contate nosso suporte");
     }
   };
-
-  
 
   return (
     <div className="py-8 text-center">
@@ -25,14 +23,12 @@ function Sucess({ dadosCodigo = { servidor: "", codigoderecarga: "", idPedido: "
       <H3>Compra Finalizada com Sucesso!</H3>
       <Paragrafo>Seus dados de acesso:</Paragrafo>
 
-      
       <div className="flex items-center justify-center mx-auto max-w-xs mb-4">
         <div className="bg-green-100 border border-green-200 rounded-l-md py-2 px-4">
           <span className="font-mono font-medium text-green-800">
             {codigo || "Erro: Contate o suporte"}
           </span>
         </div>
-        
       </div>
 
       {codigo && (

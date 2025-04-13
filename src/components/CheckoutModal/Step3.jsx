@@ -8,7 +8,12 @@ import Alerta from "../comum/alertas";
 import { CopiarTexto } from "../../functions/data";
 import { H3, H4 } from "../tailwindComponents/Textos";
 
-function Step3({ mercadoPagoDados, setDadosCodigo, handleClose, handleContinue }) {
+function Step3({
+  mercadoPagoDados,
+  setDadosCodigo,
+  handleClose,
+  handleContinue,
+}) {
   const { logout } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
 
@@ -29,9 +34,12 @@ function Step3({ mercadoPagoDados, setDadosCodigo, handleClose, handleContinue }
     setLoading(true);
 
     const verificarPagamento = async () => {
-      const response = await requisicaoPost("/Backend/Checkout/consulta-pedido.php", {
-        idPedido: paymentId,
-      });
+      const response = await requisicaoPost(
+        "/Backend/Checkout/consulta-pedido.php",
+        {
+          idPedido: paymentId,
+        }
+      );
 
       const pedido = response?.data?.pedido;
       if (response?.data?.success && pedido) {
@@ -155,10 +163,10 @@ QRCodeImage.propTypes = {
   base64: PropTypes.string,
 };
 PixCodeTextArea.propTypes = {
-  value: PropTypes.string, 
-}
+  value: PropTypes.string,
+};
 CopyButton.propTypes = {
-  onClick: PropTypes.func, 
-}
+  onClick: PropTypes.func,
+};
 
 export default Step3;

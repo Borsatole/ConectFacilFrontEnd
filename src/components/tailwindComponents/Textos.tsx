@@ -1,6 +1,10 @@
-import PropTypes from "prop-types";
+import * as React from "react";
 
-export function TituloPagina({ children }) {
+interface TextosProps {
+  children: React.ReactNode;
+}
+
+export function TituloPagina({ children } : TextosProps) {
   return (
     <div className="flex justify-between items-center mb-6">
       <h1 className="text-2xl font-bold">{children}</h1>
@@ -8,18 +12,14 @@ export function TituloPagina({ children }) {
   );
 }
 
-TituloPagina.propTypes = {
-  children: PropTypes.node,
-};
 
-export function Paragrafo({ children }) {
+
+export function Paragrafo({ children } : TextosProps) {
   return <p className="text-gray-600 mb-4">{children}</p>;
 }
-Paragrafo.propTypes = {
-  children: PropTypes.node,
-};
 
-export function H2({ children }) {
+
+export function H2({ children } : TextosProps) {
   return (
     <h2 className="text-2xl font-bold text-gray-900 text-left mb-8">
       {children}
@@ -27,11 +27,9 @@ export function H2({ children }) {
   );
 }
 
-H2.propTypes = {
-  children: PropTypes.node,
-};
 
-export function H3({ children }) {
+
+export function H3({ children } : TextosProps) {
   return (
     <h3 className="text-xl font-bold leading-6 text-gray-900 mb-4">
       {children}
@@ -39,13 +37,9 @@ export function H3({ children }) {
   );
 }
 
-H3.propTypes = {
-  children: PropTypes.node,
-};
 
-export function H4({ children }) {
+
+export function H4({ children } : TextosProps) {
   return <h4 className="text-lg font-semibold mb-2">{children}</h4>;
 }
-H4.propTypes = {
-  children: PropTypes.node,
-};
+
