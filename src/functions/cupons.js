@@ -1,5 +1,5 @@
 import Alerta from "../components/comum/alertas";
-import { requisicaoPost } from "../services/Requisicoes";
+import { requisicaoPost } from "../services/requisicoes";
 
 export async function handleAddNewCoupon(
   e,

@@ -32,17 +32,14 @@ export function AuthProvider({ children }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   async function verificaToken(token) {
     try {
-      const response = await requisicaoPost( 
+      const response = await requisicaoPost(
         `/Backend/Auth/Token/valida-jwt.php`,
-        { token },
-      )
-      
-
+        { token }
+      );
 
       if (!response.data.success) {
         Alerta("swal", "error", `${response.data.error}`);
         logout();
-        
       }
     } catch (e) {
       Alerta("swal", "error", `${e}`);

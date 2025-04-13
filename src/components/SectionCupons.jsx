@@ -13,7 +13,7 @@ import { format, parseISO } from "date-fns";
 
 import Swal from "sweetalert2";
 import Loading from "./Loading";
-import { requisicaoPost } from "src/services/requisicoes.jsx";
+import { requisicaoPost } from "../services/requisicoes";
 import { Button, ButtonCloseModal } from "./comum/button";
 import { H3 } from "./tailwindComponents/Textos";
 import { FormGroup } from "./comum/FormGroup";

@@ -1,7 +1,18 @@
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 
+import * as React from "react";
+
+// interface InputProps {
+//   alerta?: string | "toast" | "swal";
+//   tipo?: string;
+//   mensagem?: string;
+// }
+
+type Alerta = (alerta?: string, tipo?: string, mensagem?: string) => void;
+
 function Alerta(alerta = "toast", tipo = "success", mensagem = "") {
+  
   if (alerta === "toast" && tipo === "success") {
     toast.success(mensagem, {
       position: "top-right",

@@ -21,7 +21,7 @@ import {
   handleUpdateRecarga,
   handleDeleteRecarga,
 } from "../functions/recargas";
-import { requisicaoPost } from "src/services/requisicoes.jsx";
+import { requisicaoPost } from "../services/requisicoes";
 import ModalEditarRecargas from "./AdminRecargas/modalEditarRecargas";
 
 function SectionRecargas() {
