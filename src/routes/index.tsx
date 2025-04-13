@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
 
 import Loading from "../components/Loading";
-
+import * as React from "react";
 
 const TelaLogin = lazy(() => import("./telaLogin"));
 const Dashboard = lazy(() => import("./Dashboard"));

@@ -1,5 +1,6 @@
 import ConteudoMeusPedidos from "../layout/ConteudoMeusPedidos";
 import MenuLateral from "../layout/MenuLateral";
+import * as React from "react";
 
 export default function MeusPedidos() {
   return (

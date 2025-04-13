@@ -1,5 +1,6 @@
-import ConteudoAdmin from "../layout/ConteudoAdmin";
+import ConteudoPerfil from "../layout/ConteudoPerfil";
 import MenuLateral from "../layout/MenuLateral";
+import * as React from "react";
 
 export default function Perfil() {
   return (
@@ -7,7 +8,7 @@ export default function Perfil() {
       <MenuLateral />
 
       <div style={{ width: "100%" }} className="bg-gray-100">
-        <ConteudoAdmin />
+        <ConteudoPerfil />
       </div>
     </div>
   );
