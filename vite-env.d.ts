@@ -13,3 +13,7 @@ interface ImportMetaEnv {
     readonly VITE_API: string;
   }
   
+
+  interface ImportMetaEnv {
+    readonly env: Record<string, string>;
+  }

@@ -5,23 +5,50 @@ import { Input } from "../comum/input";
 import { H3 } from "../tailwindComponents/Textos";
 import { BtnInserir } from "./btnInserir";
 
-type Recarga = {
-  id: number,
-  icone: string,
-  nome: string,
-  codigos: string[],
-  handleCloseModal: () => void,
-  selectedRecarga: any,
-  setRecargas: any,
-  setLoading: any,
-  recargas: any,
-  handleImageChange: any,
-  handleUpdateRecarga: any,
-  codigosFiltrados: any,
-  selectedCodigos: any,
-  handleCodigoChange: any,
-  setSelectedCodigos: any
-};
+// Define o tipo da recarga separadamente
+interface Recarga {
+  id: number;
+  imagem: string;
+  titulo: string;
+  dias: number;
+  valor?: number;
+  previewImage?: string;
+}
+
+// Define o tipo de Código
+interface Codigo {
+  id: number;
+  idRecarga: number;
+  servidor: string;
+  codigo: string;
+  usado: number;
+  dias: number;
+}
+
+// Define a interface para as props do componente
+interface ModalEditarRecargasProps {
+  handleCloseModal: () => void;
+  selectedRecarga: Recarga;
+  setRecargas: React.Dispatch<React.SetStateAction<Recarga[]>>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  recargas: Recarga[];
+  handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleUpdateRecarga: (
+    e: React.FormEvent,
+    selectedRecarga: Recarga,
+    setRecargas: React.Dispatch<React.SetStateAction<Recarga[]>>,
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+    recargas: Recarga[],
+    handleCloseModal: () => void
+  ) => void;
+  codigosFiltrados: Codigo[];
+  selectedCodigos: number[];
+  handleCodigoChange: (
+    codigo: Codigo,
+    setSelectedCodigos: React.Dispatch<React.SetStateAction<number[]>>
+  ) => void;
+  setSelectedCodigos: React.Dispatch<React.SetStateAction<number[]>>;
+}
 
 function ModalEditarRecargas({
   handleCloseModal,
@@ -35,7 +62,7 @@ function ModalEditarRecargas({
   selectedCodigos,
   handleCodigoChange,
   setSelectedCodigos,
-}: Recarga) {
+}: ModalEditarRecargasProps) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"

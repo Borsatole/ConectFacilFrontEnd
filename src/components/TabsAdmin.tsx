@@ -1,9 +1,17 @@
 import { useState } from "react";
 import SectionCupons from "./SectionCupons";
 import SectionRecargas from "./SectionRecargas";
+import * as React from "react";
 
-function TabsAdmin() {
-  const [autorization, setAuthorization] = useState(true);
+
+interface TabsAdminProps {
+  title: string;
+  content: React.ReactNode;
+}
+
+
+function TabsAdmin( props: TabsAdminProps) {
+  const [autorization] = useState(true);
 
   document.title = "Administrador do Sistema";
   const [activeTab, setActiveTab] = useState("Vendas");
@@ -43,7 +51,7 @@ function TabsAdmin() {
               {
                 id: "Vendas",
                 title: "Vendas da loja",
-                content: <SectionVendasLoja  />,
+                content: <SectionVendasLoja />,
               },
               {
                 id: "Recarga",
