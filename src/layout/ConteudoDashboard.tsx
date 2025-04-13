@@ -1,15 +1,19 @@
 import { requisicaoPost } from "../services/requisicoes";
 import Container from "../components/tailwindComponents/Container";
 import { CardEstatisticas, CardRecargas } from "../components/Dashboard/Cards";
+import * as React from "react";
 
 import Loading from "../components/Loading";
-import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 
 import { TituloPagina, H2 } from "../components/tailwindComponents/Textos";
 import { BtnAbrirMenuLateral } from "../components/MenuLateral/botoesMenu";
 
-function ConteudoDashboard() {
+
+interface ConteudoDashboardProps {
+  setMenuAberto ?: () => void
+}
+function ConteudoDashboard( { setMenuAberto }: ConteudoDashboardProps ) {
   const [dadosDashboard, setDadosDashboard] = useState({
     TotalPedidos: 0,
     TotalPedidosCancelados: 0,
@@ -80,13 +84,11 @@ function ConteudoDashboard() {
   );
 }
 
-ConteudoDashboard.propTypes = {
-  setMenuAberto: PropTypes.func,
-};
+
 
 export default ConteudoDashboard;
 
-function CatalogoRecargas(props) {
+function CatalogoRecargas(props : CatalogoRecargasProps) {
   const { items, loading } = props;
 
   const RotaApi = import.meta.env.VITE_API;
@@ -117,7 +119,8 @@ function CatalogoRecargas(props) {
     </div>
   );
 }
-CatalogoRecargas.propTypes = {
-  items: PropTypes.array,
-  loading: PropTypes.bool,
-};
+
+interface CatalogoRecargasProps {
+  items: any[];
+  loading: boolean;
+}

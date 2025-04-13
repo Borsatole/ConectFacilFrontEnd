@@ -5,8 +5,8 @@ import * as React from "react";
 
 
 interface TabsAdminProps {
-  title: string;
-  content: React.ReactNode;
+  title?: string;
+  content?: React.ReactNode;
 }
 
 

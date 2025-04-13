@@ -1,17 +1,20 @@
-import CardsPedidos from "../components/CardsPedidos";
-import { TituloPagina } from "../components/tailwindComponents/Textos";
+import TabsAdmin from "../components/TabsAdmin";
 import Container from "../components/tailwindComponents/Container";
-
+import { TituloPagina } from "../components/tailwindComponents/Textos";
 import { BtnAbrirMenuLateral } from "../components/MenuLateral/botoesMenu";
+import * as React from "react";
 
 
+interface ConteudoMeusPedidosProps {
+  
+}
 function ConteudoMeusPedidos() {
   return (
     <Container>
       <BtnAbrirMenuLateral />
-      <TituloPagina>Meus Pedidos</TituloPagina>
+      <TituloPagina>Admin</TituloPagina>
 
-      <CardsPedidos />
+      <TabsAdmin />
     </Container>
   );
 }

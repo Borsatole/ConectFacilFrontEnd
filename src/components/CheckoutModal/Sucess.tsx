@@ -1,11 +1,21 @@
-import PropTypes from "prop-types";
 import { H3 } from "../tailwindComponents/Textos";
 import Alerta from "../comum/alertas";
 import { Paragrafo } from "../tailwindComponents/Textos";
+import * as React from "react";
+
+interface SucessProps {
+  dadosCodigo: {
+    servidor: string;
+    codigoderecarga: string;
+    idPedido: string;
+    handleClose?: () => void;
+  };
+}
+
 
 function Sucess({
-  dadosCodigo = { servidor: "", codigoderecarga: "", idPedido: "" },
-}) {
+  dadosCodigo = { servidor: "", codigoderecarga: "", idPedido: "",  handleClose: () => {} },
+} : SucessProps) {
   const codigo = dadosCodigo?.codigoderecarga;
 
   const handleCopy = () => {
@@ -49,13 +59,7 @@ function Sucess({
   );
 }
 
-Sucess.propTypes = {
-  dadosCodigo: PropTypes.shape({
-    servidor: PropTypes.string,
-    codigoderecarga: PropTypes.string,
-    idPedido: PropTypes.string,
-  }),
-};
+
 
 // Ícone de sucesso isolado em componente funcional
 function CheckIcon() {

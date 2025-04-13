@@ -7,7 +7,7 @@ import * as React from "react";
 // Props do CardEstatisticas
 interface CardEstatisticasProps {
   icone: string;
-  valor: string;
+  valor: string | number;
   descricao: string;
   loading: boolean;
 }

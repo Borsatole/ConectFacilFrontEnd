@@ -4,13 +4,18 @@ import * as React from "react";
 
 interface LoadingProps {
   color?: string ;
+  escala?: number | string;
 }
 
-function Loading({ color = "#ffffff" } : LoadingProps) {
-
-
+export default function Loading({ color = "#ffffff", escala = "1" }: LoadingProps) {
   return (
-    <div className="dot-spinner" style={{ "--uib-color": color }as React.CSSProperties}>
+    <div
+      className="dot-spinner"
+      style={{
+        ["--uib-color" as any]: color,
+        transform: `scale(${escala})`,
+      }}
+    >
       <div className="dot-spinner__dot"></div>
       <div className="dot-spinner__dot"></div>
       <div className="dot-spinner__dot"></div>
@@ -22,5 +27,3 @@ function Loading({ color = "#ffffff" } : LoadingProps) {
     </div>
   );
 }
-
-export default Loading;

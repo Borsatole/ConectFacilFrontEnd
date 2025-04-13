@@ -4,32 +4,48 @@ import { Button } from "../comum/button";
 import Alerta from "../comum/alertas";
 import { H3 } from "../tailwindComponents/Textos";
 import { useState } from "react";
+import * as React from "react";
 
+interface Step1Props {
+  setSellerInfo: any;
+  productInfo: any;
+  handleContinue: (nxpage) => void;
+  handleClose: () => void;
+  handleChangeCupom: any;
+  cupom: any;
+}
 function Step1({
   setSellerInfo,
   productInfo,
   handleContinue,
   handleChangeCupom,
   cupom,
-}) {
+} : Step1Props) {
   const [loading, setLoading] = useState(false);
   async function EnviarDados() {
     setLoading(true);
-    const handleRequisicao = await requisicaoPost(
-      "/Backend/Checkout/cupons/cupons.php",
-      {
-        cupom: cupom,
-        idProduto: productInfo.id,
+    try {
+      const handleRequisicao = await requisicaoPost(
+        "/Backend/Checkout/cupons/cupons.php",
+        {
+          cupom: cupom,
+          idProduto: productInfo.id,
+        }
+      );
+  
+      if (handleRequisicao?.data?.success === true) {
+        setSellerInfo(handleRequisicao.data);
+        handleContinue(2);
+      } else {
+        Alerta("swal", "error", handleRequisicao?.data?.message || "Erro ao validar cupom.");
       }
-    );
-
-    if (handleRequisicao.data.success == true) {
-      setSellerInfo(handleRequisicao.data);
-      handleContinue(2);
-    } else {
-      Alerta("swal", "error", handleRequisicao.data.message);
+    } catch (error) {
+      Alerta("swal", "error", "Erro na requisição");
+    } finally {
+      setLoading(false);
     }
   }
+  
 
   return (
     <div>

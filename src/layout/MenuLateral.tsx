@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import { requisicaoPost } from "../services/requisicoes";
 import { AuthContext } from "../context/AuthContext";
 import { useMenu } from "../context/MenuContext";
+import * as React from "react";
 
 import Swal from "sweetalert2";
 import Loading from "../components/Loading";

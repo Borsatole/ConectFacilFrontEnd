@@ -4,13 +4,21 @@ import { Button } from "../comum/button";
 import { requisicaoPost } from "../../services/requisicoes";
 import Alerta from "../comum/alertas";
 import { H3 } from "../tailwindComponents/Textos";
+import * as React from "react";
+
+interface Step2Props {
+  sellerInfo: any;
+  handleContinue: (page) => void;
+  setMercadoPagoDados: any;
+  handleClose: () =>  void;
+};
 
 function Step2({
   sellerInfo,
   handleContinue,
   setMercadoPagoDados,
   handleClose,
-}) {
+} : Step2Props) {
   const [loading, setLoading] = useState(false);
   const dadosDoUsuario = sellerInfo?.dadosDoUsuario || {};
   const dadosDaCompra = sellerInfo?.dadosDaCompra || {};
@@ -22,6 +30,7 @@ function Step2({
 
   const FinalizarCompra = async () => {
     setLoading(true);
+  
     const response = await requisicaoPost(
       "/Backend/Checkout/cria-pagamento.php",
       {
@@ -29,7 +38,13 @@ function Step2({
         idProduto: dadosDaCompra.idProduto,
       }
     );
-
+  
+    if (!response || !response.data) {
+      handleClose();
+      Alerta("swal", "error", "Erro ao conectar com o servidor.");
+      return;
+    }
+  
     if (!response.data.success) {
       handleClose();
       Alerta("swal", "error", `${response.data.message}`);
@@ -39,6 +54,7 @@ function Step2({
       handleContinue(3);
     }
   };
+  
 
   return (
     <div>

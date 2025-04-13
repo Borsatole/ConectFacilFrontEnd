@@ -5,9 +5,9 @@ import FecharMenuIcon from "./Icones/FecharMenu";
 import * as React from "react";
 
 interface BtnAbrirMenuLateralProps {
-  abrirMenu: () => void;
-  fecharMenu: () => void;
-  menuAberto: boolean;
+  abrirMenu?: () => void;
+  fecharMenu?: () => void;
+  menuAberto?: boolean;
 
 }
 

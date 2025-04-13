@@ -2,6 +2,7 @@ import FormularioPerfil from "../components/FormularioPerfil";
 import ContainerPrincipal from "../components/tailwindComponents/Container";
 import { TituloPagina } from "../components/tailwindComponents/Textos";
 import { BtnAbrirMenuLateral } from "../components/MenuLateral/botoesMenu";
+import * as React from "react";
 
 function ConteudoMeusPedidos() {
   return (

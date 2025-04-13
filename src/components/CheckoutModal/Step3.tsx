@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useEffect, useState, useContext } from "react";
-
+import * as React from "react";
 import { requisicaoPost } from "../../services/requisicoes";
 import { AuthContext } from "../../context/AuthContext";
 import Loading from "../Loading";
@@ -8,12 +8,20 @@ import Alerta from "../comum/alertas";
 import { CopiarTexto } from "../../functions/data";
 import { H3, H4 } from "../tailwindComponents/Textos";
 
+interface Step3Props {
+  mercadoPagoDados: any;
+  setDadosCodigo: (data) => void;
+  handleContinue: (page) => void;
+  handleClose?: () => void;
+}
+
 function Step3({
   mercadoPagoDados,
   setDadosCodigo,
-  handleClose,
-  handleContinue,
-}) {
+  handleClose = () => {},
+  handleContinue
+  
+} : Step3Props) {
   const { logout } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
 
@@ -88,23 +96,18 @@ function Step3({
 
           {loading && (
             <div className="flex flex-col items-center gap-2">
-              <Loading color="var(--corPrincipal)" style={{ scale: "0.3" }} />
+              <Loading color="var(--corPrincipal)" escala="1"/>
               <p className="text-sm text-gray-600">Aguardando o pagamento...</p>
             </div>
           )}
+          
         </div>
       </div>
     </div>
   );
 }
 
-Step3.propTypes = {
-  mercadoPagoDados: PropTypes.object,
-  setDadosCodigo: PropTypes.func,
-  handleFinish: PropTypes.func,
-  handleContinue: PropTypes.func,
-  handleClose: PropTypes.func,
-};
+
 
 // COMPONENTE INTERNO: QRCodeImage
 function QRCodeImage({ base64 }) {
