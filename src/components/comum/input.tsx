@@ -21,7 +21,7 @@ export function Input({
   min = "",
   max = "",
   required = false,
-  ...rest // permite a propagação de outras props
+  ...rest 
 }: InputProps) {
   return (
     <input
@@ -34,7 +34,7 @@ export function Input({
       min={min}
       max={max}
       required={required}
-      {...rest} // espalha as props adicionais, como "name"
+      {...rest}
     />
   );
 }

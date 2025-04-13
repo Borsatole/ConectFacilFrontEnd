@@ -1,4 +1,4 @@
-// import PropTypes from "prop-types";
+
 import { ImgAvatar } from "./imagemAvatar";
 import * as React from "react";
 

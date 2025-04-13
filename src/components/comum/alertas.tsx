@@ -3,11 +3,6 @@ import Swal from "sweetalert2";
 
 import * as React from "react";
 
-// interface InputProps {
-//   alerta?: string | "toast" | "swal";
-//   tipo?: string;
-//   mensagem?: string;
-// }
 
 type Alerta = (alerta?: string, tipo?: string, mensagem?: string) => void;
 

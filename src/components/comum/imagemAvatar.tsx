@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+
 import * as React from "react";
 
 interface ImgAvatarProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -20,6 +20,3 @@ export function ImgAvatar({ src }: ImgAvatarProps) {
   );
 }
 
-ImgAvatar.propTypes = {
-  src: PropTypes.string.isRequired,
-};

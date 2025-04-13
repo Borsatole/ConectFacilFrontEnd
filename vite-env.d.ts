@@ -8,4 +8,8 @@ interface ImportMetaEnv {
   interface ImportMeta {
     readonly env: ImportMetaEnv;
   }
+
+  interface env {
+    readonly VITE_API: string;
+  }
   
