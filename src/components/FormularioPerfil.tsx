@@ -1,6 +1,7 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { requisicaoPost } from "../services/requisicoes";
+import * as React from "react";
 
 import Alerta from "./comum/alertas";
 import Loading from "./Loading";
@@ -11,14 +12,30 @@ import { FormGroup } from "./comum/FormGroup";
 import { AvatarGrid } from "./comum/gridAvatar";
 import { Button } from "./comum/button";
 
-function FormularioPerfil() {
-  const [dados, setDados] = useState(null);
-  const [erro, setErro] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [loadingbtn, setLoadingbtn] = useState(false);
-  const [avatarSelecionado, setAvatarSelecionado] = useState("");
+interface DadosUsuario {
+  nome: string;
+  email: string;
+  telefone: string;
+  avatar?: string;
+}
 
-  const avatares = [
+interface FormData {
+  token: string | null;
+  nome: string;
+  email: string;
+  telefone: string;
+  avatar: string;
+  senha?: string;
+}
+
+function FormularioPerfil() {
+  const [dados, setDados] = useState<DadosUsuario | null>(null);
+  const [erro, setErro] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [loadingbtn, setLoadingbtn] = useState<boolean>(false);
+  const [avatarSelecionado, setAvatarSelecionado] = useState<string>("");
+
+  const avatares: string[] = [
     "avatar1.png",
     "avatar2.png",
     "avatar3.png",
@@ -52,22 +69,22 @@ function FormularioPerfil() {
     carregarDados();
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     setLoadingbtn(true);
     e.preventDefault();
     const token = localStorage.getItem("token");
     const RotaApi = import.meta.env.VITE_API;
 
-    const formData = {
+    const formData: FormData = {
       token,
-      nome: e.target.fullName.value,
-      email: e.target.email.value,
-      telefone: e.target.phone.value,
+      nome: e.currentTarget.fullName.value,
+      email: e.currentTarget.email.value,
+      telefone: e.currentTarget.phone.value,
       avatar: avatarSelecionado,
     };
 
-    if (e.target.password.value) {
-      formData.senha = e.target.password.value;
+    if (e.currentTarget.password.value) {
+      formData.senha = e.currentTarget.password.value;
     }
 
     try {
@@ -89,6 +106,8 @@ function FormularioPerfil() {
         "error",
         "Falha ao atualizar o perfil. Por favor, tente novamente."
       );
+    } finally {
+      setLoadingbtn(false);
     }
   };
 
@@ -168,4 +187,4 @@ function FormularioPerfil() {
   );
 }
 
-export default FormularioPerfil;
+export default FormularioPerfil; 

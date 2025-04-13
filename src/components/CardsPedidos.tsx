@@ -1,11 +1,47 @@
 import { requisicaoPost } from "../services/requisicoes";
 import { useEffect, useState } from "react";
 import { converterData } from "../functions/data";
-import PropTypes from "prop-types";
 import Loading from "./Loading";
 import { ButtonCopy } from "./comum/button";
+import * as React from "react";
 
-function PedidoCard({ id, server, codigo, data, valor, situacao, bgColor }) {
+interface PedidoCardProps {
+  id: string;
+  server?: string;
+  codigo?: string;
+  data: string;
+  valor?: string;
+  situacao: string;
+  bgColor?: string;
+  dias?: string;
+}
+
+interface ParagrafoProps {
+  Titulo?: string;
+  dado?: string;
+}
+
+interface StatusProps {
+  status: string;
+  situacao: string;
+}
+
+interface Pedido {
+  idpedido: string;
+  titulo: string;
+  dias: string;
+  codigoderecarga: string;
+  created: string;
+  valor: string;
+  status: string;
+}
+
+interface DadosPedidos {
+  pedidos: Pedido[];
+}
+
+function PedidoCard({ id, server, codigo, data, valor, situacao, bgColor }: PedidoCardProps) {
+
   return (
     <div
       className={`flex justify-between items-center p-4 rounded-lg shadow-sm ${bgColor}`}
@@ -35,29 +71,15 @@ function PedidoCard({ id, server, codigo, data, valor, situacao, bgColor }) {
   );
 }
 
-PedidoCard.propTypes = {
-  id: PropTypes.string.isRequired,
-  server: PropTypes.string,
-  codigo: PropTypes.string,
-  data: PropTypes.string.isRequired,
-  valor: PropTypes.string,
-  situacao: PropTypes.string.isRequired,
-  bgColor: PropTypes.string,
-};
-
-function Paragrafo({ Titulo, dado }) {
+function Paragrafo({ Titulo, dado }: ParagrafoProps) {
   return (
     <p className="text-gray-600" style={{ fontWeight: "200" }}>
       {Titulo}: {dado}
     </p>
   );
 }
-Paragrafo.propTypes = {
-  Titulo: PropTypes.string,
-  dado: PropTypes.string,
-};
 
-function Status({ status, situacao }) {
+function Status({ status, situacao }: StatusProps) {
   return (
     <span
       className={`text-xs font-semibold uppercase mr-2 px-2.5 py-0.5 rounded ${
@@ -70,18 +92,14 @@ function Status({ status, situacao }) {
     </span>
   );
 }
-Status.propTypes = {
-  status: PropTypes.string.isRequired,
-  situacao: PropTypes.string.isRequired,
-};
 
 function CardsPedidos() {
-  const [dadosPedidos, setDadosPedidos] = useState({ pedidos: [] });
-  const [loading, setLoading] = useState(true);
+  const [dadosPedidos, setDadosPedidos] = useState<DadosPedidos>({ pedidos: [] });
+  const [loading, setLoading] = useState<boolean>(true);
 
   const pedidos = dadosPedidos.pedidos || [];
   const pedidosmaisrecentes = pedidos.sort(
-    (a, b) => new Date(b.created) - new Date(a.created)
+    (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()
   );
 
   useEffect(() => {
@@ -129,4 +147,4 @@ function CardsPedidos() {
   );
 }
 
-export default CardsPedidos;
+export default CardsPedidos; 

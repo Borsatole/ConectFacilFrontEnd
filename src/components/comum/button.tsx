@@ -48,8 +48,8 @@ export function Button({
 }
 
 interface ButtonCopyProps {
-  codigo: string | number;
-  copiarCodigo: () => void;
+  codigo: string | number | undefined;
+  copiarCodigo?: () => void;
 }
 
 export function ButtonCopy({ codigo } : ButtonCopyProps) {
