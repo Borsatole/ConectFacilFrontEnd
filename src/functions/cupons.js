@@ -65,6 +65,7 @@ export async function handleAddNewCoupon(
 export async function handleUpdateCoupon(
   e,
   selectedCoupon,
+  cupons,
   setCupons,
   handleCloseModal
 ) {
@@ -76,14 +77,16 @@ export async function handleUpdateCoupon(
     form.querySelectorAll('input[name="aplicavel"]:checked')
   ).map((checkbox) => checkbox.value);
 
+  const uso = cupons.filter((cupom) => cupom.id == selectedCoupon.id)[0].usos;
+
   const dados = {
-    token: localStorage.getItem("token"),
     couponId: selectedCoupon.id,
     codigo: form.codigo.value,
     desconto: form.desconto.value,
     tipo: form.tipo.value,
     validade: form.validade.value,
     maxuse: form.maxuse.value,
+    usos: uso,
     valido: form.valido.checked ? 1 : 0,
     produtos: selectedServers,
   };
@@ -97,12 +100,22 @@ export async function handleUpdateCoupon(
     if (response?.data?.success) {
       Alerta("swal", "success", "Cupom atualizado com sucesso!");
 
-      // Atualiza o cupom alterado na lista
-      setCupons((prevCupons) =>
-        prevCupons.map((cupom) =>
-          cupom.id === selectedCoupon.id ? response.data.novocupon : cupom
-        )
-      );
+      const novoCupom = {
+        id: selectedCoupon.id,
+        codigo: form.codigo.value,
+        desconto: form.desconto.value,
+        tipo: form.tipo.value,
+        validade: form.validade.value,
+        maxuse: form.maxuse.value,
+        usos: uso,
+        valido: form.valido.checked ? 1 : 0,
+        produtos: JSON.stringify(selectedServers),
+      };
+
+      cupons = cupons.filter((cupom) => cupom.id !== selectedCoupon.id);
+
+      const updatedCupons = [novoCupom, ...cupons];
+      setCupons(updatedCupons);
 
       handleCloseModal();
     } else {
@@ -111,6 +124,7 @@ export async function handleUpdateCoupon(
       throw new Error(message);
     }
   } catch (error) {
+    console.log(error);
     Alerta("swal", "error", `Erro ao atualizar cupom: ${error.message}`);
   }
 }

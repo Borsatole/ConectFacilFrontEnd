@@ -180,6 +180,7 @@ function SectionCupons() {
         <ModalEditarCupons
           handleCloseModal={handleCloseModal}
           selectedCoupon={selectedCoupon}
+          cupons={cupons}
           setCupons={setCupons}
           handleUpdateCoupon={handleUpdateCoupon}
           servers={server}

@@ -11,6 +11,7 @@ import { format, parseISO } from "date-fns";
 export function ModalEditarCupons({
     handleCloseModal,
     selectedCoupon,
+    cupons,
     setCupons,
     handleUpdateCoupon,
     servers
@@ -29,6 +30,7 @@ export function ModalEditarCupons({
                     handleUpdateCoupon(
                       e,
                       selectedCoupon,
+                      cupons,
                       setCupons,
                       handleCloseModal
                     )
