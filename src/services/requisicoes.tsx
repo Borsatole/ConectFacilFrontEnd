@@ -4,7 +4,7 @@ import * as React from "react";
 const rotaApi = import.meta.env.VITE_API;
 
 // Lembrar de corrigir o metodo get
-export async function requisicaoGet(rota: string, dados?: any) {
+export async function requisicaoGet(rota) {
   const token = localStorage.getItem("token");
 
   try {
@@ -33,9 +33,7 @@ export async function requisicaoGet(rota: string, dados?: any) {
 }
 
 
-
-
-export async function requisicaoPost(rota: string, dados: any) {
+export async function requisicaoPost(rota, dados) {
   
   const token = localStorage.getItem("token");
 
@@ -68,29 +66,28 @@ export async function requisicaoPost(rota: string, dados: any) {
 }
 
 export async function requisicaoPut(rota, dados) {
-  
   const token = localStorage.getItem("token");
 
   try {
     const response = await axios.put(
       `${rotaApi}${rota}`,
-      { token, ...dados },
+      { token, ...dados }, // <- Corpo da requisição com token e dados
       {
         headers: {
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"
+        }
       }
     );
 
-    
-    if (response.status === 200 && response.data.success == true) {
+    console.log(response);
+
+    if (response.status === 200 && response.data.success === true) {
       return response;
     } else {
-      if (response.data.error == "Token inválido") {
+      if (response.data.error === "Token inválido") {
         window.location.href = "/login";
       }
-      
-      
+
       return response;
     }
   } catch (error) {
@@ -99,18 +96,21 @@ export async function requisicaoPut(rota, dados) {
   }
 }
 
-export async function requisicaoDelete(rota: string, dados: any) {
-  const token = localStorage.getItem("token");
 
+export async function requisicaoDelete(rota, dados) {
+  const token = localStorage.getItem("token");
+  
   try {
-    const response = await axios.delete(`${rotaApi}${rota}`, {
+    const response = await axios.delete(`${rotaApi}${rota}`,
+      {
       headers: {
         "Content-Type": "application/json",
       },
-      data: { token, ...dados },
+      data: { token, ...dados }
     });
 
     if (response.status === 200 && response.data.success === true) {
+  
       return response;
     } else {
       if (response.data.error === "Token inválido") {

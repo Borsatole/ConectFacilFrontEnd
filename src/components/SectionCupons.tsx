@@ -52,7 +52,10 @@ function SectionCupons() {
   const [server, setServer] = useState<Server[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
 
-  const handleConfirmDelete = (cupom: Cupom) => {
+
+  
+
+  const handleConfirmDelete = ({cupom, setCupons, cupons}) => {
     Swal.fire({
       title: "Tem certeza de que deseja excluir esse cupom?",
       icon: "warning",
@@ -63,7 +66,7 @@ function SectionCupons() {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        handleDeleteCoupon(cupom);
+        handleDeleteCoupon({cupom, setCupons, cupons});
       }
     });
   };
@@ -165,7 +168,7 @@ function SectionCupons() {
                     <CelulaTabela>
                       <div className="flex items-center gap-2">
                         <ButtonEdit onClick={() => handleEditCoupon(cupom)} />
-                        <ButtonDelete onClick={() => handleConfirmDelete(cupom)} />
+                        <ButtonDelete onClick={() => handleConfirmDelete({cupom, setCupons, cupons})} />
                       </div>
                     </CelulaTabela>
                   </LinhaTabela>

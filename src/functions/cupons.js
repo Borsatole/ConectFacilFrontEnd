@@ -3,6 +3,7 @@ import {
   requisicaoGet,
   requisicaoPost,
   requisicaoDelete,
+  requisicaoPut,
 } from "../services/requisicoes";
 
 export async function carregarCupons(setCupons) {
@@ -92,7 +93,7 @@ export async function handleUpdateCoupon(
   };
 
   try {
-    const response = await requisicaoPost(
+    const response = await requisicaoPut(
       "/Backend/Admin/cupons/cupons-editar.php",
       dados
     );
@@ -129,17 +130,26 @@ export async function handleUpdateCoupon(
   }
 }
 
-export async function handleDeleteCoupon(cupom) {
+export async function handleDeleteCoupon({ cupom, cupons, setCupons }) {
   const response = await requisicaoDelete(
     "/Backend/Admin/cupons/cupons-deletar.php",
     {
       codigo: cupom.codigo,
     }
   );
+
   if (response?.data?.success) {
+    const cupomDeletadoId = response.data.cupomDeletado.id;
+    const meusCupons = cupons.filter((coupom) => coupom.id !== cupomDeletadoId);
+    setCupons(meusCupons);
+
     Alerta("toast", "success", `${response?.data?.message}`);
   } else {
-    Alerta("toast", "error", `${response?.data?.message}`);
+    Alerta(
+      "toast",
+      "error",
+      `${response?.data?.message || "Erro ao deletar cupom"}`
+    );
   }
 }
 
