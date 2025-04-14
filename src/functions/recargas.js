@@ -1,5 +1,5 @@
 import Alerta from "../components/comum/alertas";
-import { requisicaoPost } from "../services/requisicoes";
+import { requisicaoDelete, requisicaoPost } from "../services/requisicoes";
 
 export function handleFiltrarCodigos(recargaId, codigos) {
   if (!recargaId) return [];
@@ -70,7 +70,7 @@ export async function handleUpdateRecarga(
 
 export async function handleDeleteRecarga(recarga, setRecargas, recargas) {
   try {
-    const response = await requisicaoPost(
+    const response = await requisicaoDelete(
       "/Backend/Admin/recargas/recargas-deletar.php",
       {
         idRecarga: recarga.id,

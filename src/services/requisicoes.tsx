@@ -3,38 +3,39 @@ import * as React from "react";
 
 const rotaApi = import.meta.env.VITE_API;
 
-export async function requisicaoGet(rota) {
+// Lembrar de corrigir o metodo get
+export async function requisicaoGet(rota: string, dados?: any) {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await axios.get(
-      `${rotaApi}${rota}`,
-      { token },
+    const response = await axios.post(`${rotaApi}${rota}`, 
+      { token},
       {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+    });
 
-    if (response.status === 200) {
-      
+    if (response.status === 200 && response.data.success === true) {
+      return response;
+    } else {
+      if (response.data.error === "Token inválido") {
+        window.location.href = "/login";
+      }
+
       return response;
     }
-
-    else {
-      console.error("Erro na requisição:", response.statusText);
-      return null;
-    }
-    
   } catch (error) {
-    
-    console.error("Erro na verificação do token:", error);
+    console.error("Erro:", error);
     return null;
   }
 }
 
-export async function requisicaoPost(rota, dados) {
+
+
+
+export async function requisicaoPost(rota: string, dados: any) {
   
   const token = localStorage.getItem("token");
 
@@ -98,30 +99,24 @@ export async function requisicaoPut(rota, dados) {
   }
 }
 
-export async function requisicaoDelete(rota, dados) {
-  
+export async function requisicaoDelete(rota: string, dados: any) {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await axios.delete(
-      `${rotaApi}${rota}`,
-      { token, ...dados },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.delete(`${rotaApi}${rota}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: { token, ...dados },
+    });
 
-    
-    if (response.status === 200 && response.data.success == true) {
+    if (response.status === 200 && response.data.success === true) {
       return response;
     } else {
-      if (response.data.error == "Token inválido") {
+      if (response.data.error === "Token inválido") {
         window.location.href = "/login";
       }
-      
-      
+
       return response;
     }
   } catch (error) {
@@ -129,4 +124,5 @@ export async function requisicaoDelete(rota, dados) {
     return null;
   }
 }
+
 

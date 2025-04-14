@@ -19,7 +19,7 @@ import {
   handleUpdateRecarga,
   handleDeleteRecarga,
 } from "../functions/recargas";
-import { requisicaoPost } from "../services/requisicoes";
+import { requisicaoGet, requisicaoPost } from "../services/requisicoes";
 import ModalEditarRecargas from "./AdminRecargas/modalEditarRecargas";
 
 interface Codigo {
@@ -121,8 +121,9 @@ function SectionRecargas() {
     const fetchServers = async () => {
       setLoading(true);
       try {
-        const response = await requisicaoPost("/Backend/Admin/servidores/buscar-recargas.php");
+        const response = await requisicaoGet("/Backend/Admin/servidores/buscar-recargas.php");
         if (response?.data?.recargas) {
+          setError(null);
           setRecargas(response.data.recargas);
         } else {
           throw new Error("Nenhuma recarga encontrada ou resposta inválida.");

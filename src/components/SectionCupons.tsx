@@ -17,7 +17,7 @@ import {
 import { format, parseISO } from "date-fns";
 import Swal from "sweetalert2";
 import Loading from "./Loading";
-import { requisicaoPost } from "../services/requisicoes";
+import { requisicaoGet, requisicaoPost } from "../services/requisicoes";
 import { Button, ButtonCloseModal } from "./comum/button";
 import { H3 } from "./tailwindComponents/Textos";
 import { FormGroup } from "./comum/FormGroup";
@@ -72,7 +72,7 @@ function SectionCupons() {
     const BaixarRecargas = async () => {
       setLoading(true);
       try {
-        const response = await requisicaoPost("/Backend/Admin/servidores/buscar-recargas.php");
+        const response = await requisicaoGet("/Backend/Admin/servidores/buscar-recargas.php");
         if (response?.data?.recargas) {
           setServer(response.data.recargas);
         } else {
@@ -90,7 +90,7 @@ function SectionCupons() {
 
   useEffect(() => {
     const carregarTodosCupons = async () => {
-      const response = await requisicaoPost("/Backend/Admin/cupons/cupons-listagem.php");
+      const response = await requisicaoGet("/Backend/Admin/cupons/cupons-listagem.php");
       if (response?.data?.todosCupons) {
         setCupons(response.data.todosCupons);
       }
