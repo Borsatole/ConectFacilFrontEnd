@@ -1,19 +1,10 @@
 /// <reference types="vite/client" />
 
-
 interface ImportMetaEnv {
-    readonly VITE_API: string;
-  }
-  
-  interface ImportMeta {
-    readonly env: ImportMetaEnv;
-  }
+  readonly VITE_API: string;
+  // Add other environment variables as needed
+}
 
-  interface env {
-    readonly VITE_API: string;
-  }
-  
-
-  interface ImportMetaEnv {
-    readonly env: Record<string, string>;
-  }
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}

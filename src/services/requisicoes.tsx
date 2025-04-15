@@ -3,19 +3,20 @@ import * as React from "react";
 
 const rotaApi = import.meta.env.VITE_API;
 
-// Lembrar de corrigir o metodo get
-export async function requisicaoGet(rota) {
+export async function requisicaoGet(rota: string) {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await axios.post(`${rotaApi}${rota}`, 
-      { token},
+    const response = await axios.post(
+      `${rotaApi}${rota}`,
+      { token },
       {
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
-    });
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (response.status === 200 && response.data.success === true) {
       return response;
@@ -32,9 +33,7 @@ export async function requisicaoGet(rota) {
   }
 }
 
-
-export async function requisicaoPost(rota, dados) {
-  
+export async function requisicaoPost(rota: string, dados: Record<string, any>) {
   const token = localStorage.getItem("token");
 
   try {
@@ -48,15 +47,13 @@ export async function requisicaoPost(rota, dados) {
       }
     );
 
-    
-    if (response.status === 200 && response.data.success == true) {
+    if (response.status === 200 && response.data.success === true) {
       return response;
     } else {
-      if (response.data.error == "Token inválido") {
+      if (response.data.error === "Token inválido") {
         window.location.href = "/login";
       }
-      
-      
+
       return response;
     }
   } catch (error) {
@@ -65,22 +62,20 @@ export async function requisicaoPost(rota, dados) {
   }
 }
 
-export async function requisicaoPut(rota, dados) {
+export async function requisicaoPut(rota: string, dados: Record<string, any>) {
   const token = localStorage.getItem("token");
 
   try {
     const response = await axios.put(
       `${rotaApi}${rota}`,
-      { token, ...dados }, // <- Corpo da requisição com token e dados
+      { token, ...dados },
       {
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       }
     );
 
-    console.log(response);
-
     if (response.status === 200 && response.data.success === true) {
       return response;
     } else {
@@ -96,21 +91,18 @@ export async function requisicaoPut(rota, dados) {
   }
 }
 
-
-export async function requisicaoDelete(rota, dados) {
+export async function requisicaoDelete(rota: string, dados: Record<string, any>) {
   const token = localStorage.getItem("token");
-  
+
   try {
-    const response = await axios.delete(`${rotaApi}${rota}`,
-      {
+    const response = await axios.delete(`${rotaApi}${rota}`, {
       headers: {
         "Content-Type": "application/json",
       },
-      data: { token, ...dados }
+      data: { token, ...dados },
     });
 
     if (response.status === 200 && response.data.success === true) {
-  
       return response;
     } else {
       if (response.data.error === "Token inválido") {
@@ -124,5 +116,3 @@ export async function requisicaoDelete(rota, dados) {
     return null;
   }
 }
-
-

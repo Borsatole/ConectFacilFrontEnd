@@ -1,8 +1,35 @@
-# React + Vite
+# 🛡️ SISTEMA DE RECARGAS ONLINE – PHP + TypeScript
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### 💬 Descrição
 
-Currently, two official plugins are available:
+Este projeto é um sistema de recargas seguro, desenvolvido com **PHP** no backend e **TypeScript** no frontend. Ele oferece proteção contra ataques de força bruta, bloqueando o acesso após várias tentativas de login falhas.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
+
+## ⚙️ Funcionalidades
+
+- ✅ **Bloqueio após múltiplas tentativas:** Sistema de proteção que bloqueia o IP após um número excessivo de tentativas de login inválidas. Após o bloqueio, o usuário deverá aguardar um tempo mínimo para tentar novamente.
+- ✅ **Autenticação com Token (JWT):** Implementação de JSON Web Token para segurança e persistência da sessão do usuário.
+- ✅ **Salvamento de token no navegador:** Após o login, o sistema armazena o token no `LocalStorage`. Ao acessar outras páginas, esse token é enviado ao backend para validar a sessão. Tokens inválidos ou expirados resultam em logout automático.
+- ✅ **Interface Responsiva:** Design adaptável para diferentes dispositivos – desktop, tablets e smartphones.
+
+---
+
+## 🤖 Tecnologias Utilizadas
+
+<p align="left">
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=git,html,css,react,php,mysql" />
+  </a>
+</p>
+
+---
+
+## 🚀 Como Instalar?
+
+### 📥 1. Clone o Repositório
+
+```bash
+git clone https://github.com/Borsatole/SistemaAutenticacao.git
+cd SistemaAutenticacao
+```

@@ -1,4 +1,4 @@
-import { requisicaoPost } from "../services/requisicoes";
+import { requisicaoGet, requisicaoPost } from "../services/requisicoes";
 import Container from "../components/tailwindComponents/Container";
 import { CardEstatisticas, CardRecargas } from "../components/Dashboard/Cards";
 import * as React from "react";
@@ -42,7 +42,7 @@ function ConteudoDashboard( { setMenuAberto }: ConteudoDashboardProps ) {
 
   useEffect(() => {
     const carregarDados = async () => {
-      const response = await requisicaoPost("/Backend/Usuario/Dashboard.php");
+      const response = await requisicaoGet("/Backend/Usuario/Dashboard.php");
 
       if (response) {
         setDadosDashboard({

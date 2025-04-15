@@ -17,31 +17,15 @@ import {
 import { format, parseISO } from "date-fns";
 import Swal from "sweetalert2";
 import Loading from "./Loading";
-import { requisicaoGet, requisicaoPost } from "../services/requisicoes";
+import { requisicaoGet } from "../services/requisicoes";
 import { Button, ButtonCloseModal } from "./comum/button";
 import { H3 } from "./tailwindComponents/Textos";
 import { FormGroup } from "./comum/FormGroup";
 import { Input } from "./comum/input";
 import Select from "./comum/select";
 import { ModalEditarCupons } from "./AdminCupons/modalEditarCupons";
-
-interface Cupom {
-  id: string;
-  codigo: string;
-  desconto: number;
-  tipo: "valor" | "percent";
-  validade: string;
-  usos: number;
-  maxuse: number;
-  aplicavel: string[];
-  valido: boolean;
-}
-
-interface Server {
-  id: string;
-  titulo: string;
-  dias: string;
-}
+// Import shared types
+import { Cupom, Server } from "../functions/shared-types";
 
 function SectionCupons() {
   const [cupons, setCupons] = useState<Cupom[]>([]);
@@ -52,10 +36,15 @@ function SectionCupons() {
   const [server, setServer] = useState<Server[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
 
-
-  
-
-  const handleConfirmDelete = ({cupom, setCupons, cupons}) => {
+  const handleConfirmDelete = ({
+    cupom,
+    setCupons,
+    cupons,
+  }: {
+    cupom: Cupom;
+    setCupons: React.Dispatch<React.SetStateAction<Cupom[]>>;
+    cupons: Cupom[];
+  }) => {
     Swal.fire({
       title: "Tem certeza de que deseja excluir esse cupom?",
       icon: "warning",
