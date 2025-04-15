@@ -1,26 +1,33 @@
 import Alerta from "../components/comum/alertas";
 import { requisicaoDelete, requisicaoPost } from "../services/requisicoes";
+import { RecargaProps, CodigoProps } from "./tipos";
 
-export function handleFiltrarCodigos(recargaId, codigos) {
-  if (!recargaId) return [];
-  return codigos.filter((codigo) => codigo.idRecarga === recargaId);
+
+export function handleFiltrarCodigos(recarga: RecargaProps, codigos: CodigoProps[]) {
+  if (!recarga) return [];
+  return codigos.filter((codigo) => codigo.idRecarga === Number(recarga.id));
 }
 
-export function handleCodigoChange(codigo, setSelectedCodigos) {
-  setSelectedCodigos((prev) =>
+
+export function handleCodigoChange(
+  codigo: CodigoProps,
+  setSelectedCodigos: React.Dispatch<React.SetStateAction<number[]>>
+) {
+  setSelectedCodigos((prev: number[]) =>
     prev.includes(codigo.id)
       ? prev.filter((id) => id !== codigo.id)
       : [...prev, codigo.id]
   );
 }
 
+
 export async function handleUpdateRecarga(
-  e,
-  selectedRecarga,
-  setRecargas,
-  setLoading,
-  recargas,
-  handleCloseModal
+  e: React.FormEvent<HTMLFormElement>,
+  selectedRecarga: RecargaProps & { previewImage?: string },
+  setRecargas: React.Dispatch<React.SetStateAction<RecargaProps[]>>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  recargas: RecargaProps[] | Record<string, RecargaProps>,
+  handleCloseModal: () => void
 ) {
   e.preventDefault();
 
@@ -29,7 +36,8 @@ export async function handleUpdateRecarga(
     titulo: e.target.titulo.value,
     dias: e.target.dias.value,
     imagem: selectedRecarga.previewImage || "",
-  };
+  } ;
+
 
   try {
     const response = await requisicaoPost(

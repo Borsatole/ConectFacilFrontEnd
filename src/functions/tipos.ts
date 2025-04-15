@@ -8,5 +8,26 @@ export interface CupomProps {
     usos: number;
     valido: number | boolean;
     produtos: string | string[];
-  }
+}
+
+export interface RecargaProps {
+    id: string;
+    imagem: string;
+    titulo: string;
+    dias: number;
+    valor: number;
+    ativo?: boolean;
+}
+
+
+
+export interface CodigoProps {
+    id: number;
+    idRecarga: number;
+    servidor: string;
+    codigo: string;
+    usado: number;
+    dias: number;
+}
+
   

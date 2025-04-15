@@ -19,31 +19,32 @@ import {
   handleUpdateRecarga,
   handleDeleteRecarga,
 } from "../functions/recargas";
-import { requisicaoGet, requisicaoPost } from "../services/requisicoes";
+import { requisicaoGet } from "../services/requisicoes";
 import ModalEditarRecargas from "./AdminRecargas/modalEditarRecargas";
+import { RecargaProps, CodigoProps } from "../functions/tipos";
 
-interface Codigo {
-  id: number;
-  idRecarga: number;
-  servidor: string;
-  codigo: string;
-  usado: number;
-  dias: number;
-}
+// interface Codigo {
+//   id: number;
+//   idRecarga: number;
+//   servidor: string;
+//   codigo: string;
+//   usado: number;
+//   dias: number;
+// }
 
-interface Recarga {
-  id: number;
-  imagem: string;
-  titulo: string;
-  dias: number;
-}
+// interface Recarga {
+//   id: number;
+//   imagem: string;
+//   titulo: string;
+//   dias: number;
+// }
 
 function SectionRecargas() {
-  const [recargas, setRecargas] = useState<Recarga[]>([]);
+  const [recargas, setRecargas] = useState<RecargaProps[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [codigos] = useState<Codigo[]>([{
+  const [codigos] = useState<CodigoProps[]>([{
     id: 1,
     idRecarga: 4,
     servidor: "alphaplay",
@@ -77,17 +78,17 @@ function SectionRecargas() {
   }]);
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedRecarga, setSelectedRecarga] = useState<Recarga | null>(null);
-  const [selectedCodigos, setSelectedCodigos] = useState<number[]>([]);
-  const [codigosFiltrados, setCodigosFiltrados] = useState<Codigo[]>([]);
+  const [selectedRecarga, setSelectedRecarga] = useState<RecargaProps | null>(null);
+  const [selectedCodigos, setSelectedCodigos] = useState<RecargaProps[]>([]);
+  const [codigosFiltrados, setCodigosFiltrados] = useState<CodigoProps[]>([]);
 
   useEffect(() => {
     if (selectedRecarga == null) return;
-    const filteredCodigos = handleFiltrarCodigos(selectedRecarga.id, codigos);
+    const filteredCodigos = handleFiltrarCodigos(selectedRecarga.id, codigos as CodigoProps[]);
     setCodigosFiltrados(filteredCodigos);
   }, [codigos, selectedRecarga]);
 
-  const handleEditCoupon = (recarga?: Recarga) => {
+  const handleEditCoupon = (recarga?: RecargaProps) => {
     if (!recarga) return;
     setSelectedRecarga(recarga);
     setIsEditModalOpen(true);
@@ -138,7 +139,7 @@ function SectionRecargas() {
     fetchServers();
   }, []);
 
-  const handleConfirmarDelete = (recarga: Recarga) => {
+  const handleConfirmarDelete = (recarga: RecargaProps) => {
     Swal.fire({
       title: "A recarga e todos os códigos cadastrados serão deletados permanentemente.",
       icon: "warning",
@@ -205,9 +206,7 @@ function SectionRecargas() {
 
       {isEditModalOpen && selectedRecarga && (
         <ModalEditarRecargas
-          
           handleCloseModal={handleCloseModal}
-
           selectedRecarga={selectedRecarga}
           setRecargas={setRecargas}
           setLoading={setLoading}

@@ -36,7 +36,7 @@ function SectionCupons() {
   const [server, setServer] = useState<any[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
 
-  
+
   const handleConfirmDelete = ({
     cupom,
     setCupons,
@@ -138,6 +138,7 @@ function SectionCupons() {
             <tbody className="divide-y divide-gray-200">
               {cupons.map((cupom) => {
                 if (!cupom || !cupom.codigo) {
+                  
                   console.warn("Cupom inválido na posição", cupom);
                   return null;
                 }
