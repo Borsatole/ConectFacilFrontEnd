@@ -25,25 +25,26 @@ import { Input } from "./comum/input";
 import Select from "./comum/select";
 import { ModalEditarCupons } from "./AdminCupons/modalEditarCupons";
 // Import shared types
-import { Cupom, Server } from "../functions/shared-types";
+import { CupomProps } from "../functions/tipos";
 
 function SectionCupons() {
-  const [cupons, setCupons] = useState<Cupom[]>([]);
+  const [cupons, setCupons] = useState<CupomProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
-  const [selectedCoupon, setSelectedCoupon] = useState<Cupom | null>(null);
-  const [server, setServer] = useState<Server[]>([]);
+  const [selectedCoupon, setSelectedCoupon] = useState<CupomProps | null>(null);
+  const [server, setServer] = useState<any[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
 
+  
   const handleConfirmDelete = ({
     cupom,
     setCupons,
     cupons,
   }: {
-    cupom: Cupom;
-    setCupons: React.Dispatch<React.SetStateAction<Cupom[]>>;
-    cupons: Cupom[];
+    cupom: CupomProps;
+    setCupons: React.Dispatch<React.SetStateAction<CupomProps[]>>;
+    cupons: CupomProps[];
   }) => {
     Swal.fire({
       title: "Tem certeza de que deseja excluir esse cupom?",
@@ -90,7 +91,7 @@ function SectionCupons() {
     carregarTodosCupons();
   }, []);
 
-  const handleEditCoupon = (cupom: Cupom) => {
+  const handleEditCoupon = (cupom: CupomProps) => {
     setSelectedCoupon(cupom);
     setIsEditModalOpen(true);
   };

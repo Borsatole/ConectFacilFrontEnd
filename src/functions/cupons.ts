@@ -5,9 +5,9 @@ import {
   requisicaoDelete,
   requisicaoPut,
 } from "../services/requisicoes";
-import { Cupom } from "./shared-types";
+import { CupomProps } from "./tipos";
 
-export async function carregarCupons(setCupons: React.Dispatch<React.SetStateAction<Cupom[]>>) {
+export async function carregarCupons(setCupons: React.Dispatch<React.SetStateAction<CupomProps[]>>) {
   const response = await requisicaoGet("/Backend/Admin/cupons/cupons-listagem.php");
   if (response?.data?.todosCupons) {
     setCupons(response.data.todosCupons);
@@ -16,8 +16,8 @@ export async function carregarCupons(setCupons: React.Dispatch<React.SetStateAct
 
 export async function handleAddNewCoupon(
   e: React.FormEvent<HTMLFormElement>,
-  cupons: Cupom[],
-  setCupons: React.Dispatch<React.SetStateAction<Cupom[]>>,
+  cupons: CupomProps[],
+  setCupons: React.Dispatch<React.SetStateAction<CupomProps[]>>,
   handleCloseModal: () => void
 ) {
   e.preventDefault();
@@ -59,9 +59,9 @@ export async function handleAddNewCoupon(
 
 export async function handleUpdateCoupon(
   e: React.FormEvent<HTMLFormElement>,
-  selectedCoupon: Cupom,
-  cupons: Cupom[],
-  setCupons: React.Dispatch<React.SetStateAction<Cupom[]>>,
+  selectedCoupon: CupomProps,
+  cupons: CupomProps[],
+  setCupons: React.Dispatch<React.SetStateAction<CupomProps[]>>,
   handleCloseModal: () => void
 ) {
   e.preventDefault();
@@ -92,7 +92,7 @@ export async function handleUpdateCoupon(
     if (response?.data?.success) {
       Alerta("swal", "success", "Cupom atualizado com sucesso!");
 
-      const novoCupom: Cupom = {
+      const novoCupom: CupomProps = {
         id: selectedCoupon.id,
         codigo: form.codigo.value,
         desconto: parseFloat(form.desconto.value),
@@ -101,7 +101,7 @@ export async function handleUpdateCoupon(
         maxuse: parseInt(form.maxuse.value),
         usos: uso,
         valido: form.valido.checked ? 1 : 0,
-        aplicavel: selectedServers, // Fixed: Using array directly instead of JSON string
+        produtos: selectedServers, // Fixed: Using array directly instead of JSON string
       };
 
       const updatedCupons = [novoCupom, ...cupons.filter((cupom) => cupom.id !== selectedCoupon.id)];
@@ -124,9 +124,9 @@ export async function handleDeleteCoupon({
   cupons,
   setCupons,
 }: {
-  cupom: Cupom;
-  cupons: Cupom[];
-  setCupons: React.Dispatch<React.SetStateAction<Cupom[]>>;
+  cupom: CupomProps;
+  cupons: CupomProps[];
+  setCupons: React.Dispatch<React.SetStateAction<CupomProps[]>>;
 }) {
   const response = await requisicaoDelete("/Backend/Admin/cupons/cupons-deletar.php", {
     codigo: cupom.codigo,
@@ -143,12 +143,12 @@ export async function handleDeleteCoupon({
   }
 }
 
-export function determinarStatus(cupom: Cupom): string {
+export function determinarStatus(cupom: CupomProps): string {
   if (!cupom || typeof cupom.valido === "undefined") return "Indefinido";
   return cupom.valido ? "Ativo" : "Inativo";
 }
 
-export function formatarDesconto(cupom: Cupom): string {
+export function formatarDesconto(cupom: CupomProps): string {
   return cupom.tipo === "percent"
     ? `${parseFloat(String(cupom.desconto)).toFixed(0)}%`
     : `R$ ${parseFloat(String(cupom.desconto)).toFixed(2)}`;
