@@ -4,52 +4,34 @@ import { FormGroup } from "../comum/FormGroup";
 import { Input } from "../comum/input";
 import { H3 } from "../tailwindComponents/Textos";
 import { BtnInserir } from "./btnInserir";
+import { RecargaProps, CodigoProps } from "../../functions/tipos";
 
-// Define o tipo da recarga separadamente
-interface Recarga {
-  id: number;
-  imagem: string;
-  titulo: string;
-  dias: number;
-  valor?: number;
-  previewImage?: string;
-}
-
-// Define o tipo de Código
-interface Codigo {
-  id: number;
-  idRecarga: number;
-  servidor: string;
-  codigo: string;
-  usado: number;
-  dias: number;
-}
-
-// Define a interface para as props do componente
+// Tipagem
 interface ModalEditarRecargasProps {
   handleCloseModal: () => void;
-  selectedRecarga: Recarga;
-  setRecargas: React.Dispatch<React.SetStateAction<Recarga[]>>;
+  selectedRecarga: RecargaProps;
+  setRecargas: React.Dispatch<React.SetStateAction<RecargaProps[]>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  recargas: Recarga[];
+  recargas: RecargaProps[];
   handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleUpdateRecarga: (
-    e: React.FormEvent,
-    selectedRecarga: Recarga,
-    setRecargas: React.Dispatch<React.SetStateAction<Recarga[]>>,
+    e: React.FormEvent<HTMLFormElement>,
+    selectedRecarga: RecargaProps,
+    setRecargas: React.Dispatch<React.SetStateAction<RecargaProps[]>>,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-    recargas: Recarga[],
+    recargas: RecargaProps[],
     handleCloseModal: () => void
-  ) => void;
-  codigosFiltrados: Codigo[];
-  selectedCodigos: number[];
+  ) => Promise<void>;
+  codigosFiltrados: CodigoProps[];
+  selectedCodigos: CodigoProps[];
   handleCodigoChange: (
-    codigo: Codigo,
-    setSelectedCodigos: React.Dispatch<React.SetStateAction<number[]>>
+    codigo: CodigoProps,
+    setSelectedCodigos: React.Dispatch<React.SetStateAction<CodigoProps[]>>
   ) => void;
-  setSelectedCodigos: React.Dispatch<React.SetStateAction<number[]>>;
+  setSelectedCodigos: React.Dispatch<React.SetStateAction<CodigoProps[]>>;
 }
 
+// Componente principal
 function ModalEditarRecargas({
   handleCloseModal,
   selectedRecarga,
@@ -72,6 +54,7 @@ function ModalEditarRecargas({
         <ButtonCloseModal onClick={handleCloseModal} />
         <H3>Editar Recarga</H3>
 
+        {/* Formulário */}
         <form
           onSubmit={(e) =>
             handleUpdateRecarga(
@@ -84,21 +67,16 @@ function ModalEditarRecargas({
             )
           }
         >
+          {/* Imagem */}
           <FormGroup label="Imagem da Recarga" id="icone-app">
             <div className="flex items-center gap-4">
               <img
                 src={
                   selectedRecarga.previewImage ||
-                  `${import.meta.env.VITE_API}/Backend/Recargas/${
-                    selectedRecarga.imagem
-                  }`
+                  `${import.meta.env.VITE_API}/Backend/Recargas/${selectedRecarga.imagem}`
                 }
-                style={{
-                  width: "100px",
-                  height: "100px",
-                  objectFit: "cover",
-                  borderRadius: "50%",
-                }}
+                alt="Imagem atual"
+                className="w-[100px] h-[100px] object-cover rounded-full"
               />
 
               <input
@@ -111,7 +89,8 @@ function ModalEditarRecargas({
             </div>
           </FormGroup>
 
-          <FormGroup label="Titulo da Recarga" id="titulo">
+          {/* Título */}
+          <FormGroup label="Título da Recarga" id="titulo">
             <Input
               type="text"
               id="titulo"
@@ -120,7 +99,8 @@ function ModalEditarRecargas({
             />
           </FormGroup>
 
-          <FormGroup label="dias" id="dias">
+          {/* Dias */}
+          <FormGroup label="Dias" id="dias">
             <Input
               type="number"
               name="dias"
@@ -130,24 +110,24 @@ function ModalEditarRecargas({
             />
           </FormGroup>
 
+          {/* Valor */}
           <FormGroup label="Valor" id="valor">
             <Input
               type="number"
               id="valor"
-              name="valor" 
+              name="valor"
               min="1"
               defaultValue={selectedRecarga.valor || ""}
             />
           </FormGroup>
 
-          {/* separador */}
-          <div className="mt-2 justify-center">
-            <div className="flex justify-between items-center gap-4 pt-4  pb-4 border-b border-gray-300">
-              <label className="block text-gray-700 text-sm font-bold mb-2 ">
-                Codigos ({codigosFiltrados.length})
+          {/* Códigos */}
+          <div className="mt-2">
+            <div className="flex justify-between items-center gap-4 pt-4 pb-4 border-b border-gray-300">
+              <label className="text-gray-700 text-sm font-bold">
+                Códigos ({codigosFiltrados.length})
               </label>
-
-              <BtnInserir selectedCodigos={selectedCodigos}></BtnInserir>
+              <BtnInserir selectedCodigos={selectedCodigos} />
             </div>
           </div>
 
@@ -162,7 +142,7 @@ function ModalEditarRecargas({
                     type="checkbox"
                     name="aplicavel"
                     value={codigo.id}
-                    checked={selectedCodigos.includes(codigo.id)}
+                    checked={selectedCodigos.some((cod) => cod.id === codigo.id)}
                     onChange={() =>
                       handleCodigoChange(codigo, setSelectedCodigos)
                     }
@@ -176,6 +156,7 @@ function ModalEditarRecargas({
             </div>
           </div>
 
+          {/* Botão de envio */}
           <div className="mt-4">
             <Button type="submit">Atualizar Recarga</Button>
           </div>

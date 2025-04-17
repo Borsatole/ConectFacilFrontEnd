@@ -3,23 +3,27 @@ import { requisicaoDelete, requisicaoPost } from "../services/requisicoes";
 import { RecargaProps, CodigoProps } from "./tipos";
 
 
+
+
+
 export function handleFiltrarCodigos(recarga: RecargaProps, codigos: CodigoProps[]) {
   if (!recarga) return [];
   return codigos.filter((codigo) => codigo.idRecarga === Number(recarga.id));
 }
 
-
 export function handleCodigoChange(
-  codigo: CodigoProps,
-  setSelectedCodigos: React.Dispatch<React.SetStateAction<number[]>>
+  codigo: CodigoProps, 
+  setSelectedCodigos: React.Dispatch<React.SetStateAction<CodigoProps[]>>
 ) {
-  setSelectedCodigos((prev: number[]) =>
-    prev.includes(codigo.id)
-      ? prev.filter((id) => id !== codigo.id)
-      : [...prev, codigo.id]
-  );
+  setSelectedCodigos(prevCodigos => {
+    const exists = prevCodigos.some(cod => cod.id === codigo.id);
+    if (exists) {
+      return prevCodigos.filter(cod => cod.id !== codigo.id);
+    } else {
+      return [...prevCodigos, codigo];
+    }
+  });
 }
-
 
 export async function handleUpdateRecarga(
   e: React.FormEvent<HTMLFormElement>,
@@ -30,13 +34,16 @@ export async function handleUpdateRecarga(
   handleCloseModal: () => void
 ) {
   e.preventDefault();
+  const form = e.target as HTMLFormElement;
+
 
   const dados = {
     idRecarga: selectedRecarga.id,
-    titulo: e.target.titulo.value,
-    dias: e.target.dias.value,
+    titulo: form.titulo.value,
+    dias: form.dias.value,
     imagem: selectedRecarga.previewImage || "",
-  } ;
+  };
+  
 
 
   try {
@@ -54,9 +61,9 @@ export async function handleUpdateRecarga(
         recarga.id === selectedRecarga.id
           ? {
               ...recarga,
-              titulo: e.target.titulo.value,
-              dias: e.target.dias.value,
-              valor: e.target.valor.value,
+              titulo: form.titulo.value,
+              dias: form.dias.value,
+              valor: form.valor.value
             }
           : recarga
       );
@@ -76,7 +83,11 @@ export async function handleUpdateRecarga(
   }
 }
 
-export async function handleDeleteRecarga(recarga, setRecargas, recargas) {
+export async function handleDeleteRecarga(
+  recarga: RecargaProps,
+  setRecargas: React.Dispatch<React.SetStateAction<RecargaProps[]>>, 
+  recargas: RecargaProps[]
+) {
   try {
     const response = await requisicaoDelete(
       "/Backend/Admin/recargas/recargas-deletar.php",
@@ -86,14 +97,14 @@ export async function handleDeleteRecarga(recarga, setRecargas, recargas) {
     );
 
     if (response?.data?.success) {
-      const updatedRecargas = recargas.filter((c) => c.id !== recarga.id);
+      const updatedRecargas = recargas.filter((c: RecargaProps) => c.id !== recarga.id);
       setRecargas(updatedRecargas);
       Alerta("toast", "success", "Recarga deletada com sucesso");
     } else {
       Alerta("toast", "error", "Erro ao deletar recarga");
     }
   } catch (error) {
-    console.error("Erro ao deletar recarga:", error);
+    console.error("Erro ao deletar recarga:", error); 
     Alerta("toast", "error", "Erro ao deletar recarga");
   }
 }

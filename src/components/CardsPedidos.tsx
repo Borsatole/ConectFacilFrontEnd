@@ -1,9 +1,9 @@
-import { requisicaoPost } from "../services/requisicoes";
+import { requisicaoGet, requisicaoPost } from "../services/requisicoes";
 import { useEffect, useState } from "react";
 import { converterData } from "../functions/data";
 import Loading from "./Loading";
 import { ButtonCopy } from "./comum/button";
-import * as React from "react";
+
 
 interface PedidoCardProps {
   id: string;
@@ -104,7 +104,7 @@ function CardsPedidos() {
 
   useEffect(() => {
     const carregarDados = async () => {
-      const response = await requisicaoPost("/Backend/Usuario/Pedidos.php");
+      const response = await requisicaoGet("/Backend/Usuario/Pedidos.php");
 
       if (response) {
         setDadosPedidos({ pedidos: response.data.Pedidos });

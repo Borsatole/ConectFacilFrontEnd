@@ -23,21 +23,6 @@ import { requisicaoGet } from "../services/requisicoes";
 import ModalEditarRecargas from "./AdminRecargas/modalEditarRecargas";
 import { RecargaProps, CodigoProps } from "../functions/tipos";
 
-// interface Codigo {
-//   id: number;
-//   idRecarga: number;
-//   servidor: string;
-//   codigo: string;
-//   usado: number;
-//   dias: number;
-// }
-
-// interface Recarga {
-//   id: number;
-//   imagem: string;
-//   titulo: string;
-//   dias: number;
-// }
 
 function SectionRecargas() {
   const [recargas, setRecargas] = useState<RecargaProps[]>([]);
@@ -79,16 +64,16 @@ function SectionRecargas() {
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedRecarga, setSelectedRecarga] = useState<RecargaProps | null>(null);
-  const [selectedCodigos, setSelectedCodigos] = useState<RecargaProps[]>([]);
+  const [selectedCodigos, setSelectedCodigos] = useState<CodigoProps[]>([]);
   const [codigosFiltrados, setCodigosFiltrados] = useState<CodigoProps[]>([]);
 
   useEffect(() => {
     if (selectedRecarga == null) return;
-    const filteredCodigos = handleFiltrarCodigos(selectedRecarga.id, codigos as CodigoProps[]);
+    const filteredCodigos = handleFiltrarCodigos(selectedRecarga, codigos);
     setCodigosFiltrados(filteredCodigos);
   }, [codigos, selectedRecarga]);
 
-  const handleEditCoupon = (recarga?: RecargaProps) => {
+  const handleEditRecarga = (recarga?: RecargaProps) => {
     if (!recarga) return;
     setSelectedRecarga(recarga);
     setIsEditModalOpen(true);
@@ -160,7 +145,7 @@ function SectionRecargas() {
 
   return (
     <>
-      <Button onClick={() => handleEditCoupon()} wsize="">
+      <Button onClick={() => handleEditRecarga()} wsize="">
         Adicionar Recarga
       </Button>
 
@@ -176,7 +161,6 @@ function SectionRecargas() {
                 <CelulaTabela tipo="">Imagem</CelulaTabela>
                 <CelulaTabela tipo="">Recarga</CelulaTabela>
                 <CelulaTabela tipo="">Dias</CelulaTabela>
-                
                 <CelulaTabela tipo="">Ações</CelulaTabela>
               </LinhaTabela>
             </thead>
@@ -193,8 +177,8 @@ function SectionRecargas() {
                   <CelulaTabela>{recarga.titulo.toUpperCase()}</CelulaTabela>
                   <CelulaTabela>{recarga.dias}</CelulaTabela>
                   
-                  <td className="px-6 py-4 space-x-2">
-                    <ButtonEdit onClick={() => handleEditCoupon(recarga)} />
+                  <td className=" py-4 space-x-2">
+                    <ButtonEdit onClick={() => handleEditRecarga(recarga)} />
                     <ButtonDelete onClick={() => handleConfirmarDelete(recarga)} />
                   </td>
                 </LinhaTabela>
@@ -208,8 +192,9 @@ function SectionRecargas() {
         <ModalEditarRecargas
           handleCloseModal={handleCloseModal}
           selectedRecarga={selectedRecarga}
-          setRecargas={setRecargas}
+
           setLoading={setLoading}
+          setRecargas={setRecargas}
           recargas={recargas}
           handleImageChange={handleImageChange}
           handleUpdateRecarga={handleUpdateRecarga}

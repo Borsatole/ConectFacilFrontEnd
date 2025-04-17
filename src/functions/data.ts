@@ -1,4 +1,4 @@
-export function converterData(data) {
+export function converterData(data : string) {
     const dataConvertida = new Date(data);
     const dia = dataConvertida.getDate();
     const mes = dataConvertida.getMonth() + 1;
@@ -16,6 +16,6 @@ export function converterData(data) {
 }
 
 
-export function CopiarTexto(texto) {
+export function CopiarTexto(texto: string) {
     navigator.clipboard.writeText(texto);
 }

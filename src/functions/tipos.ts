@@ -11,7 +11,8 @@ export interface CupomProps {
 }
 
 export interface RecargaProps {
-    id: string;
+    previewImage: string;
+    id: number ;
     imagem: string;
     titulo: string;
     dias: number;
