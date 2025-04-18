@@ -9,10 +9,10 @@ import { RecargaProps, CodigoProps } from "../../functions/tipos";
 // Tipagem
 interface ModalEditarRecargasProps {
   handleCloseModal: () => void;
+  recargas: RecargaProps[];
   selectedRecarga: RecargaProps;
   setRecargas: React.Dispatch<React.SetStateAction<RecargaProps[]>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  recargas: RecargaProps[];
   handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleUpdateRecarga: (
     e: React.FormEvent<HTMLFormElement>,

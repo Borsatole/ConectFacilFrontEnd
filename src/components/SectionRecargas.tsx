@@ -22,6 +22,7 @@ import {
 import { requisicaoGet } from "../services/requisicoes";
 import ModalEditarRecargas from "./AdminRecargas/modalEditarRecargas";
 import { RecargaProps, CodigoProps } from "../functions/tipos";
+import ModalAdicionarRecarga from "./AdminRecargas/modalAdicionarRecarga";
 
 
 function SectionRecargas() {
@@ -63,6 +64,7 @@ function SectionRecargas() {
   }]);
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddModalOpen, setAddModalOpen] = useState (false);
   const [selectedRecarga, setSelectedRecarga] = useState<RecargaProps | null>(null);
   const [selectedCodigos, setSelectedCodigos] = useState<CodigoProps[]>([]);
   const [codigosFiltrados, setCodigosFiltrados] = useState<CodigoProps[]>([]);
@@ -73,6 +75,10 @@ function SectionRecargas() {
     setCodigosFiltrados(filteredCodigos);
   }, [codigos, selectedRecarga]);
 
+  const handleAddNovaRecarga = () => {
+    setAddModalOpen(true)
+  }
+
   const handleEditRecarga = (recarga?: RecargaProps) => {
     if (!recarga) return;
     setSelectedRecarga(recarga);
@@ -81,6 +87,7 @@ function SectionRecargas() {
 
   const handleCloseModal = () => {
     setIsEditModalOpen(false);
+    setAddModalOpen(false);
     setSelectedRecarga(null);
     setSelectedCodigos([]);
     setCodigosFiltrados([]);
@@ -145,7 +152,7 @@ function SectionRecargas() {
 
   return (
     <>
-      <Button onClick={() => handleEditRecarga()} wsize="">
+      <Button onClick={() => handleAddNovaRecarga()} wsize="">
         Adicionar Recarga
       </Button>
 
@@ -165,7 +172,7 @@ function SectionRecargas() {
               </LinhaTabela>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {recargas.sort((a, b) => a.dias - b.dias).map((recarga) => (
+              {recargas.sort((a: RecargaProps, b: RecargaProps) => parseFloat(a.dias) - parseFloat(b.dias)).map((recarga) => (
                 <LinhaTabela key={recarga.id} tipo="body">
                   <CelulaTabela>
                     <img
@@ -177,7 +184,7 @@ function SectionRecargas() {
                   <CelulaTabela>{recarga.titulo.toUpperCase()}</CelulaTabela>
                   <CelulaTabela>{recarga.dias}</CelulaTabela>
                   
-                  <td className=" py-4 space-x-2">
+                  <td className="px-6 py-4 space-x-2">
                     <ButtonEdit onClick={() => handleEditRecarga(recarga)} />
                     <ButtonDelete onClick={() => handleConfirmarDelete(recarga)} />
                   </td>
@@ -202,6 +209,13 @@ function SectionRecargas() {
           selectedCodigos={selectedCodigos}
           handleCodigoChange={handleCodigoChange}
           setSelectedCodigos={setSelectedCodigos}
+        />
+      )}
+
+      {isAddModalOpen && (
+        <ModalAdicionarRecarga
+        handleCloseModal={handleCloseModal}
+        setLoading={setLoading}
         />
       )}
     </>

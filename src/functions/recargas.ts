@@ -2,10 +2,6 @@ import Alerta from "../components/comum/alertas";
 import { requisicaoDelete, requisicaoPost } from "../services/requisicoes";
 import { RecargaProps, CodigoProps } from "./tipos";
 
-
-
-
-
 export function handleFiltrarCodigos(recarga: RecargaProps, codigos: CodigoProps[]) {
   if (!recarga) return [];
   return codigos.filter((codigo) => codigo.idRecarga === Number(recarga.id));
@@ -107,4 +103,25 @@ export async function handleDeleteRecarga(
     console.error("Erro ao deletar recarga:", error); 
     Alerta("toast", "error", "Erro ao deletar recarga");
   }
+}
+
+
+
+export async function handleAddRecarga(e: React.FormEvent<HTMLFormElement>) {
+  e.preventDefault();
+  const formData = new FormData(e.currentTarget);
+
+  const titulo = formData.get('titulo') as string;
+  const dias = formData.get('dias') as string;
+  const valor = Number(formData.get('valor')) as number;
+
+  const novaRecarga: RecargaProps = {
+    titulo,
+    dias,
+    valor,
+  };
+
+  console.log(novaRecarga);
+
+  Alerta("swal", "success", "Recarga adicionada com sucesso");
 }

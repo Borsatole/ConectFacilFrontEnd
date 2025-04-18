@@ -5,7 +5,22 @@ import { FormGroup } from '../comum/FormGroup';
 import { Input } from '../comum/input';
 import Select from '../comum/select';
 import { format, parseISO } from "date-fns";
+import {CupomProps, CodigoProps, RecargaProps} from "../../functions/tipos"
 
+interface ModalEditarCuponsProps {
+  handleCloseModal: () => void;
+  selectedCoupon: CupomProps;
+  cupons: CupomProps[];
+  setCupons: React.Dispatch<React.SetStateAction<CupomProps[]>>;
+  handleUpdateCoupon: (
+    e: React.FormEvent<HTMLFormElement>,
+    selectedCoupon: CupomProps,
+    cupons: CupomProps[],
+    setCupons: React.Dispatch<React.SetStateAction<CupomProps[]>>,
+    handleCloseModal: () => void
+  ) => void;
+  servers: RecargaProps[];
+}
 
 
 export function ModalEditarCupons({
@@ -15,7 +30,7 @@ export function ModalEditarCupons({
     setCupons,
     handleUpdateCoupon,
     servers
-  }) {
+  }: ModalEditarCuponsProps) {
   return (
     <div
               className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
@@ -87,8 +102,8 @@ export function ModalEditarCupons({
                   <FormGroup label="Produtos Aplicáveis" id="aplicavel">
                     <div className="flex flex-col gap-2 overflow-y-scroll max-h-40 p-2">
                       {servers
-                        .sort((a, b) => parseFloat(a.dias) - parseFloat(b.dias))
-                        .map((server) => (
+                        .sort((a: RecargaProps, b:RecargaProps) => parseFloat(a.dias) - parseFloat(b.dias))
+                        .map((server: RecargaProps) => (
                           <label
                             key={server.id}
                             className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg shadow-sm cursor-pointer transition-all hover:bg-gray-100 focus-within:ring-2 focus-within:ring-blue-500"
@@ -100,24 +115,26 @@ export function ModalEditarCupons({
                               defaultChecked={(() => {
                                 try {
                                   if (!selectedCoupon.produtos) return false;
-    
-                                  const aplicaveis = JSON.parse(
-                                    selectedCoupon.produtos
-                                  );
-                                  return (
-                                    Array.isArray(aplicaveis) &&
-                                    aplicaveis
-                                      .map(String)
-                                      .includes(String(server.id))
-                                  );
+                              
+                                  let aplicaveis: string[] = [];
+                                  const raw = selectedCoupon.produtos;
+                
+                              
+                                  if (typeof raw === "string" && raw.trim().startsWith("[")) {
+                                    aplicaveis = JSON.parse(raw);
+                                  } else if (typeof raw === "string") {
+                                    aplicaveis = raw.split(",");
+                                  } else if (Array.isArray(raw)) {
+                                    aplicaveis = raw;
+                                  }
+                              
+                                  return aplicaveis.map(String).includes(String(server.id));
                                 } catch (error) {
-                                  console.error(
-                                    "Erro ao verificar produtos aplicáveis:",
-                                    error
-                                  );
+                                
                                   return false;
                                 }
                               })()}
+                              
                               className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                             />
                             <span className="text-sm font-medium text-gray-700">
