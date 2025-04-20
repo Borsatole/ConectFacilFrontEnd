@@ -18,6 +18,7 @@ export interface RecargaProps {
     dias: string;
     valor: number;
     ativo?: boolean;
+    servidor?:string;
 }
 
 

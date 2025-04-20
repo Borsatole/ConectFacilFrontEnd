@@ -1,3 +1,4 @@
+import axios from "axios";
 import Alerta from "../components/comum/alertas";
 import { requisicaoDelete, requisicaoPost } from "../services/requisicoes";
 import { RecargaProps, CodigoProps } from "./tipos";
@@ -111,17 +112,61 @@ export async function handleAddRecarga(e: React.FormEvent<HTMLFormElement>) {
   e.preventDefault();
   const formData = new FormData(e.currentTarget);
 
+  const imagem = formData.get('imagem') as string;
   const titulo = formData.get('titulo') as string;
   const dias = formData.get('dias') as string;
   const valor = Number(formData.get('valor')) as number;
 
   const novaRecarga: RecargaProps = {
     titulo,
+    imagem,
     dias,
     valor,
   };
 
-  console.log(novaRecarga);
+  try {
 
-  Alerta("swal", "success", "Recarga adicionada com sucesso");
+    
+    const response = await requisicaoPost('/Backend/Admin/recargas/recargas-adicionar.php', formData);
+    if (response?.data?.success) {
+      console.log (response.data)
+      Alerta("toast", "success", `${ response?.data?.message || "Recarga adicionada com sucesso"}` );
+    } else {
+      console.log (response)
+      Alerta("toast", "error", `${ response?.data?.message || "Erro ao adicionar recarga"}` );
+      
+    }
+  } catch (error) {
+    console.log (error);
+    console.error('Erro ao adicionar recarga:', error);
+  }
+
+  // console.log(novaRecarga);
+
+  // Alerta("swal", "success", "Recarga adicionada com sucesso");
 }
+
+// export async function handleAddRecarga(e: React.FormEvent<HTMLFormElement>) {
+//   e.preventDefault();
+
+//   const formData = new FormData(e.currentTarget); // aqui já contém a imagem e os outros campos
+
+//   try {
+//     const response = await axios.post(
+//       `${import.meta.env.VITE_API}/Backend/Admin/recargas/recargas-adicionar.php`,
+//       formData
+//       // ❌ Não precisa setar 'Content-Type', o axios detecta e insere o boundary corretamente
+//     );
+
+//     if (response?.data?.success) {
+//       console.log(response.data);
+//     } else {
+//       console.log(response.data);
+//       console.log('Erro ao adicionar recarga');
+//     }
+//   } catch (error) {
+//     console.error('Erro ao adicionar recarga:', error);
+//   }
+// }
+
+

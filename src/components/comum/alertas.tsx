@@ -38,6 +38,7 @@ function Alerta(alerta = "toast", tipo = "success", mensagem = "") {
     Swal.fire({
       icon: tipo,
       title: mensagem,
+      
       showConfirmButton: true,
     });
   }

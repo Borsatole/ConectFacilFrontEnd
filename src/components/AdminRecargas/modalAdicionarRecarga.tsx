@@ -4,6 +4,7 @@ import { Input } from "../comum/input";
 import { H3 } from "../tailwindComponents/Textos";
 import {handleAddRecarga} from "../../functions/recargas"
 import { RecargaProps } from "../../functions/tipos";
+import { useState } from "react";
 
 
 
@@ -14,6 +15,7 @@ export interface ModalAdicionarRecargasProps {
     selectedRecarga?: RecargaProps | null;
     setRecargas?: React.Dispatch<React.SetStateAction<RecargaProps[]>>;
     handleImageChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    
 }
   
 
@@ -21,7 +23,21 @@ export interface ModalAdicionarRecargasProps {
 function ModalAdicionarRecarga({
     handleCloseModal,
     setLoading,
+    recargas,
   }: ModalAdicionarRecargasProps) {
+    const [preview, setPreview] = useState<string | null>(null);
+    
+
+    function handleImagemChange(e: React.ChangeEvent<HTMLInputElement>) {
+      const file = e.target.files?.[0];
+      if (file) {
+        const previewUrl = URL.createObjectURL(file);
+        setPreview(previewUrl);
+      }
+    }
+
+    const servidoresUnicos = Array.from(new Set(recargas?.map((r) => r.servidor)));
+
   return (
     <div
           className="fixed inset-0 z-100 flex items-center justify-center bg-black bg-opacity-50"
@@ -38,23 +54,25 @@ function ModalAdicionarRecarga({
               }
             >
               {/* Imagem */}
-              {/* <FormGroup label="Imagem da Recarga" id="icone-app">
+              <FormGroup label="Imagem da Recarga" id="icone-app">
                 <div className="flex items-center gap-4">
                   <img
-                    src={""}
+                    src={ preview ||`${import.meta.env.VITE_API}/Backend/Recargas/default.png`}
                     alt="Imagem atual"
                     className="w-[100px] h-[100px] object-cover rounded-full"
+
                   />
     
                   <input
                     type="file"
                     name="imagem"
+                    onChange={handleImagemChange}
                     accept="image/*"
-                    
                     className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                    required
                   />
                 </div>
-              </FormGroup> */}
+              </FormGroup>
     
               {/* Título */}
               <FormGroup label="Título da Recarga" id="titulo">
@@ -62,8 +80,25 @@ function ModalAdicionarRecarga({
                   type="text"
                   id="titulo"
                   name="titulo"
-                  defaultValue={""}
+                  defaultValue={"UNITV 30 DIAS"}
+                  required
                 />
+              </FormGroup>
+
+              <FormGroup label="Servidor" id="servidor">
+                <Input
+                  type="text"
+                  id="servidor"
+                  name="servidor"
+                  list="servidores"
+                  required
+                />
+
+<datalist id="servidores">
+    {servidoresUnicos.map((servidor, index) => (
+      <option key={index} value={servidor} />
+    ))}
+  </datalist>
               </FormGroup>
     
               {/* Dias */}
@@ -73,7 +108,8 @@ function ModalAdicionarRecarga({
                   name="dias"
                   id="dias"
                   min="1"
-                  defaultValue={""}
+                  defaultValue={"30"}
+                  required
                 />
               </FormGroup>
     
@@ -85,7 +121,8 @@ function ModalAdicionarRecarga({
                   name="valor"
                   min="1"
                   step="0.01"
-                  defaultValue={""}
+                  
+                  required
                 />
               </FormGroup>
               
