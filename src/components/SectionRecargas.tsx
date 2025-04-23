@@ -23,45 +23,14 @@ import { requisicaoGet } from "../services/requisicoes";
 import ModalEditarRecargas from "./AdminRecargas/modalEditarRecargas";
 import { RecargaProps, CodigoProps } from "../functions/tipos";
 import ModalAdicionarRecarga from "./AdminRecargas/modalAdicionarRecarga";
+import { carregarCodigosDeRecargas } from "../functions/recargas";
 
 
 function SectionRecargas() {
   const [recargas, setRecargas] = useState<RecargaProps[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const [codigos] = useState<CodigoProps[]>([{
-    id: 1,
-    idRecarga: 4,
-    servidor: "alphaplay",
-    codigo: "DARACODE",
-    usado: 0,
-    dias: 30,
-  },
-  {
-    id: 2,
-    idRecarga: 4,
-    servidor: "alphaplay",
-    codigo: "CODIGO2",
-    usado: 0,
-    dias: 30,
-  },
-  {
-    id: 3,
-    idRecarga: 4,
-    servidor: "alphaplay",
-    codigo: "CODIGO3",
-    usado: 0,
-    dias: 30,
-  },
-  {
-    id: 4,
-    idRecarga: 3,
-    servidor: "alphaplay",
-    codigo: "CHICACODE",
-    usado: 0,
-    dias: 30,
-  }]);
+  const [codigos, setCodigosdeRecargas] = useState<CodigoProps[]>([]);
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setAddModalOpen] = useState (false);
@@ -70,10 +39,16 @@ function SectionRecargas() {
   const [codigosFiltrados, setCodigosFiltrados] = useState<CodigoProps[]>([]);
 
   useEffect(() => {
+    carregarCodigosDeRecargas(setCodigosdeRecargas);
+  } , []);
+
+  useEffect(() => {
     if (selectedRecarga == null) return;
     const filteredCodigos = handleFiltrarCodigos(selectedRecarga, codigos);
     setCodigosFiltrados(filteredCodigos);
   }, [codigos, selectedRecarga]);
+
+  
 
   const handleAddNovaRecarga = () => {
     setAddModalOpen(true)
@@ -130,6 +105,9 @@ function SectionRecargas() {
     fetchServers();
   }, []);
 
+  
+  
+
   const handleConfirmarDelete = (recarga: RecargaProps) => {
     Swal.fire({
       title: "A recarga e todos os códigos cadastrados serão deletados permanentemente.",
@@ -145,6 +123,8 @@ function SectionRecargas() {
       }
     });
   };
+
+  
 
   if (loading) return <Loading color="var(--corPrincipal)" />;
   if (error) return <div>Erro: {error}</div>;

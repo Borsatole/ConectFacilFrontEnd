@@ -1,10 +1,59 @@
-import * as React from "react";
+import Swal from "sweetalert2";
+import {CodigoProps , RecargaProps} from "../../functions/tipos"
 
 type Props = {
-  selectedCodigos: any[];
+  selectedCodigos: CodigoProps[];
+  selectedRecarga: RecargaProps & { previewImage?: string }
 }
 
-export function BtnInserir({ selectedCodigos }:Props) {
+export function BtnInserir({ selectedCodigos, selectedRecarga }:Props) {
+
+
+  function CadastrarCodigo(){
+
+  }
+  
+
+function ModalAdicionarCodigo() {
+    Swal.fire({
+        title: "Adicione novo Codigo",
+        input: "text",
+        inputAttributes: {
+          autocapitalize: "off"
+        },
+        showCancelButton: true,
+        confirmButtonText: "Adicionar",
+        showLoaderOnConfirm: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+         console.log(result.value);
+        //  console.log(selectedRecarga);
+
+
+        // idRecarga, servidor, codigo, usado, dias
+
+        const novoCodigo: CodigoProps = {
+          idRecarga: Number(selectedRecarga.id),
+          servidor: String(selectedRecarga.servidor),
+          codigo: String(result.value),
+          usado: Number(0),
+          dias: Number(30)
+        }
+        console.log(novoCodigo);
+// {
+//     "id": 4,
+//     "imagem": "alphaplay.png",
+//     "titulo": "Alphaplay 30 Dias",
+//     "servidor": "",
+//     "dias": "30",
+//     "valor": "30.00"
+// }
+        }
+      })
+}
+
+
+
   return selectedCodigos.length > 0 ? (
     // Botão para deletar
     <button
@@ -40,7 +89,9 @@ export function BtnInserir({ selectedCodigos }:Props) {
     <button
       onClick={(event) => {
         event.preventDefault();
-        console.log("adicionar");
+
+        ModalAdicionarCodigo();
+      
       }}
       className="text-white font-bold py-1 px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
       style={{

@@ -137,7 +137,10 @@ function ModalEditarRecargas({
               <label className="text-gray-700 text-sm font-bold">
                 Códigos ({codigosFiltrados.length})
               </label>
-              <BtnInserir selectedCodigos={selectedCodigos} />
+              <BtnInserir 
+              selectedCodigos={selectedCodigos}
+              selectedRecarga={selectedRecarga}
+              />
             </div>
           </div>
 

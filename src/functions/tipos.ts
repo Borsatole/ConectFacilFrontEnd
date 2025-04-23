@@ -25,7 +25,7 @@ export interface RecargaProps {
 
 
 export interface CodigoProps {
-    id: number;
+    id?: number;
     idRecarga: number;
     servidor: string;
     codigo: string;
