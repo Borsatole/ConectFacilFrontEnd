@@ -215,6 +215,7 @@ function SectionRecargas() {
         <ModalAdicionarRecarga
         handleCloseModal={handleCloseModal}
         recargas={recargas}
+        setRecargas={setRecargas}
         selectedRecarga={selectedRecarga}
         setLoading={setLoading}
         />

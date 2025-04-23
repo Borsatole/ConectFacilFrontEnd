@@ -1,6 +1,5 @@
-import axios from "axios";
 import Alerta from "../components/comum/alertas";
-import { requisicaoDelete, requisicaoPost } from "../services/requisicoes";
+import { requisicaoDelete, requisicaoGet, requisicaoPost } from "../services/requisicoes";
 import { RecargaProps, CodigoProps } from "./tipos";
 
 export function handleFiltrarCodigos(recarga: RecargaProps, codigos: CodigoProps[]) {
@@ -36,6 +35,7 @@ export async function handleUpdateRecarga(
   const formData = new FormData();
   formData.append('idRecarga', String(selectedRecarga.id));
   formData.append('titulo', form.titulo.value);
+  formData.append('servidor', form.servidor.value);
   formData.append('dias', form.dias.value);
   formData.append('valor', form.valor.value);
 
@@ -53,6 +53,7 @@ export async function handleUpdateRecarga(
       formData
     );
 
+    console.log(response);
 
     if (response?.data?.success) {
       const arrRecargas = Array.isArray(recargas)
@@ -111,8 +112,13 @@ export async function handleDeleteRecarga(
 
 
 
-export async function handleAddRecarga(e: React.FormEvent<HTMLFormElement>) {
+export async function handleAddRecarga(
+  e: React.FormEvent<HTMLFormElement>,
+  setRecargas: React.Dispatch<React.SetStateAction<RecargaProps[]>>,
+  handleCloseModal: () => void
+) {
   e.preventDefault();
+
   const formData = new FormData(e.currentTarget);
 
   const imagem = formData.get('imagem') as string;
@@ -128,48 +134,24 @@ export async function handleAddRecarga(e: React.FormEvent<HTMLFormElement>) {
   };
 
   try {
-
-    
     const response = await requisicaoPost('/Backend/Admin/recargas/recargas-adicionar.php', formData);
     if (response?.data?.success) {
-      console.log (response.data)
-      Alerta("toast", "success", `${ response?.data?.message || "Recarga adicionada com sucesso"}` );
-    } else {
-      console.log (response)
-      Alerta("toast", "error", `${ response?.data?.message || "Erro ao adicionar recarga"}` );
+      // Carregar recargas diretamente aqui
+      const recargasResponse = await requisicaoGet("/Backend/Admin/servidores/buscar-recargas.php");
+      if (recargasResponse?.data?.recargas) {
+        setRecargas(recargasResponse.data.recargas);
+      }
       
+      handleCloseModal(); // Fechar o modal após sucesso
+      Alerta("toast", "success", `${response?.data?.message || "Recarga adicionada com sucesso"}`);
+    } else {
+      console.log(response);
+      Alerta("toast", "error", `${response?.data?.message || "Erro ao adicionar recarga"}`);
     }
   } catch (error) {
-    console.log (error);
+    console.log(error);
     console.error('Erro ao adicionar recarga:', error);
   }
-
-  // console.log(novaRecarga);
-
-  // Alerta("swal", "success", "Recarga adicionada com sucesso");
 }
-
-// export async function handleAddRecarga(e: React.FormEvent<HTMLFormElement>) {
-//   e.preventDefault();
-
-//   const formData = new FormData(e.currentTarget); // aqui já contém a imagem e os outros campos
-
-//   try {
-//     const response = await axios.post(
-//       `${import.meta.env.VITE_API}/Backend/Admin/recargas/recargas-adicionar.php`,
-//       formData
-//       // ❌ Não precisa setar 'Content-Type', o axios detecta e insere o boundary corretamente
-//     );
-
-//     if (response?.data?.success) {
-//       console.log(response.data);
-//     } else {
-//       console.log(response.data);
-//       console.log('Erro ao adicionar recarga');
-//     }
-//   } catch (error) {
-//     console.error('Erro ao adicionar recarga:', error);
-//   }
-// }
 
 

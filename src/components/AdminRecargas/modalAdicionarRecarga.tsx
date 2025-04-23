@@ -13,7 +13,7 @@ export interface ModalAdicionarRecargasProps {
     setLoading?: React.Dispatch<React.SetStateAction<boolean>>;
     recargas?: RecargaProps[];
     selectedRecarga?: RecargaProps | null;
-    setRecargas?: React.Dispatch<React.SetStateAction<RecargaProps[]>>;
+    setRecargas: React.Dispatch<React.SetStateAction<RecargaProps[]>>;
     handleImageChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     
 }
@@ -24,6 +24,7 @@ function ModalAdicionarRecarga({
     handleCloseModal,
     setLoading,
     recargas,
+    setRecargas,
   }: ModalAdicionarRecargasProps) {
     const [preview, setPreview] = useState<string | null>(null);
     
@@ -50,7 +51,7 @@ function ModalAdicionarRecarga({
             {/* Formulário */}
             <form
               onSubmit={(e) =>
-                handleAddRecarga(e)
+                handleAddRecarga(e, setRecargas, handleCloseModal)
               }
             >
               {/* Imagem */}

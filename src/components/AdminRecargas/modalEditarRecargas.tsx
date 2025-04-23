@@ -16,7 +16,7 @@ interface ModalEditarRecargasProps {
   handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleUpdateRecarga: (
     e: React.FormEvent<HTMLFormElement>,
-    selectedRecarga: RecargaProps,
+    selectedRecarga: RecargaProps & { previewImage?: string },
     setRecargas: React.Dispatch<React.SetStateAction<RecargaProps[]>>,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
     recargas: RecargaProps[],
@@ -45,6 +45,7 @@ function ModalEditarRecargas({
   handleCodigoChange,
   setSelectedCodigos,
 }: ModalEditarRecargasProps) {
+
 
   
   return (
@@ -96,6 +97,15 @@ function ModalEditarRecargas({
               id="titulo"
               name="titulo"
               defaultValue={selectedRecarga.titulo || ""}
+            />
+          </FormGroup>
+
+          <FormGroup label="Servidor" id="servidor">
+            <Input
+              type="text"
+              id="servidor"
+              name="servidor"
+              defaultValue={selectedRecarga.servidor || ""}
             />
           </FormGroup>
 
