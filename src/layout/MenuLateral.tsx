@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import { requisicaoPost } from "../services/requisicoes";
+import { requisicaoGet, requisicaoPost } from "../services/requisicoes";
 import { AuthContext } from "../context/AuthContext";
 import { useMenu } from "../context/MenuContext";
 import * as React from "react";
@@ -37,7 +37,7 @@ const MenuLateral = () => {
   const carregarDados = async () => {
     try {
       const RotaApi = import.meta.env.VITE_API;
-      const response = await requisicaoPost("/Backend/Usuario/Dashboard.php");
+      const response = await requisicaoGet("/Backend/Usuario/Dashboard.php");
 
       if (response?.data?.InformacoesBasicas) {
         const info = response.data.InformacoesBasicas;

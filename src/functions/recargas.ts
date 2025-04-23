@@ -32,22 +32,27 @@ export async function handleUpdateRecarga(
 ) {
   e.preventDefault();
   const form = e.target as HTMLFormElement;
-
-
-  const dados = {
-    idRecarga: selectedRecarga.id,
-    titulo: form.titulo.value,
-    dias: form.dias.value,
-    imagem: selectedRecarga.previewImage || "",
-  };
   
+  const formData = new FormData();
+  formData.append('idRecarga', String(selectedRecarga.id));
+  formData.append('titulo', form.titulo.value);
+  formData.append('dias', form.dias.value);
+  formData.append('valor', form.valor.value);
+
+  // Handle image upload
+  if (form.imagem.files?.[0]) {
+    formData.append('imagem', form.imagem.files[0]);
+  } else if (selectedRecarga.imagem) {
+    formData.append('imagem', selectedRecarga.imagem);
+  }
 
 
   try {
     const response = await requisicaoPost(
       "/Backend/Admin/recargas/recargas-editar.php",
-      dados
+      formData
     );
+
 
     if (response?.data?.success) {
       const arrRecargas = Array.isArray(recargas)
@@ -58,9 +63,7 @@ export async function handleUpdateRecarga(
         recarga.id === selectedRecarga.id
           ? {
               ...recarga,
-              titulo: form.titulo.value,
-              dias: form.dias.value,
-              valor: form.valor.value
+              ...response.data.RecargaEditada || {},
             }
           : recarga
       );
@@ -69,7 +72,7 @@ export async function handleUpdateRecarga(
       handleCloseModal();
 
       Alerta(
-        "toast",
+        "swal",
         "success",
         `${response?.data?.message || "Atualizado com sucesso"}`
       );

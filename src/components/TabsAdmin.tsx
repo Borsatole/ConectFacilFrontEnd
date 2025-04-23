@@ -1,7 +1,10 @@
-import { useState } from "react";
+
 import SectionCupons from "./SectionCupons";
 import SectionRecargas from "./SectionRecargas";
-import * as React from "react";
+
+
+import React, { useState } from "react";
+
 
 
 interface TabsAdminProps {
@@ -13,8 +16,14 @@ interface TabsAdminProps {
 function TabsAdmin( props: TabsAdminProps) {
   const [autorization] = useState(true);
 
+
+
   document.title = "Administrador do Sistema";
   const [activeTab, setActiveTab] = useState("Vendas");
+
+
+  
+ 
 
   return (
     <>

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import { Button, ButtonCloseModal } from "../comum/button";
 import { FormGroup } from "../comum/FormGroup";
 import { Input } from "../comum/input";
@@ -45,6 +45,8 @@ function ModalEditarRecargas({
   handleCodigoChange,
   setSelectedCodigos,
 }: ModalEditarRecargasProps) {
+
+  
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
@@ -71,10 +73,8 @@ function ModalEditarRecargas({
           <FormGroup label="Imagem da Recarga" id="icone-app">
             <div className="flex items-center gap-4">
               <img
-                src={
-                  selectedRecarga.previewImage ||
-                  `${import.meta.env.VITE_API}/Backend/Recargas/${selectedRecarga.imagem}`
-                }
+                src={selectedRecarga.previewImage || `${import.meta.env.VITE_API}/Backend/Recargas/${selectedRecarga.imagem}`}
+                
                 alt="Imagem atual"
                 className="w-[100px] h-[100px] object-cover rounded-full"
               />

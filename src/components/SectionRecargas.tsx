@@ -96,19 +96,18 @@ function SectionRecargas() {
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setSelectedRecarga((prevRecarga) => {
-          if (!prevRecarga) return prevRecarga;
-          return {
-            ...prevRecarga,
-            imagem: file.name,
-          };
-        });
-      };
-      reader.readAsDataURL(file);
+      const preview = URL.createObjectURL(file);
+      setSelectedRecarga((prevRecarga) => {
+        if (!prevRecarga) return prevRecarga;
+        return {
+          ...prevRecarga,
+          previewImage: preview,
+          imagem: file.name,
+        };
+      });
     }
   };
+  
 
   useEffect(() => {
     const fetchServers = async () => {
@@ -216,6 +215,7 @@ function SectionRecargas() {
         <ModalAdicionarRecarga
         handleCloseModal={handleCloseModal}
         recargas={recargas}
+        selectedRecarga={selectedRecarga}
         setLoading={setLoading}
         />
       )}

@@ -94,11 +94,11 @@ function ModalAdicionarRecarga({
                   required
                 />
 
-<datalist id="servidores">
-    {servidoresUnicos.map((servidor, index) => (
-      <option key={index} value={servidor} />
-    ))}
-  </datalist>
+              <datalist id="servidores">
+                  {servidoresUnicos.map((servidor, index) => (
+                    <option key={index} value={servidor} />
+                  ))}
+                </datalist>
               </FormGroup>
     
               {/* Dias */}

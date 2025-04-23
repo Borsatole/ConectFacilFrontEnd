@@ -1,5 +1,5 @@
 import axios from "axios";
-import * as React from "react";
+
 
 const rotaApi = import.meta.env.VITE_API;
 
@@ -7,9 +7,9 @@ export async function requisicaoGet(rota: string) {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await axios.post(
+    const response = await axios.get(
       `${rotaApi}${rota}`,
-      { token },
+      // { token },
       {
         headers: {
           "Content-Type": "application/json",
@@ -43,6 +43,7 @@ export async function requisicaoPostSimples(rota: string, dados: Record<string, 
       {
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -66,18 +67,18 @@ export async function requisicaoPost(rota: string, dados: Record<string, any> | 
   const token = localStorage.getItem("token");
 
   let config = {
-    headers: {} as Record<string, string>
+    headers: {
+      Authorization: `Bearer ${token}`
+    } as Record<string, string>
   };
 
   let payload: any;
 
   if (dados instanceof FormData) {
-    dados.append('token', token || '');
     payload = dados;
   } else {
-    payload = { token, ...dados };
     config.headers["Content-Type"] = "application/json";
-    payload = JSON.stringify(payload);
+    payload = JSON.stringify(dados);
   }
 
   try {
@@ -99,16 +100,18 @@ export async function requisicaoPost(rota: string, dados: Record<string, any> | 
 }
 
 
+
 export async function requisicaoPut(rota: string, dados: Record<string, any>) {
   const token = localStorage.getItem("token");
 
   try {
     const response = await axios.put(
       `${rotaApi}${rota}`,
-      { token, ...dados },
+      { ...dados },
       {
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -135,8 +138,9 @@ export async function requisicaoDelete(rota: string, dados: Record<string, any>)
     const response = await axios.delete(`${rotaApi}${rota}`, {
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-      data: { token, ...dados },
+      data: {...dados},
     });
 
     if (response.status === 200 && response.data.success === true) {

@@ -43,6 +43,7 @@ function ConteudoDashboard( { setMenuAberto }: ConteudoDashboardProps ) {
   useEffect(() => {
     const carregarDados = async () => {
       const response = await requisicaoGet("/Backend/Usuario/Dashboard.php");
+      console.log(response);
 
       if (response) {
         setDadosDashboard({
