@@ -141,6 +141,7 @@ function ModalEditarRecargas({
               </label>
               <BtnInserir 
               selectedCodigos={selectedCodigos}
+              setSelectedCodigos={setSelectedCodigos}
               setCodigosdeRecargas={setCodigosdeRecargas}
               selectedRecarga={selectedRecarga}
               />

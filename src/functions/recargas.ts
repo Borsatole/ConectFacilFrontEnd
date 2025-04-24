@@ -3,6 +3,7 @@ import { requisicaoDelete, requisicaoGet, requisicaoPost } from "../services/req
 import { RecargaProps, CodigoProps } from "./tipos";
 
 
+
 export async function carregarCodigosDeRecargas(setCodigosdeRecargas: React.Dispatch<React.SetStateAction<CodigoProps[]>>) {
   const response = await requisicaoGet("/Backend/Admin/recargas/codigos-recargas-listagem.php");
   if (response?.data?.codigos) {
@@ -161,22 +162,47 @@ export async function handleDeleteRecarga(
   }
 }
 
-export async function handleAddCodigodeRecarga(novoCodigo: CodigoProps) {
+export async function handleAddCodigodeRecarga(novoCodigo: CodigoProps, setCodigosdeRecargas: React.Dispatch<React.SetStateAction<CodigoProps[]>>) {
   try {
+    // console.log(novoCodigo);
     const response = await requisicaoPost(
-      "/Backend/Admin/codigos/codigos-adicionar.php",
+      "/Backend/Admin/recargas/codigos-adicionar.php",
       novoCodigo
+    );
+    if (response?.data?.success) {
+      Alerta("toast", "success", `${response?.data?.message || "Codigo adicionado com sucesso"}`);
+      carregarCodigosDeRecargas(setCodigosdeRecargas);
+    } else {
+      console.log(response);
+      Alerta("toast", "error", `${response?.data?.message || "Erro ao adicionar codigo"}`);
+    }
+  } catch (error) {
+    // console.error("Erro ao adicionar codigo:", error);
+  }
+}
+
+export async function halndleDeleteCodigodeRecarga(selectedCodigos: CodigoProps[], setCodigosdeRecargas: React.Dispatch<React.SetStateAction<CodigoProps[]>>, setSelectedCodigos: React.Dispatch<React.SetStateAction<CodigoProps[]>>) {
+  
+  try {
+    const response = await requisicaoDelete(
+      "/Backend/Admin/recargas/codigos-deletar.php",
+      selectedCodigos
     );
 
     if (response?.data?.success) {
-      Alerta("swal", "success", "Codigo adicionado com sucesso!");
+      Alerta("toast", "success", `${response?.data?.message || "Codigo deletado com sucesso"}`);
+      carregarCodigosDeRecargas(setCodigosdeRecargas);
+      setSelectedCodigos([]);
     } else {
-      Alerta("swal", "error", "Erro ao adicionar codigo!");
+      setSelectedCodigos([]);
+      Alerta("toast", "error", `${response?.data?.message || "Erro ao deletar codigo"}`);
     }
   } catch (error) {
-    console.error("Erro ao adicionar codigo:", error);
+    
   }
-}
+  }
+
+ 
 
 
 

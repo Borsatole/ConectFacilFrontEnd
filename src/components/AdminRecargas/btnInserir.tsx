@@ -1,16 +1,18 @@
 import Swal from "sweetalert2";
 import {CodigoProps , RecargaProps} from "../../functions/tipos"
 import Alerta from "../../components/comum/alertas";
-import {carregarCodigosDeRecargas, handleAddCodigodeRecarga} from "../../functions/recargas"
-import { requisicaoPost } from "services/requisicoes";
+import {handleAddCodigodeRecarga,halndleDeleteCodigodeRecarga } from "../../functions/recargas"
+
 
 type Props = {
   selectedCodigos: CodigoProps[];
+  setSelectedCodigos: React.Dispatch<React.SetStateAction<CodigoProps[]>>
   selectedRecarga: RecargaProps & { previewImage?: string }
   setCodigosdeRecargas: React.Dispatch<React.SetStateAction<CodigoProps[]>>
+
 }
 
-export function BtnInserir({ selectedCodigos, selectedRecarga, setCodigosdeRecargas }:Props) {
+export function BtnInserir({ selectedCodigos, setSelectedCodigos, selectedRecarga, setCodigosdeRecargas }:Props) {
 
 
 function ModalAdicionarCodigo() {
@@ -38,13 +40,13 @@ function ModalAdicionarCodigo() {
           usado: Number(0),
           dias: Number(30)
         }
-        console.log(novoCodigo);
+        // console.log(novoCodigo);
 
-        handleAddCodigodeRecarga(novoCodigo);
+        handleAddCodigodeRecarga(novoCodigo, setCodigosdeRecargas);
 
-        carregarCodigosDeRecargas
+        
 
-        Alerta("toast", "success", `${result.value} adicionado com sucesso!` || "Erro ao adicionar!");
+        // Alerta("toast", "success", `${result.value} adicionado com sucesso!` || "Erro ao adicionar!");
         }
       })
 }
@@ -56,8 +58,7 @@ function ModalAdicionarCodigo() {
     <button
       onClick={(event) => {
         event.preventDefault();
-        console.log("Codigos Para Deletar:", selectedCodigos);
-        // Aqui você pode implementar a função para deletar
+        halndleDeleteCodigodeRecarga(selectedCodigos, setCodigosdeRecargas, setSelectedCodigos);
       }}
       className="text-white font-bold py-1 px-4 rounded focus:outline-none focus:shadow-outline flex items-center"
       style={{
