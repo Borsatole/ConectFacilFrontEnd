@@ -178,7 +178,7 @@ function SectionRecargas() {
         <ModalEditarRecargas
           handleCloseModal={handleCloseModal}
           selectedRecarga={selectedRecarga}
-
+          setCodigosdeRecargas={setCodigosdeRecargas}
           setLoading={setLoading}
           setRecargas={setRecargas}
           recargas={recargas}

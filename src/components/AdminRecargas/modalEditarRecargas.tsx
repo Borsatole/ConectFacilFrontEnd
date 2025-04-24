@@ -11,6 +11,7 @@ interface ModalEditarRecargasProps {
   handleCloseModal: () => void;
   recargas: RecargaProps[];
   selectedRecarga: RecargaProps;
+  setCodigosdeRecargas: React.Dispatch<React.SetStateAction<CodigoProps[]>>;
   setRecargas: React.Dispatch<React.SetStateAction<RecargaProps[]>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   handleImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -34,6 +35,7 @@ interface ModalEditarRecargasProps {
 // Componente principal
 function ModalEditarRecargas({
   handleCloseModal,
+  setCodigosdeRecargas,
   selectedRecarga,
   setRecargas,
   setLoading,
@@ -139,6 +141,7 @@ function ModalEditarRecargas({
               </label>
               <BtnInserir 
               selectedCodigos={selectedCodigos}
+              setCodigosdeRecargas={setCodigosdeRecargas}
               selectedRecarga={selectedRecarga}
               />
             </div>

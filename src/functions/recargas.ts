@@ -8,12 +8,54 @@ export async function carregarCodigosDeRecargas(setCodigosdeRecargas: React.Disp
   if (response?.data?.codigos) {
     // console.log(response.data.codigos);
     setCodigosdeRecargas(response.data.codigos);
+    return response.data.codigos;
   }
 }
 
 export function handleFiltrarCodigos(recarga: RecargaProps, codigos: CodigoProps[]) {
   if (!recarga) return [];
   return codigos.filter((codigo) => codigo.idRecarga === Number(recarga.id));
+}
+
+export async function handleAddRecarga(
+  e: React.FormEvent<HTMLFormElement>,
+  setRecargas: React.Dispatch<React.SetStateAction<RecargaProps[]>>,
+  handleCloseModal: () => void
+) {
+  e.preventDefault();
+
+  const formData = new FormData(e.currentTarget);
+
+  const imagem = formData.get('imagem') as string;
+  const titulo = formData.get('titulo') as string;
+  const dias = formData.get('dias') as string;
+  const valor = Number(formData.get('valor')) as number;
+
+  const novaRecarga: RecargaProps = {
+    titulo,
+    imagem,
+    dias,
+    valor,
+  };
+
+  try {
+    const response = await requisicaoPost('/Backend/Admin/recargas/recargas-adicionar.php', formData);
+    if (response?.data?.success) {
+      const recargasResponse = await requisicaoGet("/Backend/Admin/servidores/buscar-recargas.php");
+      if (recargasResponse?.data?.recargas) {
+        setRecargas(recargasResponse.data.recargas);
+      }
+      
+      handleCloseModal();
+      Alerta("toast", "success", `${response?.data?.message || "Recarga adicionada com sucesso"}`);
+    } else {
+      console.log(response);
+      Alerta("toast", "error", `${response?.data?.message || "Erro ao adicionar recarga"}`);
+    }
+  } catch (error) {
+    console.log(error);
+    console.error('Erro ao adicionar recarga:', error);
+  }
 }
 
 export function handleCodigoChange(
@@ -119,45 +161,25 @@ export async function handleDeleteRecarga(
   }
 }
 
-export async function handleAddRecarga(
-  e: React.FormEvent<HTMLFormElement>,
-  setRecargas: React.Dispatch<React.SetStateAction<RecargaProps[]>>,
-  handleCloseModal: () => void
-) {
-  e.preventDefault();
-
-  const formData = new FormData(e.currentTarget);
-
-  const imagem = formData.get('imagem') as string;
-  const titulo = formData.get('titulo') as string;
-  const dias = formData.get('dias') as string;
-  const valor = Number(formData.get('valor')) as number;
-
-  const novaRecarga: RecargaProps = {
-    titulo,
-    imagem,
-    dias,
-    valor,
-  };
-
+export async function handleAddCodigodeRecarga(novoCodigo: CodigoProps) {
   try {
-    const response = await requisicaoPost('/Backend/Admin/recargas/recargas-adicionar.php', formData);
+    const response = await requisicaoPost(
+      "/Backend/Admin/codigos/codigos-adicionar.php",
+      novoCodigo
+    );
+
     if (response?.data?.success) {
-      const recargasResponse = await requisicaoGet("/Backend/Admin/servidores/buscar-recargas.php");
-      if (recargasResponse?.data?.recargas) {
-        setRecargas(recargasResponse.data.recargas);
-      }
-      
-      handleCloseModal();
-      Alerta("toast", "success", `${response?.data?.message || "Recarga adicionada com sucesso"}`);
+      Alerta("swal", "success", "Codigo adicionado com sucesso!");
     } else {
-      console.log(response);
-      Alerta("toast", "error", `${response?.data?.message || "Erro ao adicionar recarga"}`);
+      Alerta("swal", "error", "Erro ao adicionar codigo!");
     }
   } catch (error) {
-    console.log(error);
-    console.error('Erro ao adicionar recarga:', error);
+    console.error("Erro ao adicionar codigo:", error);
   }
 }
+
+
+
+
 
 

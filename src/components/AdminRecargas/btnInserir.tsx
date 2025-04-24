@@ -1,18 +1,17 @@
 import Swal from "sweetalert2";
 import {CodigoProps , RecargaProps} from "../../functions/tipos"
+import Alerta from "../../components/comum/alertas";
+import {carregarCodigosDeRecargas, handleAddCodigodeRecarga} from "../../functions/recargas"
+import { requisicaoPost } from "services/requisicoes";
 
 type Props = {
   selectedCodigos: CodigoProps[];
   selectedRecarga: RecargaProps & { previewImage?: string }
+  setCodigosdeRecargas: React.Dispatch<React.SetStateAction<CodigoProps[]>>
 }
 
-export function BtnInserir({ selectedCodigos, selectedRecarga }:Props) {
+export function BtnInserir({ selectedCodigos, selectedRecarga, setCodigosdeRecargas }:Props) {
 
-
-  function CadastrarCodigo(){
-
-  }
-  
 
 function ModalAdicionarCodigo() {
     Swal.fire({
@@ -26,11 +25,11 @@ function ModalAdicionarCodigo() {
         showLoaderOnConfirm: false,
       }).then((result) => {
         if (result.isConfirmed) {
-         console.log(result.value);
-        //  console.log(selectedRecarga);
 
-
-        // idRecarga, servidor, codigo, usado, dias
+        if (result.value == undefined || result.value == "") {
+            Alerta("toast", "error", "Você não digitou nenhum codigo!");
+            return
+        }
 
         const novoCodigo: CodigoProps = {
           idRecarga: Number(selectedRecarga.id),
@@ -40,14 +39,12 @@ function ModalAdicionarCodigo() {
           dias: Number(30)
         }
         console.log(novoCodigo);
-// {
-//     "id": 4,
-//     "imagem": "alphaplay.png",
-//     "titulo": "Alphaplay 30 Dias",
-//     "servidor": "",
-//     "dias": "30",
-//     "valor": "30.00"
-// }
+
+        handleAddCodigodeRecarga(novoCodigo);
+
+        carregarCodigosDeRecargas
+
+        Alerta("toast", "success", `${result.value} adicionado com sucesso!` || "Erro ao adicionar!");
         }
       })
 }
