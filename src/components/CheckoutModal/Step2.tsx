@@ -38,9 +38,10 @@ function Step2({
         idProduto: dadosDaCompra.idProduto,
       }
     );
-  
+    console.log(response);
     if (!response || !response.data) {
-      handleClose();
+      console.log(response);
+      // handleClose();
       Alerta("swal", "error", "Erro ao conectar com o servidor.");
       return;
     }

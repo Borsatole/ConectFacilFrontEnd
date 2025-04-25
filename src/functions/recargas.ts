@@ -188,7 +188,7 @@ export async function halndleDeleteCodigodeRecarga(selectedCodigos: CodigoProps[
       "/Backend/Admin/recargas/codigos-deletar.php",
       selectedCodigos
     );
-
+    console.log(response);
     if (response?.data?.success) {
       Alerta("toast", "success", `${response?.data?.message || "Codigo deletado com sucesso"}`);
       carregarCodigosDeRecargas(setCodigosdeRecargas);
@@ -198,7 +198,7 @@ export async function halndleDeleteCodigodeRecarga(selectedCodigos: CodigoProps[
       Alerta("toast", "error", `${response?.data?.message || "Erro ao deletar codigo"}`);
     }
   } catch (error) {
-    
+    console.log(error);
   }
   }
 

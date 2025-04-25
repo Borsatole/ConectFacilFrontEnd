@@ -81,7 +81,7 @@ export function CardRecargas({
         width="150"
       />
       <div className="text-center flex flex-col items-center">
-        <h3 className="text-xl font-bold text-gray-900">{descricaoRecarga}</h3>
+        <h3 className="text-xl font-bold text-gray-900">{descricaoRecarga.toUpperCase()}</h3>
         <p className="text-gray-500"> Valor: R${Number(valorRecarga).toFixed(2) || "Erro"}</p>
         <button
           onClick={handleFinalizarCompra}
