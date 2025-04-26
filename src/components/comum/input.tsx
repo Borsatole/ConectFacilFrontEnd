@@ -1,4 +1,6 @@
-import * as React from "react";
+import 'react-phone-input-2/lib/style.css';
+import PhoneInput from 'react-phone-input-2';
+
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id: string;
@@ -29,7 +31,7 @@ export function Input({
       type={type || "text"}
       placeholder={placeholder || ""}
       autoComplete={autoComplete || "off"}
-      className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+      className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600`}
       defaultValue={defaultValue || ""}
       min={min || ""}
       max={max || ""}
@@ -38,3 +40,28 @@ export function Input({
     />
   );
 }
+
+
+
+export function InputTelefone({ ...rest }: any) {
+  return (
+    <PhoneInput
+      country={'br'} // país padrão
+      inputStyle={{
+        width: '100%',
+        height: '2.4rem',
+        padding: '0.5rem 3rem',
+        border: '1px solid #D1D5DB', // gray-300
+        borderRadius: '0.375rem', // rounded-md
+        outlineOffset: '-2px',
+        outline: '2px solid transparent',
+      }}
+      {...rest}
+    />
+  );
+}
+
+
+
+
+

@@ -3,9 +3,12 @@ import { Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
 
 import Loading from "../components/Loading";
-import * as React from "react";
+
+
 
 const TelaLogin = lazy(() => import("./telaLogin"));
+const Register = lazy(() => import("./Register"));
+
 const Dashboard = lazy(() => import("./Dashboard"));
 const MeusPedidos = lazy(() => import("./MeusPedidos"));
 const Perfil = lazy(() => import("./Perfil"));
@@ -17,8 +20,11 @@ const Rotas = () => {
       fallback={
         <TelaLoading />
       }
+      
     >
+      
       <Routes>
+
         <Route
           path="/"
           element={
@@ -28,6 +34,7 @@ const Rotas = () => {
           }
         />
         <Route path="/login" element={<TelaLogin />} />
+        <Route path="/register" element={<Register />} />
 
         <Route
           path="/dashboard"
