@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { H2, H3 } from "../components/tailwindComponents/Textos"
 import Container from "../components/tailwindComponents/Container"
 import { FormGroup } from "../components/comum/FormGroup"
-import { Input, InputTelefone } from "../components/comum/input"
+import { Input } from "../components/comum/input"
 import { Button } from "../components/comum/button"
 import Alerta from "../components/comum/alertas"
 
@@ -10,6 +10,21 @@ import Alerta from "../components/comum/alertas"
 function Register() {
     const [step, setStep] = useState(1);
     const [codigo, setCodigo] = useState('');
+    const [dadosUsuario, setDadosUsuario] = useState({});
+
+    useEffect (() => {
+        if (step === 2) {
+          axios.post(`${import.meta.env.VITE_API}/Backend/Auth/OtpCode/gerar.php`, {dadosUsuario})
+            .then((response) => {
+                // Alerta("toast", "success", `${response.data.message}`);
+                console.log(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+        }
+    }, [step]);
+    
 
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -38,7 +53,14 @@ function Register() {
         formData.append('telefone', form.telefone.value);
         formData.append('senha', form.senha.value);
         formData.append('confirmarsenha', form.confirmarsenha.value);
-        console.log(...formData);
+        
+        const formDataObj: { [key: string]: string } = {};
+        formData.forEach((value, key) => {
+          formDataObj[key] = value as string;
+        });
+
+        setDadosUsuario(formDataObj);
+        console.log(dadosUsuario);
         setStep(2);
 
     }
@@ -209,6 +231,7 @@ export default Register
 
 
 import { useRef } from 'react';
+import axios from "axios";
 
 export function OtpInput({ value, onChange }: { value: string; onChange: (val: string) => void }) {
   const inputs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
