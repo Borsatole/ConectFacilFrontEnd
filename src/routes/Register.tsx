@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { H2, H3 } from "../components/tailwindComponents/Textos"
 import Container from "../components/tailwindComponents/Container"
 import { FormGroup } from "../components/comum/FormGroup"
@@ -6,24 +7,76 @@ import { Input } from "../components/comum/input"
 import { Button } from "../components/comum/button"
 import Alerta from "../components/comum/alertas"
 
+import { useRef } from 'react';
+import axios from "axios";
+import { requisicaoPost } from "../services/requisicoes";
+
 
 function Register() {
+  interface DadosUsuario {
+    nome: string;
+    email: string;
+    telefone: string;
+    senha: string;
+    confirmarsenha: string;
+  }
+  
+  
     const [step, setStep] = useState(1);
     const [codigo, setCodigo] = useState('');
-    const [dadosUsuario, setDadosUsuario] = useState({});
+    const [dadosUsuario, setDadosUsuario] = useState<DadosUsuario>({
+      nome: '',
+      email: '',
+      telefone: '',
+      senha: '',
+      confirmarsenha: ''
+    });
+    
 
-    useEffect (() => {
-        if (step === 2) {
-          axios.post(`${import.meta.env.VITE_API}/Backend/Auth/OtpCode/gerar.php`, {dadosUsuario})
-            .then((response) => {
-                // Alerta("toast", "success", `${response.data.message}`);
-                console.log(response.data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+    const [timer, setTimer] = useState(0);
+
+    useEffect(() => {
+        if (timer === 0) {
+            return;
         }
+        const interval = setInterval(() => {
+            setTimer((prevTimer) => prevTimer - 1);
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [timer]);
+
+    useEffect(() => {
+      if (step === 2) {
+        async function gerarCodigo() {
+          const promise = axios.post(`${import.meta.env.VITE_API}/Backend/Auth/OtpCode/gerar.php`, { dadosUsuario });
+    
+          toast.promise(promise, {
+            pending: {
+              render: () => {
+                return "Enviando código";
+              }
+            },
+            success: {
+              render: () => {
+                return "Código enviado com sucesso";
+              }
+            },
+            error: {
+              render: () => {
+                return "Erro ao enviar o código";
+              }
+            }
+          });
+    
+          const response = await promise;
+          console.log(response);
+          setTimer(25);
+        }
+    
+        gerarCodigo();
+      }
     }, [step]);
+    
     
 
 
@@ -53,29 +106,59 @@ function Register() {
         formData.append('telefone', form.telefone.value);
         formData.append('senha', form.senha.value);
         formData.append('confirmarsenha', form.confirmarsenha.value);
+
+        const formDataObj: DadosUsuario = {
+          nome: form.nome.value,
+          email: form.email.value,
+          telefone: form.telefone.value,
+          senha: form.senha.value,
+          confirmarsenha: form.confirmarsenha.value
+        };
         
-        const formDataObj: { [key: string]: string } = {};
-        formData.forEach((value, key) => {
-          formDataObj[key] = value as string;
-        });
-
+        console.log('Antes de setar:', formDataObj);
         setDadosUsuario(formDataObj);
-        console.log(dadosUsuario);
         setStep(2);
+        
 
     }
 
-    function handleConfirmarCodigo(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        const form = e.target as HTMLFormElement;
+    async function handleConfirmarCodigo(e: React.FormEvent<HTMLFormElement>) {
+      e.preventDefault();
+      const form = e.target as HTMLFormElement;
+      const codigo = form.codigo.value;
+    
+      if (isNaN(codigo)) {
+        Alerta("toast", "error", "Código inválido, deve conter apenas números");
+        return;
+      }
+    
+      // Criando FormData com os dados
+      const formData = new FormData();
+      formData.append('codigo', codigo);
+      formData.append('nome', dadosUsuario.nome);
+      formData.append('email', dadosUsuario.email);
+      formData.append('senha', dadosUsuario.senha);
+      
+      
+      // Imprima para verificar se os dados estão corretos
+      console.log('Enviando os dados:', ...formData);
+    
+      try {
+        const response = await requisicaoPost(`/Backend/Auth/OtpCode/validar.php`, formData) as any;
+        console.log(response);
 
-        console.log(form.codigo.value);
-
-        if (form.codigo.value !== codigo) {
-            Alerta("toast", "error", "Código inválido");
-            return;
+        if (response.data.success) {
+          Alerta("toast", "success", `${response.data.message || "Código validado com sucesso"}`);
+        } else {
+          Alerta("toast", "error", `${response.data.message || "Erro ao validar o código"}`);
         }
+      } catch (error) {
+        console.error(error);
+        Alerta("toast", "error", "Erro ao validar o código");
+      }
     }
+    
+    
   return (
     <>
     {step === 0 && (
@@ -164,28 +247,28 @@ function Register() {
         <form onSubmit={(e) => handleSubmit(e)}>
 
             <FormGroup label="Nome" id="nome">
-                <Input id="nome" type="text" placeholder="Digite seu nome completo" defaultValue={"Fulano de tal"} required/>
+                <Input id="nome" type="text" placeholder="Digite seu nome completo" required/>
             </FormGroup>
 
             <FormGroup label="E-mail" id="email">
                 <Input id="email" type="email" placeholder="Digite seu e-mail" 
-                value={"conectboxtecnologia@gmail.com"} required/>
+                 required/>
             </FormGroup>
 
             <FormGroup label="Telefone" id="telefone">
                 <Input id="telefone" type="tel" placeholder="Digite seu numero de telefone" 
-                value={"11999999999"}
+                
                  required/>
             </FormGroup>
 
             <FormGroup label="Senha" id="senha">
                 <Input id="senha" type="password" placeholder="Digite uma senha" 
-                value={"12345678"} required/>
+               required/>
             </FormGroup>
 
             <FormGroup label="Confirme a Senha" id="confirmarsenha">
                 <Input id="confirmarsenha" type="password" placeholder="Digite a mesma senha" 
-                value={"12345678"} required/>
+                 required/>
             </FormGroup>
 
             <div className="mt-8">
@@ -214,7 +297,17 @@ function Register() {
 
         <div className="w-full flex flex-col justify-center items-center">
           <Button type="submit" wsize="w-1/2">Confirmar</Button>
-          <a href="#" className="text-gray-600 hover:text-gray-800 mt-2" onClick={() => {Alerta("toast", "success", "Reenviado com sucesso"), setCodigo("")}}>Reenviar Código</a>
+
+          {timer === 0 && (
+            <a href="#" className="text-gray-600 hover:text-gray-800 mt-2" onClick={() => {Alerta("toast", "success", "Reenviado com sucesso"), setCodigo("")}}>Reenviar Código</a>
+          )
+          }
+          {timer > 0 && (
+            <a href="#" className="text-gray-600 hover:text-gray-800 mt-2">Reenviar Código em {timer} segundos</a>
+          )
+          
+          }
+          
         </div>
       </form>
     </Container>
@@ -230,8 +323,7 @@ function Register() {
 export default Register
 
 
-import { useRef } from 'react';
-import axios from "axios";
+
 
 export function OtpInput({ value, onChange }: { value: string; onChange: (val: string) => void }) {
   const inputs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];

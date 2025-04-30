@@ -29,6 +29,8 @@ export default function TelaLogin() {
         dadosFormularioLogin
       );
 
+      console.log(response);
+
       if (response.data.JWT) {
         
 
@@ -128,7 +130,7 @@ export default function TelaLogin() {
             <p className="mt-10 text-center text-sm/6 text-gray-500">
               Não tem cadastro?{" "}
               <a
-                href="#"
+                href="/register"
                 className="font-semibold text-indigo-600 hover:text-indigo-500"
               >
                 Cadastre-se
