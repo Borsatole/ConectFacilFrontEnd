@@ -29,7 +29,6 @@ export default function TelaLogin() {
         dadosFormularioLogin
       );
 
-      console.log(response);
 
       if (response.data.JWT) {
         

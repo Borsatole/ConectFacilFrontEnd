@@ -59,7 +59,7 @@ function FormularioPerfil() {
           setErro("Não foi possível carregar os dados do perfil.");
         }
       } catch (err) {
-        console.error("Erro ao carregar dados do perfil:", err);
+        
         setErro("Erro ao carregar dados do perfil.");
       } finally {
         setLoading(false);
@@ -88,18 +88,21 @@ function FormularioPerfil() {
     }
 
     try {
-      const response = await axios.post(
-        `${RotaApi}/Backend/Usuario/atualizar_perfil.php`,
-        formData,
-        { headers: { "Content-Type": "application/json" } }
-      );
+      const response = await requisicaoPost('/Backend/Usuario/atualizar_perfil.php', formData);
 
-      if (response.status === 200) {
+
+      if (response?.status === 200 && response?.data.success === true) {
         Alerta("toast", "success", "Perfil atualizado com sucesso!");
         setTimeout(() => window.location.reload(), 2200);
+      } else {
+        
+        Alerta(
+          "toast",
+          "error",
+          `${response?.data?.message || "Erro ao atualizar perfil."}`
+        );
       }
     } catch (error) {
-      console.error("Erro ao atualizar perfil:", error);
       setErro("Erro ao atualizar perfil.");
       Alerta(
         "toast",

@@ -139,7 +139,7 @@ function SectionCupons() {
               {cupons.map((cupom) => {
                 if (!cupom || !cupom.codigo) {
                   
-                  console.warn("Cupom inválido na posição", cupom);
+                  
                   return null;
                 }
                 const status = determinarStatus(cupom);
@@ -182,7 +182,10 @@ function SectionCupons() {
       )}
 
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+        style={{ backgroundColor: "rgba(0, 0, 0, 0.33)" }}
+      >
           <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative">
             <ButtonCloseModal onClick={handleCloseModal} />
             <H3>Adicionar Novo Cupom</H3>
@@ -216,8 +219,8 @@ function SectionCupons() {
                   {server
                     .sort((a, b) => parseFloat(a.dias) - parseFloat(b.dias))
                     .map((serverItem) => (
-                      <label key={serverItem.id} className="flex items-center gap-3 p-3 border rounded-lg shadow-sm cursor-pointer transition-all hover:bg-gray-100">
-                        <input type="checkbox" name="aplicavel" value={serverItem.id} className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded" />
+                      <label key={serverItem.id} className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg shadow-sm cursor-pointer transition-all hover:bg-gray-100 focus-within:ring-2 focus-within:ring-blue-500">
+                        <input type="checkbox" name="aplicavel" value={serverItem.id} className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
                         <span className="text-sm font-medium text-gray-700">{serverItem.titulo}</span>
                       </label>
                     ))}

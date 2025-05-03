@@ -7,7 +7,6 @@ import { RecargaProps, CodigoProps } from "./tipos";
 export async function carregarCodigosDeRecargas(setCodigosdeRecargas: React.Dispatch<React.SetStateAction<CodigoProps[]>>) {
   const response = await requisicaoGet("/Backend/Admin/recargas/codigos-recargas-listagem.php");
   if (response?.data?.codigos) {
-    // console.log(response.data.codigos);
     setCodigosdeRecargas(response.data.codigos);
     return response.data.codigos;
   }
@@ -50,12 +49,9 @@ export async function handleAddRecarga(
       handleCloseModal();
       Alerta("toast", "success", `${response?.data?.message || "Recarga adicionada com sucesso"}`);
     } else {
-      console.log(response);
       Alerta("toast", "error", `${response?.data?.message || "Erro ao adicionar recarga"}`);
     }
   } catch (error) {
-    console.log(error);
-    console.error('Erro ao adicionar recarga:', error);
   }
 }
 
@@ -105,7 +101,6 @@ export async function handleUpdateRecarga(
       formData
     );
 
-    console.log(response);
 
     if (response?.data?.success) {
       const arrRecargas = Array.isArray(recargas)
@@ -131,7 +126,6 @@ export async function handleUpdateRecarga(
       );
     }
   } catch (error) {
-    console.error("Erro ao atualizar recarga:", error);
     Alerta("toast", "error", "Erro ao atualizar recarga");
   }
 }
@@ -157,14 +151,12 @@ export async function handleDeleteRecarga(
       Alerta("toast", "error", "Erro ao deletar recarga");
     }
   } catch (error) {
-    console.error("Erro ao deletar recarga:", error); 
     Alerta("toast", "error", "Erro ao deletar recarga");
   }
 }
 
 export async function handleAddCodigodeRecarga(novoCodigo: CodigoProps, setCodigosdeRecargas: React.Dispatch<React.SetStateAction<CodigoProps[]>>) {
   try {
-    // console.log(novoCodigo);
     const response = await requisicaoPost(
       "/Backend/Admin/recargas/codigos-adicionar.php",
       novoCodigo
@@ -173,11 +165,9 @@ export async function handleAddCodigodeRecarga(novoCodigo: CodigoProps, setCodig
       Alerta("toast", "success", `${response?.data?.message || "Codigo adicionado com sucesso"}`);
       carregarCodigosDeRecargas(setCodigosdeRecargas);
     } else {
-      console.log(response);
       Alerta("toast", "error", `${response?.data?.message || "Erro ao adicionar codigo"}`);
     }
   } catch (error) {
-    // console.error("Erro ao adicionar codigo:", error);
   }
 }
 
@@ -188,7 +178,6 @@ export async function halndleDeleteCodigodeRecarga(selectedCodigos: CodigoProps[
       "/Backend/Admin/recargas/codigos-deletar.php",
       selectedCodigos
     );
-    console.log(response);
     if (response?.data?.success) {
       Alerta("toast", "success", `${response?.data?.message || "Codigo deletado com sucesso"}`);
       carregarCodigosDeRecargas(setCodigosdeRecargas);
@@ -198,7 +187,6 @@ export async function halndleDeleteCodigodeRecarga(selectedCodigos: CodigoProps[
       Alerta("toast", "error", `${response?.data?.message || "Erro ao deletar codigo"}`);
     }
   } catch (error) {
-    console.log(error);
   }
   }
 

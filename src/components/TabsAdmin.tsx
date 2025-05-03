@@ -92,7 +92,14 @@ function TabsAdmin( props: TabsAdminProps) {
 export default TabsAdmin;
 
 function SectionVendasLoja() {
+  const [construcao] = useState(true);
   return (
+    <>
+    {construcao? (
+      <>
+        <h1>Essa seção ainda está em construção</h1>
+      </>
+    ) : (
     <div>
       <div id="Vendas" className="tabcontent block">
         <h2 className="text-x2 font-semibold mb-4">Relatório de Vendas</h2>
@@ -132,5 +139,7 @@ function SectionVendasLoja() {
         </button>
       </div>
     </div>
+    )}
+    </>
   );
 }

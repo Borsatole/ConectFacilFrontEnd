@@ -49,7 +49,6 @@ const MenuLateral = () => {
         });
       }
     } catch (error) {
-      console.error("Erro ao carregar dados do menu:", error);
     } finally {
       setLoading(false);
     }

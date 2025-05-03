@@ -28,7 +28,6 @@ export async function requisicaoGet(rota: string) {
       return response;
     }
   } catch (error) {
-    console.error("Erro:", error);
     return null;
   }
 }
@@ -58,7 +57,6 @@ export async function requisicaoPostSimples(rota: string, dados: Record<string, 
       return response;
     }
   } catch (error) {
-    console.error("Erro:", error);
     return null;
   }
 }
@@ -94,7 +92,6 @@ export async function requisicaoPost(rota: string, dados: Record<string, any> | 
       return response;
     }
   } catch (error) {
-    console.error("Erro:", error);
     return null;
   }
 }
@@ -126,7 +123,6 @@ export async function requisicaoPut(rota: string, dados: Record<string, any>) {
       return response;
     }
   } catch (error) {
-    console.error("Erro:", error);
     return null;
   }
 }
@@ -153,7 +149,6 @@ export async function requisicaoDelete(rota: string, dados: Record<string, any>)
       return response;
     }
   } catch (error) {
-    console.error("Erro:", error);
     return null;
   }
 }

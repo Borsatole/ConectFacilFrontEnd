@@ -20,7 +20,6 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
               type="text"
               placeholder="Digite seu nome completo"
               required
-              defaultValue={"Roberio dos teclados"}
             />
           </FormGroup>
 
@@ -29,7 +28,6 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
               id="email"
               type="email"
               placeholder="Digite seu e-mail"
-              defaultValue={"conectboxtecnologia@gmail.com"}
               required
             />
           </FormGroup>
@@ -39,7 +37,6 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
               id="telefone"
               type="tel"
               placeholder="Digite seu numero de telefone"
-              defaultValue={"11999999999"}
               required
             />
           </FormGroup>
@@ -49,7 +46,6 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
               id="senha"
               type="password"
               placeholder="Digite uma senha"
-              defaultValue={"12#34$56"}
               required
             />
           </FormGroup>
@@ -59,7 +55,6 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
               id="confirmarsenha"
               type="password"
               placeholder="Digite a mesma senha"
-              defaultValue={"12#34$56"}
               required
             />
           </FormGroup>

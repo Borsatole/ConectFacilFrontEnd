@@ -40,7 +40,7 @@ function ModalAdicionarCodigo() {
           usado: Number(0),
           dias: Number(30)
         }
-        // console.log(novoCodigo);
+        
 
         handleAddCodigodeRecarga(novoCodigo, setCodigosdeRecargas);
 

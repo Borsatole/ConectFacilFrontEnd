@@ -64,10 +64,8 @@ function Register() {
 
     try {
       const response = await promise;
-      setTimer(25);
-      console.log(response);
+      setTimer(40);
     } catch (error: any) {
-      console.error(error);
     }
   }
 
@@ -127,7 +125,6 @@ function Register() {
     
     try {
       const response = await requisicaoPost(`/Backend/Auth/OtpCode/validar.php`, formData) as any;
-      console.log(response);
 
       if (response.data.success) {
         
@@ -138,14 +135,12 @@ function Register() {
         Alerta("toast", "error", `${response.data.message || "Erro ao validar o código"}`);
       }
     } catch (error) {
-      console.error(error);
       Alerta("toast", "error", "Erro ao validar o código");
     }
   }
 
   return (
     <>
-      {step === 0 && <LoginForm onSubmit={handleSubmit} />}
       {step === 1 && <RegisterForm onSubmit={handleSubmit} />}
       {step === 2 && (
         <OtpVerification

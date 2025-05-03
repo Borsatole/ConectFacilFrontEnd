@@ -46,7 +46,7 @@ function ModalAdicionarRecarga({
         >
           <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative">
             <ButtonCloseModal onClick={handleCloseModal} />
-            <H3>Editar Recarga</H3>
+            <H3>Adicionar Recarga</H3>
     
             {/* Formulário */}
             <form
@@ -81,7 +81,7 @@ function ModalAdicionarRecarga({
                   type="text"
                   id="titulo"
                   name="titulo"
-                  defaultValue={"UNITV 30 DIAS"}
+                  
                   required
                 />
               </FormGroup>
@@ -109,7 +109,7 @@ function ModalAdicionarRecarga({
                   name="dias"
                   id="dias"
                   min="1"
-                  defaultValue={"30"}
+                  
                   required
                 />
               </FormGroup>
