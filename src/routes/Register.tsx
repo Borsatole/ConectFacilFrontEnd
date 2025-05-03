@@ -1,363 +1,162 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { H2, H3 } from "../components/tailwindComponents/Textos"
-import Container from "../components/tailwindComponents/Container"
-import { FormGroup } from "../components/comum/FormGroup"
-import { Input } from "../components/comum/input"
-import { Button } from "../components/comum/button"
-import Alerta from "../components/comum/alertas"
-
-import { useRef } from 'react';
 import axios from "axios";
 import { requisicaoPost } from "../services/requisicoes";
+import Alerta from "../components/comum/alertas";
+import { LoginForm } from "../components/auth/LoginForm";
+import { RegisterForm } from "../components/auth/RegisterForm";
+import { OtpVerification } from "../components/auth/OtpVerification";
 
+interface DadosUsuario {
+  nome: string;
+  email: string;
+  telefone: string;
+  senha: string;
+  confirmarsenha: string;
+}
 
 function Register() {
-  interface DadosUsuario {
-    nome: string;
-    email: string;
-    telefone: string;
-    senha: string;
-    confirmarsenha: string;
-  }
+  const [step, setStep] = useState(1);
+  const [codigo, setCodigo] = useState('');
+  const [dadosUsuario, setDadosUsuario] = useState<DadosUsuario>({
+    nome: '',
+    email: '',
+    telefone: '',
+    senha: '',
+    confirmarsenha: ''
+  });
   
-  
-    const [step, setStep] = useState(1);
-    const [codigo, setCodigo] = useState('');
-    const [dadosUsuario, setDadosUsuario] = useState<DadosUsuario>({
-      nome: '',
-      email: '',
-      telefone: '',
-      senha: '',
-      confirmarsenha: ''
+  const [erro, setErro] = useState<string | null>(null);
+  const [timer, setTimer] = useState(0);
+
+  useEffect(() => {
+    if (timer === 0) {
+      return;
+    }
+    const interval = setInterval(() => {
+      setTimer((prevTimer) => prevTimer - 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [timer]);
+
+  async function gerarCodigo() {
+    const promise = axios.post(`${import.meta.env.VITE_API}/Backend/Auth/OtpCode/gerar.php`, { dadosUsuario }).then(response => {
+      if (!response.data.success) {
+        setErro(response.data.message);
+        throw new Error(response.data.message);
+      }
+      return response;
     });
     
-
-    const [timer, setTimer] = useState(0);
-
-    useEffect(() => {
-        if (timer === 0) {
-            return;
-        }
-        const interval = setInterval(() => {
-            setTimer((prevTimer) => prevTimer - 1);
-        }, 1000);
-        return () => clearInterval(interval);
-    }, [timer]);
-
-    useEffect(() => {
-      if (step === 2) {
-        async function gerarCodigo() {
-          const promise = axios.post(`${import.meta.env.VITE_API}/Backend/Auth/OtpCode/gerar.php`, { dadosUsuario });
-    
-          toast.promise(promise, {
-            pending: {
-              render: () => {
-                return "Enviando código";
-              }
-            },
-            success: {
-              render: () => {
-                return "Código enviado com sucesso";
-              }
-            },
-            error: {
-              render: () => {
-                return "Erro ao enviar o código";
-              }
-            }
-          });
-    
-          const response = await promise;
-          console.log(response);
-          setTimer(25);
-        }
-    
-        gerarCodigo();
+    toast.promise(promise, {
+      pending: {
+        render: () => "Enviando código"
+      },
+      success: {
+        render: () => "Código enviado com sucesso"
+      },
+      error: {
+        render: () => "Erro ao enviar o código"
       }
-    }, [step]);
+    });
+
+    try {
+      const response = await promise;
+      setTimer(25);
+      console.log(response);
+    } catch (error: any) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    if (step === 2) {
+      gerarCodigo();
+    }
+  }, [step]);
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+
+    if (form.senha.value !== form.confirmarsenha.value) {
+      Alerta("toast", "error", "As senhas não coincidem");
+      return;
+    }
+
+    if (isNaN(Number(form.telefone.value))) {
+      Alerta("toast", "error", "Telefone inválido deve conter apenas números");
+      return;
+    }
+
+    if (form.telefone.value.length < 11 || form.telefone.value.length > 15) {
+      Alerta("toast", "error", "Telefone inválido");
+      return;
+    }
+
+    const formDataObj: DadosUsuario = {
+      nome: form.nome.value,
+      email: form.email.value,
+      telefone: form.telefone.value,
+      senha: form.senha.value,
+      confirmarsenha: form.confirmarsenha.value
+    };
     
-    
+    setDadosUsuario(formDataObj);
+    setStep(2);
+  }
 
-
-    function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-
-        const form = e.target as HTMLFormElement;
-
-        if (form.senha.value !== form.confirmarsenha.value) {
-            Alerta("toast", "error", "As senhas não coincidem");
-            return;
-        }
-
-        if (isNaN(form.telefone.value)){
-            Alerta("toast", "error", "Telefone inválido deve conter apenas números");
-            return;
-        }
-
-        if (form.telefone.value.length < 11 || form.telefone.value.length > 15) {
-            Alerta("toast", "error", "Telefone inválido");
-            return;
-        }
+  async function handleConfirmarCodigo(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const codigo = form.codigo.value;
   
-        const formData = new FormData();
-        formData.append('nome', form.nome.value);
-        formData.append('email', form.email.value);
-        formData.append('telefone', form.telefone.value);
-        formData.append('senha', form.senha.value);
-        formData.append('confirmarsenha', form.confirmarsenha.value);
-
-        const formDataObj: DadosUsuario = {
-          nome: form.nome.value,
-          email: form.email.value,
-          telefone: form.telefone.value,
-          senha: form.senha.value,
-          confirmarsenha: form.confirmarsenha.value
-        };
-        
-        console.log('Antes de setar:', formDataObj);
-        setDadosUsuario(formDataObj);
-        setStep(2);
-        
-
+    if (isNaN(Number(codigo))) {
+      Alerta("toast", "error", "Código inválido, deve conter apenas números");
+      return;
     }
+  
+    const formData = new FormData();
+    formData.append('codigo', codigo);
+    formData.append('nome', dadosUsuario.nome);
+    formData.append('email', dadosUsuario.email);
+    formData.append('senha', dadosUsuario.senha);
+    
+    try {
+      const response = await requisicaoPost(`/Backend/Auth/OtpCode/validar.php`, formData) as any;
+      console.log(response);
 
-    async function handleConfirmarCodigo(e: React.FormEvent<HTMLFormElement>) {
-      e.preventDefault();
-      const form = e.target as HTMLFormElement;
-      const codigo = form.codigo.value;
-    
-      if (isNaN(codigo)) {
-        Alerta("toast", "error", "Código inválido, deve conter apenas números");
-        return;
+      if (response.data.success) {
+        Alerta("toast", "success", `${response.data.message || "Código validado com sucesso"}`);
+      } else {
+        setErro(erro);
+        Alerta("toast", "error", `${response.data.message || "Erro ao validar o código"}`);
       }
-    
-      // Criando FormData com os dados
-      const formData = new FormData();
-      formData.append('codigo', codigo);
-      formData.append('nome', dadosUsuario.nome);
-      formData.append('email', dadosUsuario.email);
-      formData.append('senha', dadosUsuario.senha);
-      
-      
-      // Imprima para verificar se os dados estão corretos
-      console.log('Enviando os dados:', ...formData);
-    
-      try {
-        const response = await requisicaoPost(`/Backend/Auth/OtpCode/validar.php`, formData) as any;
-        console.log(response);
-
-        if (response.data.success) {
-          Alerta("toast", "success", `${response.data.message || "Código validado com sucesso"}`);
-        } else {
-          Alerta("toast", "error", `${response.data.message || "Erro ao validar o código"}`);
-        }
-      } catch (error) {
-        console.error(error);
-        Alerta("toast", "error", "Erro ao validar o código");
-      }
+    } catch (error) {
+      console.error(error);
+      Alerta("toast", "error", "Erro ao validar o código");
     }
-    
-    
+  }
+
   return (
     <>
-    {step === 0 && (
-        <div className="h-full">
-                <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-                  <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <img
-                      alt="Your Company"
-                      src="/images/logo.png"
-                      className="mx-auto h-20 w-auto"
-                    />
-                  </div>
-                  <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form className="space-y-6" id="formLogin" onSubmit={e => handleSubmit(e)}>
-                      <div>
-                        <label
-                          htmlFor="email"
-                          className="block text-left font-medium text-gray-900"
-                        >
-                          E-mail
-                        </label>
-                        <div className="mt-2">
-                          <input
-                            id="email"
-                            name="email"
-                            type="email"
-                            required
-                            autoComplete="email"
-                            className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <div className="flex items-center justify-between">
-                          <label
-                            htmlFor="password"
-                            className="block text-left font-medium text-gray-900"
-                          >
-                            Senha
-                          </label>
-                          <div className="text-sm">
-                            <a
-                              href="#"
-                              className="font-semibold text-indigo-600 hover:text-indigo-500"
-                            >
-                              Esqueceu a senha?
-                            </a>
-                          </div>
-                        </div>
-                        <div className="mt-2">
-                          <input
-                            id="password"
-                            name="password"
-                            type="password"
-                            required
-                            autoComplete="current-password"
-                            className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <Button type="submit" >
-                          Acessar
-                        </Button>
-                        
-                      </div>
-                    </form>
-                    <p className="mt-10 text-center text-sm/6 text-gray-500">
-                      Não tem cadastro?{" "}
-                      <a
-                        href="#"
-                        className="font-semibold text-indigo-600 hover:text-indigo-500"
-                      >
-                        Cadastre-se
-                      </a>
-                    </p>
-                  </div>
-                </div>
-              </div>
-    )}
-    {step === 1 && (
-        
-    <div className="w-full p-20 bg-gray-100 h-screen">
-    <Container tipo="secundario">
-        <H2>Registre-se</H2>
-        <form onSubmit={(e) => handleSubmit(e)}>
-
-            <FormGroup label="Nome" id="nome">
-                <Input id="nome" type="text" placeholder="Digite seu nome completo" required/>
-            </FormGroup>
-
-            <FormGroup label="E-mail" id="email">
-                <Input id="email" type="email" placeholder="Digite seu e-mail" 
-                 required/>
-            </FormGroup>
-
-            <FormGroup label="Telefone" id="telefone">
-                <Input id="telefone" type="tel" placeholder="Digite seu numero de telefone" 
-                
-                 required/>
-            </FormGroup>
-
-            <FormGroup label="Senha" id="senha">
-                <Input id="senha" type="password" placeholder="Digite uma senha" 
-               required/>
-            </FormGroup>
-
-            <FormGroup label="Confirme a Senha" id="confirmarsenha">
-                <Input id="confirmarsenha" type="password" placeholder="Digite a mesma senha" 
-                 required/>
-            </FormGroup>
-
-            <div className="mt-8">
-            <Button type="submit">Cadastrar</Button>
-            </div>
-
-        </form>
-        
-
-    </Container>
-    </div>
-    )} 
-    
-    
-    {step === 2 && (
-  <div className="w-full p-20 bg-gray-100 h-screen">
-    <Container tipo="secundario">
-      <H2>Nós enviamos um código de 4 dígitos para o seu e-mail.</H2>
-      <h3 className="text-xl font-light leading-4 text-gray-900 mb-4">Por favor, confirme o código abaixo:</h3>
-
-      <form onSubmit={handleConfirmarCodigo} className="mt-8 space-y-6">
-        <div className="w-full flex justify-center">
-          <input type="hidden" name="codigo" value={codigo} />
-          <OtpInput value={codigo} onChange={setCodigo} />
-        </div>
-
-        <div className="w-full flex flex-col justify-center items-center">
-          <Button type="submit" wsize="w-1/2">Confirmar</Button>
-
-          {timer === 0 && (
-            <a href="#" className="text-gray-600 hover:text-gray-800 mt-2" onClick={() => {Alerta("toast", "success", "Reenviado com sucesso"), setCodigo("")}}>Reenviar Código</a>
-          )
-          }
-          {timer > 0 && (
-            <a href="#" className="text-gray-600 hover:text-gray-800 mt-2">Reenviar Código em {timer} segundos</a>
-          )
-          
-          }
-          
-        </div>
-      </form>
-    </Container>
-  </div>
-)}
-
-
-    
-    </>
-  )
-}
-
-export default Register
-
-
-
-
-export function OtpInput({ value, onChange }: { value: string; onChange: (val: string) => void }) {
-  const inputs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const val = e.target.value.replace(/\D/, ''); // remove não numéricos
-    if (!val) return;
-
-    const newValue = value.substring(0, index) + val + value.substring(index + 1);
-    onChange(newValue);
-
-    if (index < 3) inputs[index + 1].current?.focus();
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-    if (e.key === 'Backspace' && !value[index] && index > 0) {
-      inputs[index - 1].current?.focus();
-    }
-  };
-
-  return (
-    <div className="flex gap-2">
-      {[0, 1, 2, 3].map((i) => (
-        <input
-          key={i}
-          ref={inputs[i]}
-          type="text"
-          maxLength={1}
-          value={value[i] || ''}
-          onChange={(e) => handleChange(e, i)}
-          onKeyDown={(e) => handleKeyDown(e, i)}
-          className="w-12 h-12 text-center text-xl border border-gray-300 rounded-md focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+      {step === 0 && <LoginForm onSubmit={handleSubmit} />}
+      {step === 1 && <RegisterForm onSubmit={handleSubmit} />}
+      {step === 2 && (
+        <OtpVerification
+          codigo={codigo}
+          setCodigo={setCodigo}
+          onSubmit={handleConfirmarCodigo}
+          setStep={setStep}
+          timer={timer}
+          setErro={setErro}
+          erro={erro}
         />
-      ))}
-    </div>
+      )}
+    </>
   );
 }
+
+export default Register;
+
+
