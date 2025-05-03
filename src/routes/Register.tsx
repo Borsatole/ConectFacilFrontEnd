@@ -6,6 +6,7 @@ import Alerta from "../components/comum/alertas";
 import { LoginForm } from "../components/auth/LoginForm";
 import { RegisterForm } from "../components/auth/RegisterForm";
 import { OtpVerification } from "../components/auth/OtpVerification";
+import { useNavigate } from "react-router-dom";
 
 interface DadosUsuario {
   nome: string;
@@ -16,6 +17,7 @@ interface DadosUsuario {
 }
 
 function Register() {
+  const Navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [codigo, setCodigo] = useState('');
   const [dadosUsuario, setDadosUsuario] = useState<DadosUsuario>({
@@ -119,6 +121,7 @@ function Register() {
     const formData = new FormData();
     formData.append('codigo', codigo);
     formData.append('nome', dadosUsuario.nome);
+    formData.append('telefone', dadosUsuario.telefone);
     formData.append('email', dadosUsuario.email);
     formData.append('senha', dadosUsuario.senha);
     
@@ -127,7 +130,9 @@ function Register() {
       console.log(response);
 
       if (response.data.success) {
+        
         Alerta("toast", "success", `${response.data.message || "Código validado com sucesso"}`);
+        Navigate("/dashboard");
       } else {
         setErro(erro);
         Alerta("toast", "error", `${response.data.message || "Erro ao validar o código"}`);
