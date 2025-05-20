@@ -6,6 +6,7 @@ import { BtnAbrirMenuLateral } from "../components/MenuLateral/botoesMenu";
 import * as React from "react";
 
 function ConteudoMeusPedidos() {
+  document.title = "Meus Pedidos";
   return (
     <Container>
       <BtnAbrirMenuLateral />

@@ -1,5 +1,7 @@
-
+import { useMenu } from "../../context/MenuContext";
 import * as React from "react";
+import { Link } from "react-router-dom";
+
 
 
 interface OpcaoMenuProps {
@@ -8,15 +10,18 @@ interface OpcaoMenuProps {
   rota?: string;
 }
 
-function OpcaoMenu({ nome, svg, rota} : OpcaoMenuProps) {
+function OpcaoMenu({ nome, svg, rota }: OpcaoMenuProps) {
+    const { fecharMenu } = useMenu();
+  
   return (
-    <a
+    <Link
       className="flex items-center px-4 py-2 mt-5 text-white rounded-lg hvPrincipal"
-      href={rota || "#"} 
+      onClick={fecharMenu}
+      to={rota || "#"}
     >
       {svg || ""}
       <span className="mx-4 font-medium">{nome || ""}</span>
-    </a>
+    </Link>
   );
 }
 

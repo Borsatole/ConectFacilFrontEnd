@@ -22,6 +22,8 @@ function ConteudoDashboard( { setMenuAberto }: ConteudoDashboardProps ) {
   });
   const [loading, setLoading] = useState(true);
 
+  document.title = "Dashboard";
+
   const estatisticas = [
     {
       icone: "fas fa-shopping-cart",

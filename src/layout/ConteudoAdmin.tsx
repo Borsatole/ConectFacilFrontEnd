@@ -17,6 +17,8 @@ function ConteudoMeusPedidos() {
   const Navigate = useNavigate();
   const [autorization, setAutorization] = useState(false);
 
+  document.title = "Dashboard";
+
   useEffect(() => {
     const carregarDados = async () => {
       const response = await requisicaoGet("/Backend/Admin/admin-validacao.php");

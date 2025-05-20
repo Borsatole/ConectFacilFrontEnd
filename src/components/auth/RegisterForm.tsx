@@ -14,7 +14,7 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
       <div className="div w-full md:w-1/2 mx-auto bg-white p-8 rounded-lg">
         <H2>Registre-se</H2>
         <form onSubmit={onSubmit}>
-          <FormGroup label="Nome" id="nome">
+          <FormGroup label="Nome Completo" id="nome">
             <Input
               id="nome"
               type="text"

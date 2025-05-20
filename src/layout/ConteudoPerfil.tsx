@@ -5,6 +5,7 @@ import { BtnAbrirMenuLateral } from "../components/MenuLateral/botoesMenu";
 import * as React from "react";
 
 function ConteudoMeusPedidos() {
+  document.title = "Perfil";
   return (
     <ContainerPrincipal tipo="principal">
       <BtnAbrirMenuLateral />
