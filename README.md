@@ -19,6 +19,7 @@ Este projeto é um sistema de recargas seguro, desenvolvido com **PHP** no backe
 - ✅ **Interface Responsiva:** Design adaptável para diferentes dispositivos – desktop, tablets e smartphones.
 
 ## 🌐 Acesse o Projeto Online
+
 https://conectfacil.playnetapp.com
 
 🆔 CONTA DE ADMINISTRADOR
@@ -35,7 +36,6 @@ https://conectfacil.playnetapp.com
 
 <p align="left">
   <a href="https://skillicons.dev">
-    <img src="https://skillicons.dev/icons?i=git,html,css,typescript,php,mysql" />
+    <img src="https://skillicons.dev/icons?i=git,html,css,react,typescript,php,mysql" />
   </a>
 </p>
-
